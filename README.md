@@ -6,7 +6,7 @@
 
 Roberto Vetere · Independent researcher
 
-[Paper (EN)](docs/paper/paper_en.md) · [Paper (ES)](docs/paper/paper_es.md) · [Reproduce](docs/REPRODUCE.md) · [Data](datos/banco_nuevo/) · [Results](resultados/)
+[Paper (EN)](docs/paper/paper_en.md) · [PDF](docs/paper/paper_en.pdf) · [Paper (ES)](docs/paper/paper_es.md) · [Reproduce](docs/REPRODUCE.md) · [Data](datos/banco_nuevo/) · [Results](resultados/)
 
 </div>
 
