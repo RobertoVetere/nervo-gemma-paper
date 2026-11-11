@@ -1,0 +1,36 @@
+{
+ "variant": "variantes/base_comunidad",
+ "modelo": "gemma-4-31b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pallets__jinja-2022",
+   "resolved": true,
+   "raw": {
+    "task_id": "pallets__jinja-2022",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 1.8478003469999749,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 0,
+    "error_message": null,
+    "trace_path": null,
+    "metadata": "{}",
+    "repo": "pallets/jinja",
+    "agent_patch": "diff --git a/CHANGES.rst b/CHANGES.rst\nindex 6c998e62..aebb38b5 100644\n--- a/CHANGES.rst\n+++ b/CHANGES.rst\n@@ -20,6 +20,8 @@ Unreleased\n     async-aware filter. :issue:`1781`\n -   ``|int`` filter handles ``OverflowError`` from scientific notation.\n     :issue:`1921`\n+-   Make compiling deterministic for tuple unpacking in a ``{% set ... %}``\n+    call. :issue:`2021`\n \n \n Version 3.1.4\ndiff --git a/src/jinja2/compiler.py b/src/jinja2/compiler.py\nindex 91720c5f..074e9b18 100644\n--- a/src/jinja2/compiler.py\n+++ b/src/jinja2/compiler.py\n@@ -811,7 +811,7 @@ class CodeGenerator(NodeVisitor):\n                 self.writeline(\"_block_vars.update({\")\n             else:\n                 self.writeline(\"context.vars.update({\")\n-            for idx, name in enumerate(vars):\n+            for idx, name in enumerate(sorted(vars)):\n                 if idx:\n                     self.write(\", \")\n                 ref = frame.symbols.ref(name)\n@@ -821,7 +821,7 @@ class CodeGenerator(NodeVisitor):\n             if len(public_names) == 1:\n                 self.writeline(f\"context.exported_vars.add({public_names[0]!r})\")\n             else:\n-                names_str = \", \".join(map(repr, public_names))\n+                names_str = \", \".join(map(repr, sorted(public_names)))\n                 self.writeline(f\"context.exported_vars.update(({names_str}))\")\n \n     # -- Statement Visitors\n",
+    "test_output": "STDOUT:\n.....                                                                    [100%]\n5 passed in 0.02s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": null,
+    "tool_calls": 0,
+    "task_index": null
+   },
+   "segundos_reloj": 1.9
+  }
+ ]
+}

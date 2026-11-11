@@ -1,0 +1,61 @@
+{
+  "label": "e4b-steps-v9-isort",
+  "stage": "done",
+  "tasks": [
+    {
+      "variant": "e4b_steps",
+      "id": "timothycrosley__isort-891",
+      "repo": "timothycrosley/isort",
+      "resolved": false,
+      "patch_chars": 422,
+      "tool_calls": 8,
+      "duration_s": 60.9,
+      "exit_code": 1,
+      "error": null,
+      "patch": "diff --git a/isort/settings.py b/isort/settings.py\nindex 56ee223..c6dabd1 100644\n--- a/isort/settings.py\n+++ b/isort/settings.py\n@@ -317,6 +317,7 @@ def _get_config_data(file_path, sections):\n     return settings\n \n \n+import fnmatch\n def should_skip(filename, config, path=''):\n     \"\"\"Returns True if the file and/or folder should be skipped based on the passed in settings.\"\"\"\n     os_path = os.path.join(path, filename)",
+      "raw": {
+        "task_id": "timothycrosley__isort-891",
+        "resolved": false,
+        "status": "SUCCESS",
+        "duration_seconds": 60.89774681200015,
+        "cost_usd": 0.0,
+        "total_tokens": 0,
+        "total_llm_calls": 13,
+        "error_message": null,
+        "trace_path": "/kaggle/working/results/e4b_steps/traces/trace_timothycrosley__isort-891.json",
+        "metadata": "{}",
+        "repo": "timothycrosley/isort",
+        "agent_patch": "diff --git a/isort/settings.py b/isort/settings.py\nindex 56ee223..c6dabd1 100644\n--- a/isort/settings.py\n+++ b/isort/settings.py\n@@ -317,6 +317,7 @@ def _get_config_data(file_path, sections):\n     return settings\n \n \n+import fnmatch\n def should_skip(filename, config, path=''):\n     \"\"\"Returns True if the file and/or folder should be skipped based on the passed in settings.\"\"\"\n     os_path = os.path.join(path, filename)\n",
+        "test_output": "STDOUT:\n........................................................................ [ 49%]\n.......................................................s.s..........F... [ 99%]\n.                                                                        [100%]\n=================================== FAILURES ===================================\n______________________ test_skip_glob[skip_glob_assert1] _______________________\n\ntmpdir = local('/tmp/swegemma_sandbox_971353f2-0ac_2sc2ur0e/tmp/pytest-of-root/pytest-0/test_skip_glob_skip_glob_asser1')\nskip_glob_assert = (['**/*.py'], 1, {})\n\n    @pytest.mark.parametrize('skip_glob_assert', (([], 0, {os.sep.join(('code', 'file.py'))}), (['**/*.py'], 1, {})))\n    def test_skip_glob(tmpdir, skip_glob_assert):\n        skip_glob, skipped_count, file_names = skip_glob_assert\n        base_dir = tmpdir.mkdir('build')\n        code_dir = base_dir.mkdir('code')\n        code_dir.join('file.py').write('import os')\n    \n        config = dict(settings.default.copy(), skip_glob=skip_glob)\n        skipped = []\n        file_names = set(os.path.relpath(f, str(base_dir)) for f in main.iter_source_code([str(base_dir)], config, skipped))\n>       assert len(skipped) == skipped_count\nE       assert 0 == 1\nE        +  where 0 = len([])\n\n/tmp/swegemma_sandbox_971353f2-0ac_2sc2ur0e/workspace/test_isort.py:2795: AssertionError\n- generated xml file: /tmp/swegemma_sandbox_971353f2-0ac_2sc2ur0e/tmp/_swegemma_junit_127e2b051418.xml -\n=========================== short test summary info ============================\nFAILED test_isort.py::test_skip_glob[skip_glob_assert1] - assert 0 == 1\n1 failed, 142 passed, 2 skipped in 0.99s\n\nSTDERR:\n",
+        "test_exit_code": 1,
+        "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f9a431c4b60>",
+        "tool_calls": 8,
+        "task_index": 1
+      }
+    }
+  ],
+  "error": null,
+  "variantes": [
+    "e4b_steps"
+  ],
+  "vllm_start_seconds": 335.2,
+  "n_public_tasks": 165,
+  "sample": [
+    "timothycrosley__isort-891"
+  ],
+  "presupuestos": {
+    "e4b_steps": {
+      "timeout_seconds": 300,
+      "max_tool_calls": 28,
+      "max_time_minutes": 8,
+      "max_turns": 80
+    }
+  },
+  "summary": {
+    "e4b_steps": {
+      "resolved": 0,
+      "total": 1,
+      "con_parche": 1
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/e4b_t0",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "python-semver__python-semver-292",
+   "resolved": false,
+   "patch": "diff --git a/semver.py b/semver.py\nindex 1e15a08..dfa811e 100644\n--- a/semver.py\n+++ b/semver.py\n@@ -243,6 +243,8 @@ class VersionInfo(object):\n     )\n \n     def __init__(self, major, minor=0, patch=0, prerelease=None, build=None):\n+        if int(major) < 0 or int(minor) < 0 or int(patch) < 0:\n+            raise ValueError(\"Version numbers must be non-negative\")\n         self._major = int(major)\n         self._minor = int(minor)\n         self._patch = int(patch)",
+   "tool_calls": 11,
+   "duration_s": 42.1,
+   "error": null,
+   "raw": {
+    "task_id": "python-semver__python-semver-292",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 42.0883760239999,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 13,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/l40/e4b_t0__python-semver__python-semver-292/results/traces/trace_python-semver__python-semver-292.json",
+    "metadata": "{}",
+    "repo": "python-semver/python-semver",
+    "agent_patch": "diff --git a/semver.py b/semver.py\nindex 1e15a08..dfa811e 100644\n--- a/semver.py\n+++ b/semver.py\n@@ -243,6 +243,8 @@ class VersionInfo(object):\n     )\n \n     def __init__(self, major, minor=0, patch=0, prerelease=None, build=None):\n+        if int(major) < 0 or int(minor) < 0 or int(patch) < 0:\n+            raise ValueError(\"Version numbers must be non-negative\")\n         self._major = int(major)\n         self._minor = int(minor)\n         self._patch = int(patch)\n",
+    "test_output": "STDOUT:\n..................FFFF.................................................. [ 25%]\n........................................................................ [ 51%]\n........................................................................ [ 76%]\n.................................................................        [100%]\n=================================== FAILURES ===================================\n_________________ test_should_not_allow_negative_numbers[ver0] _________________\n\nver = {'major': -1}\n\n    @pytest.mark.parametrize(\n        \"ver\",\n        [\n            {\"major\": -1},\n            {\"major\": 1, \"minor\": -2},\n            {\"major\": 1, \"minor\": 2, \"patch\": -3},\n            {\"major\": 1, \"minor\": -2, \"patch\": 3},\n        ],\n    )\n    def test_should_not_allow_negative_numbers(ver):\n>       with pytest.raises(ValueError, match=\".* is negative. .*\"):\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError: Regex pattern did not match.\nE         Expected regex: '.* is negative. .*'\nE         Actual message: 'Version numbers must be non-negative'\n\ntest_semver.py:86: AssertionError\n_________________ test_should_not_allow_negative_numbers[ver1] _________________\n\nver = {'major': 1, 'minor': -2}\n\n    @pytest.mark.parametrize(\n        \"ver\",\n        [\n            {\"major\": -1},\n            {\"major\": 1, \"minor\": -2},\n            {\"major\": 1, \"minor\": 2, \"patch\": -3},\n            {\"major\": 1, \"minor\": -2, \"patch\": 3},\n        ],\n    )\n    def test_should_not_allow_negative_numbers(ver):\n>       with pytest.raises(ValueError, match=\".* is negative. .*\"):\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError: Regex pattern did not match.\nE         Expected regex: '.* is negative. .*'\nE         Actual message: 'Version numbers must be non-negative'\n\ntest_semver.py:86: AssertionError\n_________________ test_should_not_allow_negative_numbers[ver2] _________________\n\nver = {'major': 1, 'minor': 2, 'patch': -3}\n\n    @pytest.mark.parametrize(\n        \"ver\",\n        [\n            {\"major\": -1},\n            {\"major\": 1, \"minor\": -2},\n            {\"major\": 1, \"minor\": 2, \"patch\": -3},\n            {\"major\": 1, \"minor\": -2, \"patch\": 3},\n        ],\n    )\n    def test_should_not_allow_negative_numbers(ver):\n>       with pytest.raises(ValueError, match=\".* is negative. .*\"):\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError: Regex pattern did not match.\nE         Expected regex: '.* is negative. .*'\nE         Actual message: 'Version numbers must be non-negative'\n\ntest_semver.py:86: AssertionError\n_________________ test_should_not_allow_negative_numbers[ver3] _________________\n\nver = {'major': 1, 'minor': -2, 'patch': 3}\n\n    @pytest.mark.parametrize(\n        \"ver\",\n        [\n            {\"major\": -1},\n            {\"major\": 1, \"minor\": -2},\n            {\"major\": 1, \"minor\": 2, \"patch\": -3},\n            {\"major\": 1, \"minor\": -2, \"patch\": 3},\n        ],\n    )\n    def test_should_not_allow_negative_numbers(ver):\n>       with pytest.raises(ValueError, match=\".* is negative. .*\"):\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError: Regex pattern did not match.\nE         Expected regex: '.* is negative. .*'\nE         Actual message: 'Version numbers must be non-negative'\n\ntest_semver.py:86: AssertionError\n=========================== short test summary info ============================\nFAILED test_semver.py::test_should_not_allow_negative_numbers[ver0] - Asserti...\nFAILED test_semver.py::test_should_not_allow_negative_numbers[ver1] - Asserti...\nFAILED test_semver.py::test_should_not_allow_negative_numbers[ver2] - Asserti...\nFAILED test_semver.py::test_should_not_allow_negative_numbers[ver3] - Asserti...\n4 failed, 277 passed in 0.31s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f3b051067b0>",
+    "tool_calls": 11,
+    "task_index": 1
+   },
+   "segundos_reloj": 42.1
+  }
+ ]
+}

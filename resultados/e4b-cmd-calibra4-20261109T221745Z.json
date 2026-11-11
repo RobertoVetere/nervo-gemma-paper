@@ -1,0 +1,157 @@
+{
+  "label": "e4b-cmd-calibra4",
+  "stage": "done",
+  "tasks": [
+    {
+      "variant": "e4b_cmd",
+      "id": "more-itertools__more-itertools-903",
+      "repo": "more-itertools/more-itertools",
+      "resolved": true,
+      "patch_chars": 340,
+      "tool_calls": 10,
+      "duration_s": 68.7,
+      "exit_code": 0,
+      "error": null,
+      "patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex f7db03b..67f76fa 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -222,6 +222,7 @@ def all_equal(iterable, key=None):\n     for first in iterator:\n         for second in iterator:\n             return False\n+        return True\n     return True",
+      "raw": {
+        "task_id": "more-itertools__more-itertools-903",
+        "resolved": true,
+        "status": "SUCCESS",
+        "duration_seconds": 68.748287387,
+        "cost_usd": 0.0,
+        "total_tokens": 0,
+        "total_llm_calls": 13,
+        "error_message": null,
+        "trace_path": "/kaggle/working/results/e4b_cmd/traces/trace_more-itertools__more-itertools-903.json",
+        "metadata": "{}",
+        "repo": "more-itertools/more-itertools",
+        "agent_patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex f7db03b..67f76fa 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -222,6 +222,7 @@ def all_equal(iterable, key=None):\n     for first in iterator:\n         for second in iterator:\n             return False\n+        return True\n     return True\n \n \n",
+        "test_output": "STDOUT:\n........................................................................ [ 55%]\n..............................................s...........               [100%]\n- generated xml file: /tmp/swegemma_sandbox_f8d78fc1-c34_w9_3zfns/tmp/_swegemma_junit_2d962d544a4a.xml -\n129 passed, 1 skipped in 0.82s\n\nSTDERR:\n",
+        "test_exit_code": 0,
+        "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7a755b3001a0>",
+        "tool_calls": 10,
+        "task_index": 1
+      }
+    },
+    {
+      "variant": "e4b_cmd",
+      "id": "python-semver__python-semver-254",
+      "repo": "python-semver/python-semver",
+      "resolved": true,
+      "patch_chars": 738,
+      "tool_calls": 16,
+      "duration_s": 60.2,
+      "exit_code": 0,
+      "error": null,
+      "patch": "diff --git a/semver.py b/semver.py\nindex c2697dd..3786dd6 100644\n--- a/semver.py\n+++ b/semver.py\n@@ -495,11 +495,13 @@ build='build.10')\n             return version.replace(prerelease=None, build=None)\n \n         if part in (\"major\", \"minor\", \"patch\"):\n-            return str(getattr(version, \"bump_\" + part)())\n+            result = getattr(version, \"bump_\" + part)()\n+            return result if result is not None else version\n \n         if not version.prerelease:\n             version = version.bump_patch()\n-        return version.bump_prerelease(prerelease_token)\n+        result = version.bump_prerelease(prerelease_token)\n+        return result if result is not None else version\n \n     @comparator\n     def __eq__(self, other):",
+      "raw": {
+        "task_id": "python-semver__python-semver-254",
+        "resolved": true,
+        "status": "SUCCESS",
+        "duration_seconds": 60.249198934000106,
+        "cost_usd": 0.0,
+        "total_tokens": 0,
+        "total_llm_calls": 18,
+        "error_message": null,
+        "trace_path": "/kaggle/working/results/e4b_cmd/traces/trace_python-semver__python-semver-254.json",
+        "metadata": "{}",
+        "repo": "python-semver/python-semver",
+        "agent_patch": "diff --git a/semver.py b/semver.py\nindex c2697dd..3786dd6 100644\n--- a/semver.py\n+++ b/semver.py\n@@ -495,11 +495,13 @@ build='build.10')\n             return version.replace(prerelease=None, build=None)\n \n         if part in (\"major\", \"minor\", \"patch\"):\n-            return str(getattr(version, \"bump_\" + part)())\n+            result = getattr(version, \"bump_\" + part)()\n+            return result if result is not None else version\n \n         if not version.prerelease:\n             version = version.bump_patch()\n-        return version.bump_prerelease(prerelease_token)\n+        result = version.bump_prerelease(prerelease_token)\n+        return result if result is not None else version\n \n     @comparator\n     def __eq__(self, other):\n",
+        "test_output": "STDOUT:\n........................................................................ [ 28%]\n........................................................................ [ 56%]\n........................................................................ [ 84%]\n........................................                                 [100%]\n- generated xml file: /tmp/swegemma_sandbox_fa0d8c37-872_10wzuhai/tmp/_swegemma_junit_73cb8ac2db6b.xml -\n256 passed in 0.41s\n\nSTDERR:\n",
+        "test_exit_code": 0,
+        "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7a755ae72930>",
+        "tool_calls": 16,
+        "task_index": 2
+      }
+    },
+    {
+      "variant": "e4b_cmd",
+      "id": "googleapis__python-api-core-821",
+      "repo": "googleapis/python-api-core",
+      "resolved": true,
+      "patch_chars": 1304,
+      "tool_calls": 20,
+      "duration_s": 122.2,
+      "exit_code": 0,
+      "error": null,
+      "patch": "diff --git a/google/api_core/bidi.py b/google/api_core/bidi.py\nindex b002b40..eb3037a 100644\n--- a/google/api_core/bidi.py\n+++ b/google/api_core/bidi.py\n@@ -626,9 +626,10 @@ class BackgroundConsumer(object):\n             be called for every response on the stream.\n     \"\"\"\n \n-    def __init__(self, bidi_rpc, on_response):\n+    def __init__(self, bidi_rpc, on_response, on_fatal_exception=None):\n         self._bidi_rpc = bidi_rpc\n         self._on_response = on_response\n+        self.on_fatal_exception = on_fatal_exception\n         self._paused = False\n         self._wake = threading.Condition()\n         self._thread = None\n@@ -639,7 +640,7 @@ class BackgroundConsumer(object):\n         # when the RPC has terminated.\n         self.resume()\n \n-    def _thread_main(self, ready):\n+    def _thread_main(self, ready, on_fatal_exception=None):\n         try:\n             ready.set()\n             self._bidi_rpc.add_done_callback(self._on_call_done)\n@@ -693,7 +694,7 @@ class BackgroundConsumer(object):\n             thread = threading.Thread(\n                 name=_BIDIRECTIONAL_CONSUMER_NAME,\n                 target=self._thread_main,\n-                args=(ready,),\n+                args=(ready, self.on_fatal_exception),\n             )\n             thread.daemon = True\n             thread.start()",
+      "raw": {
+        "task_id": "googleapis__python-api-core-821",
+        "resolved": true,
+        "status": "SUCCESS",
+        "duration_seconds": 122.20142903299995,
+        "cost_usd": 0.0,
+        "total_tokens": 0,
+        "total_llm_calls": 22,
+        "error_message": null,
+        "trace_path": "/kaggle/working/results/e4b_cmd/traces/trace_googleapis__python-api-core-821.json",
+        "metadata": "{}",
+        "repo": "googleapis/python-api-core",
+        "agent_patch": "diff --git a/google/api_core/bidi.py b/google/api_core/bidi.py\nindex b002b40..eb3037a 100644\n--- a/google/api_core/bidi.py\n+++ b/google/api_core/bidi.py\n@@ -626,9 +626,10 @@ class BackgroundConsumer(object):\n             be called for every response on the stream.\n     \"\"\"\n \n-    def __init__(self, bidi_rpc, on_response):\n+    def __init__(self, bidi_rpc, on_response, on_fatal_exception=None):\n         self._bidi_rpc = bidi_rpc\n         self._on_response = on_response\n+        self.on_fatal_exception = on_fatal_exception\n         self._paused = False\n         self._wake = threading.Condition()\n         self._thread = None\n@@ -639,7 +640,7 @@ class BackgroundConsumer(object):\n         # when the RPC has terminated.\n         self.resume()\n \n-    def _thread_main(self, ready):\n+    def _thread_main(self, ready, on_fatal_exception=None):\n         try:\n             ready.set()\n             self._bidi_rpc.add_done_callback(self._on_call_done)\n@@ -693,7 +694,7 @@ class BackgroundConsumer(object):\n             thread = threading.Thread(\n                 name=_BIDIRECTIONAL_CONSUMER_NAME,\n                 target=self._thread_main,\n-                args=(ready,),\n+                args=(ready, self.on_fatal_exception),\n             )\n             thread.daemon = True\n             thread.start()\n",
+        "test_output": "STDOUT:\n.................................................                        [100%]\n- generated xml file: /tmp/swegemma_sandbox_e523b096-846_pn4387rm/tmp/_swegemma_junit_1df1fc9c14a1.xml -\n49 passed in 2.84s\n\nSTDERR:\n",
+        "test_exit_code": 0,
+        "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7a755ae5a990>",
+        "tool_calls": 20,
+        "task_index": 3
+      }
+    },
+    {
+      "variant": "e4b_cmd",
+      "id": "ipython__traitlets-687",
+      "repo": "ipython/traitlets",
+      "resolved": false,
+      "patch_chars": 798,
+      "tool_calls": 16,
+      "duration_s": 97.6,
+      "exit_code": 1,
+      "error": null,
+      "patch": "diff --git a/traitlets/config/loader.py b/traitlets/config/loader.py\nindex 14a6863..7500a82 100644\n--- a/traitlets/config/loader.py\n+++ b/traitlets/config/loader.py\n@@ -901,11 +901,8 @@ class ArgParseConfigLoader(CommandLineConfigLoader):\n             for alias, alias_target in self.aliases.items():\n                 if alias in self.flags:\n                     continue\n-                if not isinstance(alias, tuple):\n-                    short_alias, alias = alias, None  # type:ignore[assignment]\n-                else:\n-                    short_alias, alias = alias\n-                for al in (short_alias, alias):\n+                alias = (alias,)\n+                for al in alias:\n                     if al is None:\n                         continue\n                     if len(al) == 1:",
+      "raw": {
+        "task_id": "ipython__traitlets-687",
+        "resolved": false,
+        "status": "SUCCESS",
+        "duration_seconds": 97.589330668,
+        "cost_usd": 0.0,
+        "total_tokens": 0,
+        "total_llm_calls": 18,
+        "error_message": null,
+        "trace_path": "/kaggle/working/results/e4b_cmd/traces/trace_ipython__traitlets-687.json",
+        "metadata": "{}",
+        "repo": "ipython/traitlets",
+        "agent_patch": "diff --git a/traitlets/config/loader.py b/traitlets/config/loader.py\nindex 14a6863..7500a82 100644\n--- a/traitlets/config/loader.py\n+++ b/traitlets/config/loader.py\n@@ -901,11 +901,8 @@ class ArgParseConfigLoader(CommandLineConfigLoader):\n             for alias, alias_target in self.aliases.items():\n                 if alias in self.flags:\n                     continue\n-                if not isinstance(alias, tuple):\n-                    short_alias, alias = alias, None  # type:ignore[assignment]\n-                else:\n-                    short_alias, alias = alias\n-                for al in (short_alias, alias):\n+                alias = (alias,)\n+                for al in alias:\n                     if al is None:\n                         continue\n                     if len(al) == 1:\n",
+        "test_output": "er.py:910: TypeError\n____________________ TestApplication.test_no_eval_cli_text _____________________\n\nself = <traitlets.config.tests.test_application.TestApplication testMethod=test_no_eval_cli_text>\n\n    def test_no_eval_cli_text(self):\n        app = MyApp()\n>       app.initialize([\"--Foo.name=1\"])\n\ntraitlets/config/tests/test_application.py:132: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntraitlets/config/application.py:110: in inner\n    return method(app, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntraitlets/config/application.py:454: in initialize\n    self.parse_command_line(argv)\ntraitlets/config/application.py:110: in inner\n    return method(app, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntraitlets/config/application.py:815: in parse_command_line\n    self.cli_config = deepcopy(loader.load_config())\n                               ^^^^^^^^^^^^^^^^^^^^\ntraitlets/config/loader.py:875: in load_config\n    self._parse_args(argv)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <traitlets.config.loader.KVArgParseConfigLoader object at 0x7f752216d400>\nargs = ['--Foo.name=1']\n\n    def _parse_args(self, args):\n        \"\"\"self.parser->self.parsed_data\"\"\"\n        uargs = [cast_unicode(a) for a in args]\n    \n        unpacked_aliases: t.Dict[str, str] = {}\n        if self.aliases:\n            unpacked_aliases = {}\n            for alias, alias_target in self.aliases.items():\n                if alias in self.flags:\n                    continue\n                alias = (alias,)\n                for al in alias:\n                    if al is None:\n                        continue\n                    if len(al) == 1:\n                        unpacked_aliases[\"-\" + al] = \"--\" + alias_target\n>                   unpacked_aliases[\"--\" + al] = \"--\" + alias_target\n                                     ^^^^^^^^^\nE                   TypeError: can only concatenate str (not \"tuple\") to str\n\ntraitlets/config/loader.py:910: TypeError\n______________________ TestApplication.test_unicode_argv _______________________\n\nself = <traitlets.config.tests.test_application.TestApplication testMethod=test_unicode_argv>\n\n    def test_unicode_argv(self):\n        app = MyApp()\n>       app.parse_command_line([\"\u00fcn\u00eec\u00f8d\u00e9\"])\n\ntraitlets/config/tests/test_application.py:474: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntraitlets/config/application.py:110: in inner\n    return method(app, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntraitlets/config/application.py:815: in parse_command_line\n    self.cli_config = deepcopy(loader.load_config())\n                               ^^^^^^^^^^^^^^^^^^^^\ntraitlets/config/loader.py:875: in load_config\n    self._parse_args(argv)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <traitlets.config.loader.KVArgParseConfigLoader object at 0x7f75245a7290>\nargs = ['\u00fcn\u00eec\u00f8d\u00e9']\n\n    def _parse_args(self, args):\n        \"\"\"self.parser->self.parsed_data\"\"\"\n        uargs = [cast_unicode(a) for a in args]\n    \n        unpacked_aliases: t.Dict[str, str] = {}\n        if self.aliases:\n            unpacked_aliases = {}\n            for alias, alias_target in self.aliases.items():\n                if alias in self.flags:\n                    continue\n                alias = (alias,)\n                for al in alias:\n                    if al is None:\n                        continue\n                    if len(al) == 1:\n                        unpacked_aliases[\"-\" + al] = \"--\" + alias_target\n>                   unpacked_aliases[\"--\" + al] = \"--\" + alias_target\n                                     ^^^^^^^^^\nE                   TypeError: can only concatenate str (not \"tuple\") to str\n\ntraitlets/config/loader.py:910: TypeError\n_____________________________ test_show_config_cli _____________________________\n\n    def test_show_config_cli():\n        out, err, ec = get_output_error_code([sys.executable, \"-m\", __name__, \"--show-config\"])\n>       assert ec == 0\nE       assert 1 == 0\n\ntraitlets/config/tests/test_application.py:725: AssertionError\n__________________________ test_show_config_json_cli ___________________________\n\n    def test_show_config_json_cli():\n        out, err, ec = get_output_error_code([sys.executable, \"-m\", __name__, \"--show-config-json\"])\n>       assert ec == 0\nE       assert 1 == 0\n\ntraitlets/config/tests/test_application.py:731: AssertionError\n- generated xml file: /tmp/swegemma_sandbox_f5465e3e-daa_cjwn_xb8/tmp/_swegemma_junit_48e62937e59e.xml -\n=========================== short test summary info ============================\nFAILED traitlets/config/tests/test_application.py::TestApplication::test_aliases\nFAILED traitlets/config/tests/test_application.py::TestApplication::test_aliases_multiple\nFAILED traitlets/config/tests/test_application.py::TestApplication::test_config\nFAILED traitlets/config/tests/test_application.py::TestApplication::test_config_dict_args\nFAILED traitlets/config/tests/test_application.py::TestApplication::test_config_propagation\nFAILED traitlets/config/tests/test_application.py::TestApplication::test_config_seq_args\nFAILED traitlets/config/tests/test_application.py::TestApplication::test_extra_args\nFAILED traitlets/config/tests/test_application.py::TestApplication::test_flag_clobber\nFAILED traitlets/config/tests/test_application.py::TestApplication::test_flags\nFAILED traitlets/config/tests/test_application.py::TestApplication::test_flatten_aliases\nFAILED traitlets/config/tests/test_application.py::TestApplication::test_flatten_flags\nFAILED traitlets/config/tests/test_application.py::TestApplication::test_no_eval_cli_text\nFAILED traitlets/config/tests/test_application.py::TestApplication::test_unicode_argv\nFAILED traitlets/config/tests/test_application.py::test_show_config_cli - ass...\nFAILED traitlets/config/tests/test_application.py::test_show_config_json_cli\n15 failed, 28 passed in 1.79s\n\nSTDERR:\n",
+        "test_exit_code": 1,
+        "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7a75582741d0>",
+        "tool_calls": 16,
+        "task_index": 4
+      }
+    }
+  ],
+  "error": null,
+  "variantes": [
+    "e4b_cmd"
+  ],
+  "vllm_start_seconds": 334.5,
+  "n_public_tasks": 165,
+  "sample": [
+    "more-itertools__more-itertools-903",
+    "python-semver__python-semver-254",
+    "googleapis__python-api-core-821",
+    "ipython__traitlets-687"
+  ],
+  "presupuestos": {
+    "e4b_cmd": {
+      "timeout_seconds": 300,
+      "max_tool_calls": 28,
+      "max_time_minutes": 8,
+      "max_turns": 80
+    }
+  },
+  "summary": {
+    "e4b_cmd": {
+      "resolved": 3,
+      "total": 4,
+      "con_parche": 4
+    }
+  }
+}

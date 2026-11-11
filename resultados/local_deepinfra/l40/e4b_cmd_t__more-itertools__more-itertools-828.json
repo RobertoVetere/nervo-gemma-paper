@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/e4b_cmd_t",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "more-itertools__more-itertools-828",
+   "resolved": false,
+   "patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex abbdd5f..1ec9907 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -56,6 +56,7 @@ __all__ = [\n     'polynomial_from_roots',\n     'polynomial_derivative',\n     'powerset',\n+    'powerset_of_sets',\n     'prepend',\n     'quantify',\n     'reshape',\n@@ -474,6 +475,17 @@ def powerset(iterable):\n     return chain.from_iterable(combinations(s, r) for r in range(len(s) + 1))\n \n \n+def powerset_of_sets(iterable):\n+    \"\"\"Return sets of a powerset calling hash() only once per element.\n+\n+        >>> list(powerset_of_sets([1, 2, 3]))\n+        [set(), {1}, {2}, {3}, {1, 2}, {1, 3}, {2, 3}, {1, 2, 3}]\n+    \"\"\"\n+    sets = list(map(set, zip(iterable)))\n+    for r in range(len(sets) + 1):\n+        yield from starmap(set().union, combinations(sets, r))\n+\n+\n def unique_everseen(iterable, key=None):\n     \"\"\"\n     Yield unique elements, preserving order.\ndiff --git a/more_itertools/recipes.pyi b/more_itertools/recipes.pyi\nindex 15c6777..31c26d3 100644\n--- a/more_itertools/recipes.pyi\n+++ b/more_itertools/recipes.pyi\n@@ -53,6 +53,7 @@ def partition(\n     pred: Callable[[_T], object] | None, iterable: Iterable[_T]\n ) -> tuple[Iterator[_T], Iterator[_T]]: ...\n def powerset(iterable: Iterable[_T]) -> Iterator[tuple[_T, ...]]: ...\n+def powerset_of_sets(iterable: Iterable[_T]) -> Iterator[set[_T]]: ...\n def unique_everseen(\n     iterable: Iterable[_T], key: Callable[[_T], _U] | None = ...\n ) -> Iterator[_T]: ...",
+   "tool_calls": 28,
+   "duration_s": 158.0,
+   "error": null,
+   "raw": {
+    "task_id": "more-itertools__more-itertools-828",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 157.98515570199993,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 30,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/l40/e4b_cmd_t__more-itertools__more-itertools-828/results/traces/trace_more-itertools__more-itertools-828.json",
+    "metadata": "{}",
+    "repo": "more-itertools/more-itertools",
+    "agent_patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex abbdd5f..1ec9907 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -56,6 +56,7 @@ __all__ = [\n     'polynomial_from_roots',\n     'polynomial_derivative',\n     'powerset',\n+    'powerset_of_sets',\n     'prepend',\n     'quantify',\n     'reshape',\n@@ -474,6 +475,17 @@ def powerset(iterable):\n     return chain.from_iterable(combinations(s, r) for r in range(len(s) + 1))\n \n \n+def powerset_of_sets(iterable):\n+    \"\"\"Return sets of a powerset calling hash() only once per element.\n+\n+        >>> list(powerset_of_sets([1, 2, 3]))\n+        [set(), {1}, {2}, {3}, {1, 2}, {1, 3}, {2, 3}, {1, 2, 3}]\n+    \"\"\"\n+    sets = list(map(set, zip(iterable)))\n+    for r in range(len(sets) + 1):\n+        yield from starmap(set().union, combinations(sets, r))\n+\n+\n def unique_everseen(iterable, key=None):\n     \"\"\"\n     Yield unique elements, preserving order.\ndiff --git a/more_itertools/recipes.pyi b/more_itertools/recipes.pyi\nindex 15c6777..31c26d3 100644\n--- a/more_itertools/recipes.pyi\n+++ b/more_itertools/recipes.pyi\n@@ -53,6 +53,7 @@ def partition(\n     pred: Callable[[_T], object] | None, iterable: Iterable[_T]\n ) -> tuple[Iterator[_T], Iterator[_T]]: ...\n def powerset(iterable: Iterable[_T]) -> Iterator[tuple[_T, ...]]: ...\n+def powerset_of_sets(iterable: Iterable[_T]) -> Iterator[set[_T]]: ...\n def unique_everseen(\n     iterable: Iterable[_T], key: Callable[[_T], _U] | None = ...\n ) -> Iterator[_T]: ...\n",
+    "test_output": "STDOUT:\n............................................................................................ [ 14%]\n......................................................... [ 23%]\n........................................................................ [ 34%]\n................................................................................ [ 47%]\n.................................. [ 52%]\n............................................................................................................................ [ 72%]\n.................................................................. [ 82%]\n.....F...................................... [ 89%]\n....................................................s........... [100%]\n=================================== FAILURES ===================================\n____________________________ AllEqualTests.test_key ____________________________\n\nself = <tests.test_recipes.AllEqualTests testMethod=test_key>\n\n    def test_key(self):\n>       self.assertTrue(mi.all_equal('4٤໔４৪', key=int))\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: all_equal() got an unexpected keyword argument 'key'\n\ntests/test_recipes.py:158: TypeError\n=========================== short test summary info ============================\nFAILED tests/test_recipes.py::AllEqualTests::test_key - TypeError: all_equal(...\n1 failed, 631 passed, 1 skipped, 2324 subtests passed in 1.50s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f8ba82267b0>",
+    "tool_calls": 28,
+    "task_index": 1
+   },
+   "segundos_reloj": 158.0
+  }
+ ]
+}

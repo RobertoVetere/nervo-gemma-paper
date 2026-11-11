@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/com_v2",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pycqa__pyflakes-675",
+   "resolved": false,
+   "patch": "diff --git a/pyflakes/checker.py b/pyflakes/checker.py\nindex 45c7a4a..6eaee1d 100644\n--- a/pyflakes/checker.py\n+++ b/pyflakes/checker.py\n@@ -1292,7 +1292,7 @@ class Checker(object):\n                 not self.isLiteralTupleUnpacking(parent_stmt)):\n             binding = Binding(name, node)\n         elif name == '__all__' and isinstance(self.scope, ModuleScope):\n-            binding = ExportBinding(name, node._pyflakes_parent, self.scope)\n+            binding = ExportBinding(name, parent_stmt, self.scope)\n         elif PY2 and isinstance(getattr(node, 'ctx', None), ast.Param):\n             binding = Argument(name, self.getScopeNode(node))\n         else:",
+   "tool_calls": 26,
+   "duration_s": 237.4,
+   "error": null,
+   "raw": {
+    "task_id": "pycqa__pyflakes-675",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 237.39690114099994,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 28,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/l40/com_v2__pycqa__pyflakes-675/results/traces/trace_pycqa__pyflakes-675.json",
+    "metadata": "{}",
+    "repo": "pycqa/pyflakes",
+    "agent_patch": "diff --git a/pyflakes/checker.py b/pyflakes/checker.py\nindex 45c7a4a..6eaee1d 100644\n--- a/pyflakes/checker.py\n+++ b/pyflakes/checker.py\n@@ -1292,7 +1292,7 @@ class Checker(object):\n                 not self.isLiteralTupleUnpacking(parent_stmt)):\n             binding = Binding(name, node)\n         elif name == '__all__' and isinstance(self.scope, ModuleScope):\n-            binding = ExportBinding(name, node._pyflakes_parent, self.scope)\n+            binding = ExportBinding(name, parent_stmt, self.scope)\n         elif PY2 and isinstance(getattr(node, 'ctx', None), ast.Param):\n             binding = Argument(name, self.getScopeNode(node))\n         else:\n",
+    "test_output": "STDOUT:\n.................................s...s.............s.................... [ 52%]\n...........s.........................................F..........         [100%]\n=================================== FAILURES ===================================\n____________ TestSpecialAll.test_ignored_when_not_directly_assigned ____________\n\nself = <pyflakes.test.test_imports.TestSpecialAll testMethod=test_ignored_when_not_directly_assigned>\n\n    def test_ignored_when_not_directly_assigned(self):\n>       self.flakes('''\n        import bar\n        (__all__,) = (\"foo\",)\n        ''', m.UnusedImport)\n\npyflakes/test/test_imports.py:1061: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \npyflakes/test/harness.py:30: in flakes\n    self.assertEqual(outputs, expectedOutputs, '''\\\nE   AssertionError: Lists differ: [<cla[19 chars]es.UndefinedExport'>, <class 'pyflakes.messages.UnusedImport'>] != [<cla[19 chars]es.UnusedImport'>]\nE   \nE   First differing element 0:\nE   <class 'pyflakes.messages.UndefinedExport'>\nE   <class 'pyflakes.messages.UnusedImport'>\nE   \nE   First list contains 1 additional elements.\nE   First extra element 1:\nE   <class 'pyflakes.messages.UnusedImport'>\nE   \nE   - [<class 'pyflakes.messages.UndefinedExport'>,\nE   -  <class 'pyflakes.messages.UnusedImport'>]\nE   ? ^\nE   \nE   + [<class 'pyflakes.messages.UnusedImport'>]\nE   ? ^\nE    : for input:\nE   \nE           import bar\nE           (__all__,) = (\"foo\",)\nE           \nE   expected outputs:\nE   [<class 'pyflakes.messages.UnusedImport'>]\nE   but got:\nE   (none):3:1 undefined name 'foo' in __all__\nE   (none):2:1 'bar' imported but unused\n=========================== short test summary info ============================\nFAILED pyflakes/test/test_imports.py::TestSpecialAll::test_ignored_when_not_directly_assigned\n1 failed, 131 passed, 4 skipped in 0.22s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7ff589b0a7b0>",
+    "tool_calls": 26,
+    "task_index": 1
+   },
+   "segundos_reloj": 237.4
+  }
+ ]
+}

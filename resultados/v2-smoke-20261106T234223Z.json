@@ -1,0 +1,40 @@
+{
+  "label": "v2-smoke",
+  "stage": "done",
+  "tasks": [
+    {
+      "id": "rich_2725",
+      "repo": "Textualize/rich",
+      "resolved": false,
+      "patch_chars": 0,
+      "tool_calls": 30,
+      "duration_s": 375.2,
+      "exit_code": 1,
+      "error": null,
+      "patch": ""
+    },
+    {
+      "id": "httpx_3672",
+      "repo": "encode/httpx",
+      "resolved": false,
+      "patch_chars": 595,
+      "tool_calls": 30,
+      "duration_s": 360.2,
+      "exit_code": 2,
+      "error": "Agent exceeded turns budget (80 turns)",
+      "patch": "diff --git a/src/httpx/_parsers.py b/src/httpx/_parsers.py\nindex 830fccd..7e588fa 100644\n--- a/src/httpx/_parsers.py\n+++ b/src/httpx/_parsers.py\n@@ -83,9 +83,10 @@ class HTTPParser:\n     client.complete()\n     client.close()\n     \"\"\"\n-    def __init__(self, stream: Stream, mode: str) -> None:\n+    def __init__(self, stream: Stream, mode: str, keep_alive: bool = True) -> None:\n         self.stream = stream\n         self.parser = ReadAheadParser(stream)\n+        self.keep_alive = keep_alive\n         self.mode = {'CLIENT': Mode.CLIENT, 'SERVER': Mode.SERVER}[mode]\n \n         # Track state..."
+    }
+  ],
+  "error": null,
+  "vllm_start_seconds": 325.4,
+  "n_public_tasks": 129,
+  "sample": [
+    "rich_2725",
+    "httpx_3672"
+  ],
+  "summary": {
+    "resolved": 0,
+    "total": 2,
+    "rate": 0.0
+  }
+}

@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/e4b_cmd",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "more-itertools__more-itertools-566",
+   "resolved": false,
+   "patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex e470f3b..f382962 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -24,7 +24,8 @@ from itertools import (\n import operator\n from random import randrange, sample, choice\n \n-__all__ = [\n+ __all__ = [\n+    'before_and_after',\n     'all_equal',\n     'consume',\n     'convolve',\n@@ -57,6 +58,36 @@ __all__ = [\n ]\n \n \n+def before_and_after(predicate, it):\n+    \"\"\" Variant of takewhile() that allows complete\n+        access to the remainder of the iterator.\n+\n+        >>> it = iter('ABCdEfGhI')\n+        >>> all_upper, remainder = before_and_after(str.isupper, it)\n+        >>> ''.join(all_upper)\n+        'ABC'\n+        >>> ''.join(remainder)     # takewhile() would lose the 'd'\n+        'dEfGhI'\n+\n+        Note that the first iterator must be fully\n+        consumed before the second iterator can\n+        generate valid results.\n+    \"\"\"\n+    it = iter(it)\n+    transition = []\n+    def true_iterator():\n+        for elem in it:\n+            if predicate(elem):\n+                yield elem\n+            else:\n+                transition.append(elem)\n+                return\n+    def remainder_iterator():\n+        yield from transition\n+        yield from it\n+    return true_iterator(), remainder_iterator()\n+\n+\n def take(n, iterable):\n     \"\"\"Return first *n* items of the iterable as a list.",
+   "tool_calls": 24,
+   "duration_s": 102.2,
+   "error": null,
+   "raw": {
+    "task_id": "more-itertools__more-itertools-566",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 102.20502576499985,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 26,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/l40/e4b_cmd__more-itertools__more-itertools-566/results/traces/trace_more-itertools__more-itertools-566.json",
+    "metadata": "{}",
+    "repo": "more-itertools/more-itertools",
+    "agent_patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex e470f3b..f382962 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -24,7 +24,8 @@ from itertools import (\n import operator\n from random import randrange, sample, choice\n \n-__all__ = [\n+ __all__ = [\n+    'before_and_after',\n     'all_equal',\n     'consume',\n     'convolve',\n@@ -57,6 +58,36 @@ __all__ = [\n ]\n \n \n+def before_and_after(predicate, it):\n+    \"\"\" Variant of takewhile() that allows complete\n+        access to the remainder of the iterator.\n+\n+        >>> it = iter('ABCdEfGhI')\n+        >>> all_upper, remainder = before_and_after(str.isupper, it)\n+        >>> ''.join(all_upper)\n+        'ABC'\n+        >>> ''.join(remainder)     # takewhile() would lose the 'd'\n+        'dEfGhI'\n+\n+        Note that the first iterator must be fully\n+        consumed before the second iterator can\n+        generate valid results.\n+    \"\"\"\n+    it = iter(it)\n+    transition = []\n+    def true_iterator():\n+        for elem in it:\n+            if predicate(elem):\n+                yield elem\n+            else:\n+                transition.append(elem)\n+                return\n+    def remainder_iterator():\n+        yield from transition\n+        yield from it\n+    return true_iterator(), remainder_iterator()\n+\n+\n def take(n, iterable):\n     \"\"\"Return first *n* items of the iterable as a list.\n \n",
+    "test_output": "STDOUT:\n\n==================================== ERRORS ====================================\n____________________ ERROR collecting tests/test_recipes.py ____________________\n/usr/local/lib/python3.13/site-packages/_pytest/python.py:508: in importtestmodule\n    mod = import_path(\n/usr/local/lib/python3.13/site-packages/_pytest/pathlib.py:596: in import_path\n    importlib.import_module(module_name)\n/usr/local/lib/python3.13/importlib/__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1404: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1369: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1340: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:935: in _load_unlocked\n    ???\n/usr/local/lib/python3.13/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntests/test_recipes.py:8: in <module>\n    import more_itertools as mi\nmore_itertools/__init__.py:1: in <module>\n    from .more import *  # noqa\n    ^^^^^^^^^^^^^^^^^^^\nmore_itertools/more.py:29: in <module>\n    from .recipes import (\nE     File \"/tmp/swegemma_sandbox_b3f69034-f31_tfaew_v2/workspace/more_itertools/recipes.py\", line 27\nE       __all__ = [\nE   IndentationError: unexpected indent\n=========================== short test summary info ============================\nERROR tests/test_recipes.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.23s\n\nSTDERR:\n",
+    "test_exit_code": 2,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f7ea51067b0>",
+    "tool_calls": 24,
+    "task_index": 1
+   },
+   "segundos_reloj": 102.2
+  }
+ ]
+}

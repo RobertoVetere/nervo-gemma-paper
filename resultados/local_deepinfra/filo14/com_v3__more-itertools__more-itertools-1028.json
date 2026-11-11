@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/com_v3",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "more-itertools__more-itertools-1028",
+   "resolved": true,
+   "patch": "diff --git a/more_itertools/more.py b/more_itertools/more.py\nindex 3cd42e8..28c17d2 100755\n--- a/more_itertools/more.py\n+++ b/more_itertools/more.py\n@@ -283,7 +283,7 @@ def last(iterable, default=_marker):\n         if isinstance(iterable, Sequence):\n             return iterable[-1]\n         # Work around https://bugs.python.org/issue38525\n-        if hasattr(iterable, '__reversed__'):\n+        if getattr(iterable, '__reversed__', None) is not None:\n             return next(reversed(iterable))\n         return deque(iterable, maxlen=1)[-1]\n     except (IndexError, TypeError, StopIteration):",
+   "tool_calls": 15,
+   "duration_s": 79.8,
+   "error": null,
+   "raw": {
+    "task_id": "more-itertools__more-itertools-1028",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 79.78219420200003,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 17,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/l40/com_v3__more-itertools__more-itertools-1028/results/traces/trace_more-itertools__more-itertools-1028.json",
+    "metadata": "{}",
+    "repo": "more-itertools/more-itertools",
+    "agent_patch": "diff --git a/more_itertools/more.py b/more_itertools/more.py\nindex 3cd42e8..28c17d2 100755\n--- a/more_itertools/more.py\n+++ b/more_itertools/more.py\n@@ -283,7 +283,7 @@ def last(iterable, default=_marker):\n         if isinstance(iterable, Sequence):\n             return iterable[-1]\n         # Work around https://bugs.python.org/issue38525\n-        if hasattr(iterable, '__reversed__'):\n+        if getattr(iterable, '__reversed__', None) is not None:\n             return next(reversed(iterable))\n         return deque(iterable, maxlen=1)[-1]\n     except (IndexError, TypeError, StopIteration):\n",
+    "test_output": "STDOUT:\n.................................................................................. [ 15%]\n......................................................... [ 25%]\n........................................................................ [ 38%]\n.................................................. [ 47%]\n..................................................................... [ 60%]\n..................................... [ 67%]\n.................................... [ 74%]\n.............................................................................................. [ 91%]\n...............................................              [100%]\n544 passed, 2251 subtests passed in 1.73s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f118f50a7b0>",
+    "tool_calls": 15,
+    "task_index": 1
+   },
+   "segundos_reloj": 79.8
+  }
+ ]
+}

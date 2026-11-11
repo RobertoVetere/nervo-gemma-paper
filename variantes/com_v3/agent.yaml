@@ -1,0 +1,20 @@
+# com_v3: agente público (base_comunidad) con el plan de llamadas cambiado: entender antes de editar
+# (editar a más tardar en la llamada 18, no en la 12, y sin edición a ciegas). Motivo: en 54 trazas del público,
+# primera edición antes de la llamada 13 -> 14/31 aciertos; a partir de la 13 -> 17/23. Resto idéntico.
+# Origen: the public community single agent
+# ("gemma-4-harness-fixed-single-agent", Kaggle sample notebook), same tools as published,
+# same sampling and budgets as nervo v4. Only the prompt differs.
+name: swe_agent
+model: gemma-4-e4b-it-qat-w4a16-ct
+instruction: !include prompts/system.md
+tools:
+  - run_command
+  - read_file
+  - edit_file
+  - write_file
+  - get_status
+  - submit_patch
+  - get_code_neighbors
+  - search_similar_code
+  - get_code_subgraph
+generate_content_config: !include configs/sampling.yaml

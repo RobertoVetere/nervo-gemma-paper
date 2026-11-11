@@ -1,0 +1,61 @@
+{
+  "label": "e4b-steps-v7-isort",
+  "stage": "done",
+  "tasks": [
+    {
+      "variant": "e4b_steps",
+      "id": "timothycrosley__isort-891",
+      "repo": "timothycrosley/isort",
+      "resolved": false,
+      "patch_chars": 0,
+      "tool_calls": 0,
+      "duration_s": 0.6,
+      "exit_code": -1,
+      "error": "Sandbox execution error: Failed to load skill 'skills/swe_agent': 1 validation error for Frontmatter\nname\n  Value error, name must be lowercase kebab-case (a-z, 0-9, hyphens), with no leading, trailing, or consecutive delimiters [type=value_error, input_value='swe_agent', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.12/v/value_error",
+      "patch": "",
+      "raw": {
+        "task_id": "timothycrosley__isort-891",
+        "resolved": false,
+        "status": "SUCCESS",
+        "duration_seconds": 0.5674486370000977,
+        "cost_usd": 0.0,
+        "total_tokens": 0,
+        "total_llm_calls": 0,
+        "error_message": "Sandbox execution error: Failed to load skill 'skills/swe_agent': 1 validation error for Frontmatter\nname\n  Value error, name must be lowercase kebab-case (a-z, 0-9, hyphens), with no leading, trailing, or consecutive delimiters [type=value_error, input_value='swe_agent', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.12/v/value_error",
+        "trace_path": "/kaggle/working/results/e4b_steps/traces/trace_timothycrosley__isort-891.json",
+        "metadata": "{}",
+        "repo": "timothycrosley/isort",
+        "agent_patch": "",
+        "test_output": "",
+        "test_exit_code": -1,
+        "trace": null,
+        "tool_calls": 0,
+        "task_index": 1
+      }
+    }
+  ],
+  "error": null,
+  "variantes": [
+    "e4b_steps"
+  ],
+  "vllm_start_seconds": 330.7,
+  "n_public_tasks": 165,
+  "sample": [
+    "timothycrosley__isort-891"
+  ],
+  "presupuestos": {
+    "e4b_steps": {
+      "timeout_seconds": 300,
+      "max_tool_calls": 28,
+      "max_time_minutes": 8,
+      "max_turns": 80
+    }
+  },
+  "summary": {
+    "e4b_steps": {
+      "resolved": 0,
+      "total": 1,
+      "con_parche": 0
+    }
+  }
+}

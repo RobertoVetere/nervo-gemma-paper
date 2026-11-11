@@ -1,0 +1,13 @@
+# E4B agent "cmd" WITH thinking (4096, same sampling as base_comunidad). Only difference with e4b_cmd: configs/sampling.yaml.
+# Built from manual one-shot probes on the new bench (lab/una/): jinja-2022 and dynaconf-1184 solved
+# without thinking in 3 calls each, once the code supplied the evidence.
+name: fixer
+model: gemma-4-e4b-it-qat-w4a16-ct
+instruction: !include prompts/system.md
+tools:
+  - write_file
+  - run_command
+  - submit_patch
+skills:
+  - skills/fixer
+generate_content_config: !include configs/sampling.yaml

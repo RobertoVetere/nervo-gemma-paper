@@ -1,0 +1,88 @@
+{
+  "label": "v3-oracle",
+  "stage": "done",
+  "tasks": [
+    {
+      "id": "requests_6592",
+      "repo": "psf/requests",
+      "resolved": false,
+      "patch_chars": 0,
+      "tool_calls": 10,
+      "duration_s": 155.7,
+      "exit_code": -1,
+      "error": "Agent exceeded turns budget (80 turns)",
+      "patch": "",
+      "raw": {
+        "task_id": "requests_6592",
+        "resolved": false,
+        "status": "SUCCESS",
+        "duration_seconds": 155.67496339500008,
+        "cost_usd": 0.0,
+        "total_tokens": 0,
+        "total_llm_calls": 80,
+        "error_message": "Agent exceeded turns budget (80 turns)",
+        "trace_path": "/kaggle/working/results/traces/trace_requests_6592.json",
+        "metadata": "{}",
+        "repo": "psf/requests",
+        "agent_patch": "",
+        "test_output": "",
+        "test_exit_code": -1,
+        "trace": null,
+        "tool_calls": 10,
+        "task_index": 1
+      }
+    },
+    {
+      "id": "requests_7315",
+      "repo": "psf/requests",
+      "resolved": false,
+      "patch_chars": 521,
+      "tool_calls": 15,
+      "duration_s": 144.8,
+      "exit_code": 1,
+      "error": "Agent exceeded turns budget (80 turns)",
+      "patch": "diff --git a/src/requests/adapters.py b/src/requests/adapters.py\nindex 98f74465..27919468 100644\n--- a/src/requests/adapters.py\n+++ b/src/requests/adapters.py\n@@ -545,8 +545,6 @@ class HTTPAdapter(BaseAdapter):\n             using_socks_proxy = proxy_scheme.startswith(\"socks\")\n \n         url = request.path_url\n-        if url.startswith(\"//\"):  # Don't confuse urllib3\n-            url = f\"/{url.lstrip('/')}\"\n \n         if is_proxied_http_request and not using_socks_proxy:\n             url = urldefragauth(request.url)",
+      "raw": {
+        "task_id": "requests_7315",
+        "resolved": false,
+        "status": "SUCCESS",
+        "duration_seconds": 144.840569103,
+        "cost_usd": 0.0,
+        "total_tokens": 0,
+        "total_llm_calls": 80,
+        "error_message": "Agent exceeded turns budget (80 turns)",
+        "trace_path": "/kaggle/working/results/traces/trace_requests_7315.json",
+        "metadata": "{}",
+        "repo": "psf/requests",
+        "agent_patch": "diff --git a/src/requests/adapters.py b/src/requests/adapters.py\nindex 98f74465..27919468 100644\n--- a/src/requests/adapters.py\n+++ b/src/requests/adapters.py\n@@ -545,8 +545,6 @@ class HTTPAdapter(BaseAdapter):\n             using_socks_proxy = proxy_scheme.startswith(\"socks\")\n \n         url = request.path_url\n-        if url.startswith(\"//\"):  # Don't confuse urllib3\n-            url = f\"/{url.lstrip('/')}\"\n \n         if is_proxied_http_request and not using_socks_proxy:\n             url = urldefragauth(request.url)\n",
+        "test_output": "STDOUT:\nF                                                                        [100%]\n=================================== FAILURES ===================================\n_______________ test_request_url_handles_leading_path_separators _______________\n\n    def test_request_url_handles_leading_path_separators():\n        \"\"\"See also https://github.com/psf/requests/issues/6643.\"\"\"\n        a = requests.adapters.HTTPAdapter()\n        p = requests.Request(method=\"GET\", url=\"http://127.0.0.1:10000//v:h\").prepare()\n>       assert \"//v:h\" == a.request_url(p, {})\nE       AssertionError: assert '//v:h' == '/v:h'\nE         \nE         - /v:h\nE         + //v:h\nE         ? +\n\ntests/test_adapters.py:8: AssertionError\n- generated xml file: /tmp/swegemma_sandbox_253e07ec-e6e_trmxi_4q/tmp/_swegemma_junit_ab2659d7fc63.xml -\n=========================== short test summary info ============================\nFAILED tests/test_adapters.py::test_request_url_handles_leading_path_separators\n1 failed in 0.05s\n\nSTDERR:\n",
+        "test_exit_code": 1,
+        "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x781ab9654770>",
+        "tool_calls": 15,
+        "task_index": 2
+      }
+    }
+  ],
+  "error": null,
+  "vllm_start_seconds": 324.5,
+  "n_public_tasks": 129,
+  "sample": [
+    "requests_6592",
+    "requests_7315"
+  ],
+  "oracle": [
+    {
+      "error": "faltan argumentos ['docker', 'snapshot_path'] en swegemma.evaluate(docker: 'BaseSandboxManager', config: 'EvalConfig', task: 'Task', snapshot_path: 'Path', *, base_snapshot_path: 'Path | None' = None, patch_path: 'Path | None' = None, fast_path: 'bool' = True, agent_patch: 'str' = '', agent_error: 'str | None' = None, trace: 'SessionTrace | None' = None, start_time: 'float' = 0.0) -> 'TaskResult'",
+      "id": "requests_6592"
+    },
+    {
+      "error": "faltan argumentos ['docker', 'snapshot_path'] en swegemma.evaluate(docker: 'BaseSandboxManager', config: 'EvalConfig', task: 'Task', snapshot_path: 'Path', *, base_snapshot_path: 'Path | None' = None, patch_path: 'Path | None' = None, fast_path: 'bool' = True, agent_patch: 'str' = '', agent_error: 'str | None' = None, trace: 'SessionTrace | None' = None, start_time: 'float' = 0.0) -> 'TaskResult'",
+      "id": "requests_7315"
+    }
+  ],
+  "summary": {
+    "resolved": 0,
+    "total": 2,
+    "rate": 0.0
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "label": "v0",
+  "stage": "done",
+  "tasks": [
+    {
+      "id": "rich_2725",
+      "repo": "Textualize/rich",
+      "resolved": false,
+      "patch_chars": 0,
+      "tool_calls": 13,
+      "duration_s": 109.0,
+      "exit_code": 1,
+      "error": null,
+      "patch": ""
+    },
+    {
+      "id": "httpx_3672",
+      "repo": "encode/httpx",
+      "resolved": false,
+      "patch_chars": 457,
+      "tool_calls": 10,
+      "duration_s": 85.8,
+      "exit_code": 2,
+      "error": null,
+      "patch": "diff --git a/src/httpx/_parsers.py b/src/httpx/_parsers.py\nindex 830fccd..5e116b1 100644\n--- a/src/httpx/_parsers.py\n+++ b/src/httpx/_parsers.py\n@@ -375,7 +375,7 @@ class HTTPParser:\n             self.recv_state = State.DONE\n         return body\n \n-    def complete(self):\n+    def reset(self):\n         is_fully_complete = self.send_state == State.DONE and self.recv_state == State.DONE\n         is_keepalive = self.send_keep_alive and self.recv_keep_alive"
+    },
+    {
+      "id": "fastapi_11194",
+      "repo": "fastapi/fastapi",
+      "resolved": false,
+      "patch_chars": 0,
+      "tool_calls": 8,
+      "duration_s": 87.0,
+      "exit_code": 1,
+      "error": null,
+      "patch": ""
+    },
+    {
+      "id": "requests_6589",
+      "repo": "psf/requests",
+      "resolved": false,
+      "patch_chars": 0,
+      "tool_calls": 10,
+      "duration_s": 145.9,
+      "exit_code": 1,
+      "error": null,
+      "patch": ""
+    },
+    {
+      "id": "rich_3064",
+      "repo": "Textualize/rich",
+      "resolved": false,
+      "patch_chars": 0,
+      "tool_calls": 9,
+      "duration_s": 77.4,
+      "exit_code": 1,
+      "error": null,
+      "patch": ""
+    },
+    {
+      "id": "fastapi_13920",
+      "repo": "fastapi/fastapi",
+      "resolved": false,
+      "patch_chars": 586,
+      "tool_calls": 16,
+      "duration_s": 111.2,
+      "exit_code": 2,
+      "error": null,
+      "patch": "diff --git a/fastapi/types.py b/fastapi/types.py\nindex 1c3a6de7..d010fa9e 100644\n--- a/fastapi/types.py\n+++ b/fastapi/types.py\n@@ -1,3 +1,10 @@\n+from typing import TypeAlias\n+\n+def is_typealiastype(type_hint: Any) -> bool:\n+    # Vendored implementation from typing-inspection\n+    # This is a simplified representation of the actual logic.\n+    # It checks if the type hint is a TypeAlias or similar construct.\n+    return hasattr(type_hint, \"__is_type_alias__\") or type_hint is TypeAlias\n import types\n from enum import Enum\n from typing import Any, Callable, Optional, TypeVar, Union"
+    },
+    {
+      "id": "requests_7315",
+      "repo": "psf/requests",
+      "resolved": false,
+      "patch_chars": 0,
+      "tool_calls": 5,
+      "duration_s": 71.5,
+      "exit_code": 1,
+      "error": null,
+      "patch": ""
+    },
+    {
+      "id": "rich_3454",
+      "repo": "Textualize/rich",
+      "resolved": false,
+      "patch_chars": 0,
+      "tool_calls": 10,
+      "duration_s": 73.5,
+      "exit_code": 1,
+      "error": null,
+      "patch": ""
+    },
+    {
+      "id": "fastapi_14266",
+      "repo": "fastapi/fastapi",
+      "resolved": false,
+      "patch_chars": 0,
+      "tool_calls": 6,
+      "duration_s": 78.0,
+      "exit_code": 2,
+      "error": null,
+      "patch": ""
+    },
+    {
+      "id": "requests_6592",
+      "repo": "psf/requests",
+      "resolved": false,
+      "patch_chars": 578,
+      "tool_calls": 6,
+      "duration_s": 97.6,
+      "exit_code": 1,
+      "error": null,
+      "patch": "diff --git a/src/requests/status_codes.py b/src/requests/status_codes.py\nindex 4bd072be..23588122 100644\n--- a/src/requests/status_codes.py\n+++ b/src/requests/status_codes.py\n@@ -79,7 +79,7 @@ _codes = {\n     422: (\"unprocessable_entity\", \"unprocessable\"),\n     423: (\"locked\",),\n     424: (\"failed_dependency\", \"dependency\"),\n-    425: (\"unordered_collection\", \"unordered\"),\n+    425: (\"unordered_collection\", \"unordered\", \"too_early\"),\n     426: (\"upgrade_required\", \"upgrade\"),\n     428: (\"precondition_required\", \"precondition\"),\n     429: (\"too_many_requests\", \"too_many\"),"
+    },
+    {
+      "id": "rich_3486",
+      "repo": "Textualize/rich",
+      "resolved": false,
+      "patch_chars": 0,
+      "tool_calls": 4,
+      "duration_s": 116.4,
+      "exit_code": 1,
+      "error": null,
+      "patch": ""
+    },
+    {
+      "id": "fastapi_14360",
+      "repo": "fastapi/fastapi",
+      "resolved": false,
+      "patch_chars": 0,
+      "tool_calls": 9,
+      "duration_s": 153.9,
+      "exit_code": 2,
+      "error": null,
+      "patch": ""
+    }
+  ],
+  "error": null,
+  "vllm_start_seconds": 320.4,
+  "n_public_tasks": 129,
+  "sample": [
+    "rich_2725",
+    "httpx_3672",
+    "fastapi_11194",
+    "requests_6589",
+    "rich_3064",
+    "fastapi_13920",
+    "requests_7315",
+    "rich_3454",
+    "fastapi_14266",
+    "requests_6592",
+    "rich_3486",
+    "fastapi_14360"
+  ],
+  "summary": {
+    "resolved": 0,
+    "total": 12,
+    "rate": 0.0
+  }
+}

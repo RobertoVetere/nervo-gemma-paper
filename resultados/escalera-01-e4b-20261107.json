@@ -1,0 +1,241 @@
+{
+ "label": "escalera-01-e4b",
+ "stage": "done",
+ "tasks": [
+  {
+   "variant": "e4b_guiado",
+   "id": "rich_3454",
+   "repo": "Textualize/rich",
+   "resolved": true,
+   "patch_chars": 654,
+   "tool_calls": 6,
+   "duration_s": 78.7,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/rich/highlighter.py b/rich/highlighter.py\nindex 27714b25..e4c462e2 100644\n--- a/rich/highlighter.py\n+++ b/rich/highlighter.py\n@@ -98,7 +98,7 @@ class ReprHighlighter(RegexHighlighter):\n             r\"(?P<number>(?<!\\w)\\-?[0-9]+\\.?[0-9]*(e[-+]?\\d+?)?\\b|0x[0-9a-fA-F]*)\",\n             r\"(?P<path>\\B(/[-\\w._+]+)*\\/)(?P<filename>[-\\w._+]*)?\",\n             r\"(?<![\\\\\\w])(?P<str>b?'''.*?(?<!\\\\)'''|b?'.*?(?<!\\\\)'|b?\\\"\\\"\\\".*?(?<!\\\\)\\\"\\\"\\\"|b?\\\".*?(?<!\\\\)\\\")\",\n-            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!`(),.?/;:&=%#~]*)\",\n+            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!`(),.?/;:&=%#~@]*)\",\n         ),\n     ]"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "rich_3454",
+   "repo": "Textualize/rich",
+   "resolved": true,
+   "patch_chars": 654,
+   "tool_calls": 4,
+   "duration_s": 36.8,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/rich/highlighter.py b/rich/highlighter.py\nindex 27714b25..7f55b667 100644\n--- a/rich/highlighter.py\n+++ b/rich/highlighter.py\n@@ -98,7 +98,7 @@ class ReprHighlighter(RegexHighlighter):\n             r\"(?P<number>(?<!\\w)\\-?[0-9]+\\.?[0-9]*(e[-+]?\\d+?)?\\b|0x[0-9a-fA-F]*)\",\n             r\"(?P<path>\\B(/[-\\w._+]+)*\\/)(?P<filename>[-\\w._+]*)?\",\n             r\"(?<![\\\\\\w])(?P<str>b?'''.*?(?<!\\\\)'''|b?'.*?(?<!\\\\)'|b?\\\"\\\"\\\".*?(?<!\\\\)\\\"\\\"\\\"|b?\\\".*?(?<!\\\\)\\\")\",\n-            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!`(),.?/;:&=%#~]*)\",\n+            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!@`(),.?/;:&=%#~]*)\",\n         ),\n     ]"
+  },
+  {
+   "variant": "e4b_guiado",
+   "id": "rich_3278",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 318,
+   "tool_calls": 7,
+   "duration_s": 95.1,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/rich/ansi.py b/rich/ansi.py\nindex 66365e65..bb6b3603 100644\n--- a/rich/ansi.py\n+++ b/rich/ansi.py\n@@ -10,7 +10,7 @@ from .text import Text\n re_ansi = re.compile(\n     r\"\"\"\n (?:\\x1b\\](.*?)\\x1b\\\\)|\n-(?:\\x1b([(@-Z\\\\-_]|\\[[0-?]*[ -/]*[@-~]))\n+(?:\\x1b([(@-Z\\\\-_]|\\[[A-Z]*[ -/]*[@-~]))\n \"\"\",\n     re.VERBOSE,\n )"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "rich_3278",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 319,
+   "tool_calls": 4,
+   "duration_s": 74.3,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/rich/ansi.py b/rich/ansi.py\nindex 66365e65..68c16e9b 100644\n--- a/rich/ansi.py\n+++ b/rich/ansi.py\n@@ -10,7 +10,7 @@ from .text import Text\n re_ansi = re.compile(\n     r\"\"\"\n (?:\\x1b\\](.*?)\\x1b\\\\)|\n-(?:\\x1b([(@-Z\\\\-_]|\\[[0-?]*[ -/]*[@-~]))\n+(?:\\x1b([(@-Z\\\\-_]|\\[[^0-?]*[ -/]*[@-~]))\n \"\"\",\n     re.VERBOSE,\n )"
+  },
+  {
+   "variant": "e4b_guiado",
+   "id": "fastapi_14786",
+   "repo": "fastapi/fastapi",
+   "resolved": true,
+   "patch_chars": 403,
+   "tool_calls": 3,
+   "duration_s": 18.6,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/fastapi/security/utils.py b/fastapi/security/utils.py\nindex 002e68b4..fd349aec 100644\n--- a/fastapi/security/utils.py\n+++ b/fastapi/security/utils.py\n@@ -7,4 +7,4 @@ def get_authorization_scheme_param(\n     if not authorization_header_value:\n         return \"\", \"\"\n     scheme, _, param = authorization_header_value.partition(\" \")\n-    return scheme, param\n+    return scheme, param.strip()"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "fastapi_14786",
+   "repo": "fastapi/fastapi",
+   "resolved": true,
+   "patch_chars": 403,
+   "tool_calls": 4,
+   "duration_s": 27.3,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/fastapi/security/utils.py b/fastapi/security/utils.py\nindex 002e68b4..fd349aec 100644\n--- a/fastapi/security/utils.py\n+++ b/fastapi/security/utils.py\n@@ -7,4 +7,4 @@ def get_authorization_scheme_param(\n     if not authorization_header_value:\n         return \"\", \"\"\n     scheme, _, param = authorization_header_value.partition(\" \")\n-    return scheme, param\n+    return scheme, param.strip()"
+  },
+  {
+   "variant": "e4b_guiado",
+   "id": "fastapi_14479",
+   "repo": "fastapi/fastapi",
+   "resolved": false,
+   "patch_chars": 592,
+   "tool_calls": 9,
+   "duration_s": 82.1,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/fastapi/dependencies/utils.py b/fastapi/dependencies/utils.py\nindex 39d0bd89..0f10e2dc 100644\n--- a/fastapi/dependencies/utils.py\n+++ b/fastapi/dependencies/utils.py\n@@ -551,7 +551,8 @@ def analyze_param(\n                     _is_model_class(field.type_)\n                     # For Pydantic v1\n                     and getattr(field, \"shape\", 1) == 1\n-                )\n+                ),\n+                f\"Query param '{param_name}' must be of one of the supported types\"\n             )\n \n     return ParamDetails(type_annotation=type_annotation, depends=depends, field=field)"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "fastapi_14479",
+   "repo": "fastapi/fastapi",
+   "resolved": false,
+   "patch_chars": 3075,
+   "tool_calls": 9,
+   "duration_s": 59.1,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/check.py b/check.py\nnew file mode 100644\nindex 00000000..78f6b330\n--- /dev/null\n+++ b/check.py\n@@ -0,0 +1,48 @@\n+import asyncio\n+from typing import Annotated, Any\n+from fastapi import FastAPI, Query\n+from pydantic import BeforeValidator, WithJsonSchema\n+from fastapi.testclient import TestClient\n+import sys\n+\n+# Define the problematic type\n+FilterableStr = Annotated[\n+    str | dict,\n+    BeforeValidator(lambda x: x),\n+    WithJsonSchema({\"type\": \"string\"}, mode=\"serialization\"),\n+]\n+\n+# Setup FastAPI app\n+app = FastAPI()\n+\n+@app.get(\"/hello\")\n+async def get_hello(data: FilterableStr | None = Query(default=None)) -> Any:\n+    return data\n+\n+def run_app_and_check():\n+    try:\n+        client = TestClient(app)\n+        \n+        # Access the endpoint. If the type is invalid, validation should fail with the new message.\n+        client.get(\"/hello\")\n+        \n+        # If we reach here, the validation passed, which is a failure of the fix (or the bug if the fix was wrong).\n+        print(\"CHECK_FAIL: Request succeeded, validation did not fail.\")\n+\n+    except Exception as e:\n+        # Check if the exception is an AssertionError or a ValidationError that contains the specific message.\n+        # The issue states the crash is an AssertionError.\n+        if isinstance(e, AssertionError):\n+            error_message = str(e)\n+            expected_substring = \"Query param 'data' must be of one of the supported types. Invalid type annotation.\"\n+            if expected_substring in error_message:\n+                print(\"CHECK_PASS\")\n+            else:\n+                print(f\"CHECK_FAIL: AssertionError raised, but message was incorrect. Got: {error_message}\")\n+        else:\n+            # If it's a different exception (e.g., HTTPException from FastAPI validation), \n+            # we check if the message contains the required information.\n+            print(f\"CHECK_FAIL: Unexpected exception type {type(e).__name__} raised: {e}\")\n+\n+if __name__ == \"__main__\":\n+    run_app_and_check()\ndiff --git a/fastapi/dependencies/utils.py b/fastapi/dependencies/utils.py\nindex 39d0bd89..5dd7aa62 100644\n--- a/fastapi/dependencies/utils.py\n+++ b/fastapi/dependencies/utils.py\n@@ -544,14 +544,8 @@ def analyze_param(\n                 \"Path params must be of one of the supported types\"\n             )\n         elif isinstance(field_info, (params.Query, temp_pydantic_v1_params.Query)):\n-            assert (\n-                is_scalar_field(field)\n-                or is_scalar_sequence_field(field)\n-                or (\n-                    _is_model_class(field.type_)\n-                    # For Pydantic v1\n-                    and getattr(field, \"shape\", 1) == 1\n-                )\n+            assert is_scalar_field(field) or is_scalar_sequence_field(field) or (_is_model_class(field.type_) and getattr(field, \"shape\", 1) == 1), (\n+                f\"Query param '{param_name}' must be of one of the supported types. Invalid type annotation.\"\n             )\n \n     return ParamDetails(type_annotation=type_annotation, depends=depends, field=field)"
+  },
+  {
+   "variant": "e4b_guiado",
+   "id": "requests_7315",
+   "repo": "psf/requests",
+   "resolved": false,
+   "patch_chars": 0,
+   "tool_calls": 12,
+   "duration_s": 91.1,
+   "exit_code": 1,
+   "error": null,
+   "patch": ""
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "requests_7315",
+   "repo": "psf/requests",
+   "resolved": true,
+   "patch_chars": 521,
+   "tool_calls": 10,
+   "duration_s": 43.0,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/src/requests/adapters.py b/src/requests/adapters.py\nindex 98f74465..27919468 100644\n--- a/src/requests/adapters.py\n+++ b/src/requests/adapters.py\n@@ -545,8 +545,6 @@ class HTTPAdapter(BaseAdapter):\n             using_socks_proxy = proxy_scheme.startswith(\"socks\")\n \n         url = request.path_url\n-        if url.startswith(\"//\"):  # Don't confuse urllib3\n-            url = f\"/{url.lstrip('/')}\"\n \n         if is_proxied_http_request and not using_socks_proxy:\n             url = urldefragauth(request.url)"
+  },
+  {
+   "variant": "e4b_guiado",
+   "id": "rich_3894",
+   "repo": "Textualize/rich",
+   "resolved": true,
+   "patch_chars": 738,
+   "tool_calls": 3,
+   "duration_s": 30.1,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/rich/_inspect.py b/rich/_inspect.py\nindex 27d65cec..300cf19e 100644\n--- a/rich/_inspect.py\n+++ b/rich/_inspect.py\n@@ -100,7 +100,13 @@ class Inspect(JupyterMixin):\n             callable_name.stylize(f\"link file://{source_filename}\")\n         signature_text = self.highlighter(_signature)\n \n-        qualname = name or getattr(obj, \"__qualname__\", name)\n+        qualname = name\n+        if not qualname:\n+            qualname = getattr(obj, \"__qualname__\", None)\n+            if isinstance(qualname, str):\n+                pass\n+            else:\n+                qualname = getattr(obj, \"__name__\", name)\n \n         # If obj is a module, there may be classes (which are callable) to display\n         if inspect.isclass(obj):"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "rich_3894",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 682,
+   "tool_calls": 6,
+   "duration_s": 50.0,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/rich/_inspect.py b/rich/_inspect.py\nindex 27d65cec..8b0ecb1d 100644\n--- a/rich/_inspect.py\n+++ b/rich/_inspect.py\n@@ -100,7 +100,11 @@ class Inspect(JupyterMixin):\n             callable_name.stylize(f\"link file://{source_filename}\")\n         signature_text = self.highlighter(_signature)\n \n-        qualname = name or getattr(obj, \"__qualname__\", name)\n+        qualname = getattr(obj, \"__qualname__\", None)\n+        if isinstance(qualname, str):\n+            qualname = qualname\n+        else:\n+            qualname = getattr(obj, \"__name__\", name)\n \n         # If obj is a module, there may be classes (which are callable) to display\n         if inspect.isclass(obj):"
+  },
+  {
+   "variant": "e4b_guiado",
+   "id": "rich_3882",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 696,
+   "tool_calls": 13,
+   "duration_s": 97.1,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/rich/prompt.py b/rich/prompt.py\nindex c7cf25ba..d02d7570 100644\n--- a/rich/prompt.py\n+++ b/rich/prompt.py\n@@ -262,7 +262,10 @@ class PromptBase(Generic[PromptType]):\n             value (str): String entered by user.\n             error (InvalidResponse): Exception instance the initiated the error.\n         \"\"\"\n-        self.console.print(error)\n+        if not getattr(self.console, \"markup\", True):\n+            self.console.print(f\"Error: {error.message}. Please ensure your console supports rich markup for full error details.\")\n+        else:\n+            self.console.print(error)\n \n     def pre_prompt(self) -> None:\n         \"\"\"Hook to display something before the prompt.\"\"\""
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "rich_3882",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 632,
+   "tool_calls": 7,
+   "duration_s": 85.7,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/rich/prompt.py b/rich/prompt.py\nindex c7cf25ba..33d48621 100644\n--- a/rich/prompt.py\n+++ b/rich/prompt.py\n@@ -262,6 +262,8 @@ class PromptBase(Generic[PromptType]):\n             value (str): String entered by user.\n             error (InvalidResponse): Exception instance the initiated the error.\n         \"\"\"\n+        if not hasattr(self.console, \"color_system\") or self.console.color_system is None:\n+            self.console.print(\"Warning: This error message contains rich formatting, which is disabled in your current console configuration.\")\n         self.console.print(error)\n \n     def pre_prompt(self) -> None:"
+  },
+  {
+   "variant": "e4b_guiado",
+   "id": "rich_3043",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 357,
+   "tool_calls": 14,
+   "duration_s": 97.8,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml\nindex 75b988eb..14498225 100644\n--- a/.pre-commit-config.yaml\n+++ b/.pre-commit-config.yaml\n@@ -31,7 +31,7 @@ repos:\n       - id: pycln\n         args: [--all]\n   - repo: https://github.com/psf/black\n-    rev: 22.3.0\n+    rev: 23.0.0\n     hooks:\n       - id: black\n         exclude: ^benchmarks/"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "rich_3043",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 0,
+   "tool_calls": 6,
+   "duration_s": 47.6,
+   "exit_code": 1,
+   "error": null,
+   "patch": ""
+  }
+ ],
+ "error": null,
+ "variantes": [
+  "e4b_guiado",
+  "nervo_repro"
+ ],
+ "vllm_start_seconds": 358.8,
+ "n_public_tasks": 129,
+ "sample": [
+  "rich_3454",
+  "rich_3278",
+  "fastapi_14786",
+  "fastapi_14479",
+  "requests_7315",
+  "rich_3894",
+  "rich_3882",
+  "rich_3043"
+ ],
+ "presupuestos": {
+  "e4b_guiado": {
+   "timeout_seconds": 300,
+   "max_tool_calls": 28,
+   "max_time_minutes": 8,
+   "max_turns": 80
+  },
+  "nervo_repro": {
+   "timeout_seconds": 300,
+   "max_tool_calls": 28,
+   "max_time_minutes": 8,
+   "max_turns": 80
+  }
+ },
+ "summary": {
+  "e4b_guiado": {
+   "resolved": 3,
+   "total": 8,
+   "con_parche": 7
+  },
+  "nervo_repro": {
+   "resolved": 3,
+   "total": 8,
+   "con_parche": 7
+  }
+ }
+}

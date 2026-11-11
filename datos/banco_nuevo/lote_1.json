@@ -1,0 +1,20 @@
+{
+ "lote_1": [
+  "audreyr__cookiecutter-834",
+  "callowayproject__bump-my-version-180",
+  "digitalocean__pynetbox-194",
+  "dynaconf__dynaconf-1184",
+  "googleapis__python-api-core-821",
+  "ipython__traitlets-687",
+  "joke2k__faker-2203",
+  "kayak__pypika-267",
+  "matthewwithanm__python-markdownify-214",
+  "more-itertools__more-itertools-903",
+  "pallets__click-2730",
+  "pallets__jinja-2022",
+  "pycqa__pyflakes-604",
+  "python-babel__babel-1196",
+  "python-markdown__markdown-1359",
+  "python-semver__python-semver-254"
+ ]
+}

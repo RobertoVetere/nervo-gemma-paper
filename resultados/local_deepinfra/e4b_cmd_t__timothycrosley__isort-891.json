@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/e4b_cmd_t",
+ "modelo": "gemma-4-31b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "timothycrosley__isort-891",
+   "resolved": false,
+   "patch": "diff --git a/isort/main.py b/isort/main.py\nindex 29049ac..fedc7a9 100644\n--- a/isort/main.py\n+++ b/isort/main.py\n@@ -85,7 +85,7 @@ class SortAttempt(object):\n \n def sort_imports(file_name, **arguments):\n     try:\n-        result = SortImports(file_name, check_skip=False, **arguments)\n+        result = SortImports(file_name, **arguments)\n         return SortAttempt(result.incorrectly_sorted, result.skipped)\n     except IOError as e:\n         print(\"WARNING: Unable to parse file {0} due to {1}\".format(file_name, e))\ndiff --git a/isort/settings.py b/isort/settings.py\nindex 56ee223..db70c1e 100644\n--- a/isort/settings.py\n+++ b/isort/settings.py\n@@ -343,7 +343,7 @@ def should_skip(filename, config, path=''):\n         position = os.path.split(position[0])\n \n     for glob in config['skip_glob']:\n-        if fnmatch.fnmatch(filename, glob):\n+        if fnmatch.fnmatch(filename, glob) or fnmatch.fnmatch(os.path.basename(filename), glob):\n             return True\n \n     if not (os.path.isfile(os_path) or os.path.isdir(os_path) or os.path.islink(os_path)):",
+   "tool_calls": 16,
+   "duration_s": 227.9,
+   "error": null,
+   "raw": {
+    "task_id": "timothycrosley__isort-891",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 227.91169855099997,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 18,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/di-e4b-13/e4b_cmd_t__timothycrosley__isort-891/results/traces/trace_timothycrosley__isort-891.json",
+    "metadata": "{}",
+    "repo": "timothycrosley/isort",
+    "agent_patch": "diff --git a/isort/main.py b/isort/main.py\nindex 29049ac..fedc7a9 100644\n--- a/isort/main.py\n+++ b/isort/main.py\n@@ -85,7 +85,7 @@ class SortAttempt(object):\n \n def sort_imports(file_name, **arguments):\n     try:\n-        result = SortImports(file_name, check_skip=False, **arguments)\n+        result = SortImports(file_name, **arguments)\n         return SortAttempt(result.incorrectly_sorted, result.skipped)\n     except IOError as e:\n         print(\"WARNING: Unable to parse file {0} due to {1}\".format(file_name, e))\ndiff --git a/isort/settings.py b/isort/settings.py\nindex 56ee223..db70c1e 100644\n--- a/isort/settings.py\n+++ b/isort/settings.py\n@@ -343,7 +343,7 @@ def should_skip(filename, config, path=''):\n         position = os.path.split(position[0])\n \n     for glob in config['skip_glob']:\n-        if fnmatch.fnmatch(filename, glob):\n+        if fnmatch.fnmatch(filename, glob) or fnmatch.fnmatch(os.path.basename(filename), glob):\n             return True\n \n     if not (os.path.isfile(os_path) or os.path.isdir(os_path) or os.path.islink(os_path)):\n",
+    "test_output": "STDOUT:\n........................................................................ [ 49%]\n.......................................................s.s..........F... [ 99%]\n.                                                                        [100%]\n=================================== FAILURES ===================================\n______________________ test_skip_glob[skip_glob_assert1] _______________________\n\ntmpdir = local('/tmp/swegemma_sandbox_94d34e02-bee_o8wr_k7l/tmp/pytest-of-root/pytest-0/test_skip_glob_skip_glob_asser1')\nskip_glob_assert = (['**/*.py'], 1, {})\n\n    @pytest.mark.parametrize('skip_glob_assert', (([], 0, {os.sep.join(('code', 'file.py'))}), (['**/*.py'], 1, {})))\n    def test_skip_glob(tmpdir, skip_glob_assert):\n        skip_glob, skipped_count, file_names = skip_glob_assert\n        base_dir = tmpdir.mkdir('build')\n        code_dir = base_dir.mkdir('code')\n        code_dir.join('file.py').write('import os')\n    \n        config = dict(settings.default.copy(), skip_glob=skip_glob)\n        skipped = []\n        file_names = set(os.path.relpath(f, str(base_dir)) for f in main.iter_source_code([str(base_dir)], config, skipped))\n>       assert len(skipped) == skipped_count\nE       assert 0 == 1\nE        +  where 0 = len([])\n\n/tmp/swegemma_sandbox_94d34e02-bee_o8wr_k7l/workspace/test_isort.py:2795: AssertionError\n=========================== short test summary info ============================\nFAILED test_isort.py::test_skip_glob[skip_glob_assert1] - assert 0 == 1\n1 failed, 142 passed, 2 skipped in 0.59s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f0e2ce2e7b0>",
+    "tool_calls": 16,
+    "task_index": 1
+   },
+   "segundos_reloj": 227.9
+  }
+ ]
+}

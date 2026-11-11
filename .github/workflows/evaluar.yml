@@ -1,0 +1,117 @@
+name: Evaluar en Kaggle (L4)
+
+on:
+  workflow_dispatch:
+    inputs:
+      n_tasks:
+        description: Número de tareas públicas a evaluar
+        default: "12"
+      label:
+        description: Etiqueta de la versión
+        default: "v0"
+      tasks:
+        description: IDs concretos separados por comas (vacío = muestra fija)
+        default: ""
+      variant:
+        description: Carpeta de la submission (submission, variantes/base_comunidad, ...)
+        default: "submission"
+      model:
+        description: Forzar modelo (vacío = el del YAML), p.ej. gemma-4-31b-it-qat-w4a16-ct
+        default: ""
+      lab:
+        description: Fichero de sondas one-shot (modo laboratorio), p.ej. lab/sondas_01.json
+        default: ""
+      bateria:
+        description: Batería de enfoques (lab/motor.py), p.ej. lab/bateria_01.json
+        default: ""
+      diag:
+        description: Solo diagnóstico del sandbox, sin GPU ni modelo
+        default: "0"
+      slot:
+        description: "Sufijo del kernel (a-z0-9), para no pisar uno que sigue corriendo"
+        default: ""
+      banco:
+        description: "1 = usar el banco de repos nuevos (dataset nervo-banco-nuevo)"
+        default: "0"
+      oracle:
+        description: Puntuar también el parche oficial (comprueba la evaluación)
+        default: "0"
+
+permissions:
+  contents: write
+
+jobs:
+  evaluar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    defaults:
+      run:
+        shell: bash -eo pipefail {0}
+    env:
+      KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+      KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN || secrets.KAGGLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install kaggle six
+      - name: Validar la submission
+        run: |
+          for v in $(echo "${{ inputs.variant }}" | tr ',' ' '); do NERVO_VARIANT="$v" python scripts/build_submission.py; done
+      - name: Generar el kernel
+        run: python scripts/render_kernel.py --n-tasks "${{ inputs.n_tasks }}" --label "${{ inputs.label }}" --tasks "${{ inputs.tasks }}" --variant "${{ inputs.variant }}" --model "${{ inputs.model }}" $([ -n "${{ inputs.lab }}" ] && echo --lab "${{ inputs.lab }}") $([ -n "${{ inputs.bateria }}" ] && echo --bateria "${{ inputs.bateria }}") $([ "${{ inputs.oracle }}" = "1" ] && echo --oracle) $([ "${{ inputs.diag }}" = "1" ] && echo --diag) $([ "${{ inputs.banco }}" = "1" ] && echo --banco) $([ -n "${{ inputs.slot }}" ] && echo --slot "${{ inputs.slot }}")
+      - name: Lanzar en Kaggle con GPU L4
+        run: |
+          # Si el push falla (p. ej. cuota semanal agotada), parar: si no, se descargaría la salida ANTERIOR del mismo
+          # kernel y se guardaría como si fuera de esta ejecución (pasó el 11-nov con 31b-publico-oficiales).
+          out="$(kaggle kernels push -p kernel --accelerator NvidiaL4 -t 21600 2>&1)"; echo "$out"
+          if echo "$out" | grep -qiE 'error|quota|maximum'; then echo "::error::push fallido: $out"; exit 1; fi
+      - name: Esperar a que termine
+        run: |
+          REF="$(python -c "import json;print(json.load(open('kernel/kernel-metadata.json'))['id'])")"
+          sleep 60
+          for i in $(seq 1 380); do
+            s="$(kaggle kernels status "$REF" 2>&1 || true)"
+            echo "[$i] $s"
+            l="$(echo "$s" | tr '[:upper:]' '[:lower:]')"
+            if echo "$l" | grep -Eq 'complete'; then break; fi
+            if echo "$l" | grep -Eq 'error|fail|cancel'; then break; fi
+            sleep 45
+          done
+      - name: Descargar resultados
+        if: always()
+        run: |
+          mkdir -p salida
+          kaggle kernels output "$(python -c "import json;print(json.load(open('kernel/kernel-metadata.json'))['id'])")" -p salida || true
+          ls -la salida || true
+          if [ -f salida/nervo_results.json ]; then
+            python - <<'EOF'
+          import json
+          r = json.load(open("salida/nervo_results.json"))
+          print("stage:", r.get("stage"), "| error:", r.get("error"))
+          for t in r.get("tasks", []):
+              print(f"{'OK ' if t.get('resolved') else 'NO '} {t.get('variant','')} {t['id']}  patch={t.get('patch_chars')} calls={t.get('tool_calls')} t={t.get('duration_s')}s {t.get('error') or ''}")
+          print("RESUMEN:", r.get("summary"))
+          EOF
+          fi
+          tail -c 6000 salida/*.log 2>/dev/null || true
+      - name: Guardar resultados en el repo
+        if: always()
+        run: |
+          if [ -f salida/nervo_results.json ]; then
+            mkdir -p resultados
+            cp salida/nervo_results.json "resultados/${{ inputs.label }}-$(date -u +%Y%m%dT%H%M%SZ).json"
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add resultados
+            git commit -m "Resultados de evaluación ${{ inputs.label }}" || true
+            git pull --rebase origin main || true
+            git push || true
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: salida-kaggle
+          path: salida

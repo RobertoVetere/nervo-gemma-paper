@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/e4b_cmd",
+ "modelo": "gemma-4-31b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "joke2k__faker-2203",
+   "resolved": true,
+   "patch": "diff --git a/faker/proxy.py b/faker/proxy.py\nindex fc72a15..c1e34b7 100644\n--- a/faker/proxy.py\n+++ b/faker/proxy.py\n@@ -334,13 +334,25 @@ class UniqueProxy:\n             retval = self._sentinel\n \n             for i in range(_UNIQUE_ATTEMPTS):\n-                if retval not in generated:\n-                    break\n+                try:\n+                    if retval not in generated:\n+                        break\n+                except TypeError:\n+                    # Handle unhashable types by checking equality manually\n+                    # We need to check both the set and the list of unhashable values\n+                    unhashable_generated = getattr(self, '_unhashable_seen', {}).get(key, [])\n+                    if not any(retval == item for item in unhashable_generated):\n+                        break\n                 retval = function(*args, **kwargs)\n             else:\n                 raise UniquenessException(f\"Got duplicated values after {_UNIQUE_ATTEMPTS:,} iterations.\")\n \n-            generated.add(retval)\n+            try:\n+                generated.add(retval)\n+            except TypeError:\n+                if not hasattr(self, '_unhashable_seen'):\n+                    self._unhashable_seen = {}\n+                self._unhashable_seen.setdefault(key, []).append(retval)\n \n             return retval",
+   "tool_calls": 13,
+   "duration_s": 106.6,
+   "error": null,
+   "raw": {
+    "task_id": "joke2k__faker-2203",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 106.61468579399997,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 15,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/di-e4b-13/e4b_cmd__joke2k__faker-2203/results/traces/trace_joke2k__faker-2203.json",
+    "metadata": "{}",
+    "repo": "joke2k/faker",
+    "agent_patch": "diff --git a/faker/proxy.py b/faker/proxy.py\nindex fc72a15..c1e34b7 100644\n--- a/faker/proxy.py\n+++ b/faker/proxy.py\n@@ -334,13 +334,25 @@ class UniqueProxy:\n             retval = self._sentinel\n \n             for i in range(_UNIQUE_ATTEMPTS):\n-                if retval not in generated:\n-                    break\n+                try:\n+                    if retval not in generated:\n+                        break\n+                except TypeError:\n+                    # Handle unhashable types by checking equality manually\n+                    # We need to check both the set and the list of unhashable values\n+                    unhashable_generated = getattr(self, '_unhashable_seen', {}).get(key, [])\n+                    if not any(retval == item for item in unhashable_generated):\n+                        break\n                 retval = function(*args, **kwargs)\n             else:\n                 raise UniquenessException(f\"Got duplicated values after {_UNIQUE_ATTEMPTS:,} iterations.\")\n \n-            generated.add(retval)\n+            try:\n+                generated.add(retval)\n+            except TypeError:\n+                if not hasattr(self, '_unhashable_seen'):\n+                    self._unhashable_seen = {}\n+                self._unhashable_seen.setdefault(key, []).append(retval)\n \n             return retval\n \n",
+    "test_output": "STDOUT:\n......                                                                   [100%]\n6 passed in 0.25s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f46f150a7b0>",
+    "tool_calls": 13,
+    "task_index": 1
+   },
+   "segundos_reloj": 106.8
+  }
+ ]
+}

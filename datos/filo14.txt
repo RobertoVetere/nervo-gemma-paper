@@ -1,0 +1,14 @@
+dynaconf__dynaconf-811
+googleapis__python-api-core-821
+ipython__traitlets-727
+ipython__traitlets-773
+joke2k__faker-2203
+more-itertools__more-itertools-1028
+more-itertools__more-itertools-892
+more-itertools__more-itertools-926
+pallets__click-2730
+pallets__jinja-1614
+pallets__jinja-1702
+pycqa__pyflakes-675
+python-babel__babel-1196
+python-semver__python-semver-239

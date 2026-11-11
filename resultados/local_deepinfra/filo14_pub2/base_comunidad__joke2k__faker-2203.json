@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/base_comunidad",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "joke2k__faker-2203",
+   "resolved": false,
+   "patch": "diff --git a/faker/proxy.py b/faker/proxy.py\nindex fc72a15..8e703db 100644\n--- a/faker/proxy.py\n+++ b/faker/proxy.py\n@@ -296,6 +296,14 @@ class Faker:\n         return list(self._factory_map.items())\n \n \n+def _make_hashable(obj):\n+    if isinstance(obj, dict):\n+        return frozenset((k, _make_hashable(v)) for k, v in obj.items())\n+    if isinstance(obj, list):\n+        return tuple(_make_hashable(i) for i in obj)\n+    return obj\n+\n+\n class UniqueProxy:\n     def __init__(self, proxy: Faker):\n         self._proxy = proxy\n@@ -334,13 +342,13 @@ class UniqueProxy:\n             retval = self._sentinel\n \n             for i in range(_UNIQUE_ATTEMPTS):\n-                if retval not in generated:\n+                if _make_hashable(retval) not in generated:\n                     break\n                 retval = function(*args, **kwargs)\n             else:\n                 raise UniquenessException(f\"Got duplicated values after {_UNIQUE_ATTEMPTS:,} iterations.\")\n \n-            generated.add(retval)\n+            generated.add(_make_hashable(retval))\n \n             return retval",
+   "tool_calls": 22,
+   "duration_s": 199.9,
+   "error": null,
+   "raw": {
+    "task_id": "joke2k__faker-2203",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 199.87468142200032,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 24,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/filo_pub2/base_comunidad__joke2k__faker-2203/results/traces/trace_joke2k__faker-2203.json",
+    "metadata": "{}",
+    "repo": "joke2k/faker",
+    "agent_patch": "diff --git a/faker/proxy.py b/faker/proxy.py\nindex fc72a15..8e703db 100644\n--- a/faker/proxy.py\n+++ b/faker/proxy.py\n@@ -296,6 +296,14 @@ class Faker:\n         return list(self._factory_map.items())\n \n \n+def _make_hashable(obj):\n+    if isinstance(obj, dict):\n+        return frozenset((k, _make_hashable(v)) for k, v in obj.items())\n+    if isinstance(obj, list):\n+        return tuple(_make_hashable(i) for i in obj)\n+    return obj\n+\n+\n class UniqueProxy:\n     def __init__(self, proxy: Faker):\n         self._proxy = proxy\n@@ -334,13 +342,13 @@ class UniqueProxy:\n             retval = self._sentinel\n \n             for i in range(_UNIQUE_ATTEMPTS):\n-                if retval not in generated:\n+                if _make_hashable(retval) not in generated:\n                     break\n                 retval = function(*args, **kwargs)\n             else:\n                 raise UniquenessException(f\"Got duplicated values after {_UNIQUE_ATTEMPTS:,} iterations.\")\n \n-            generated.add(retval)\n+            generated.add(_make_hashable(retval))\n \n             return retval\n \n",
+    "test_output": "STDOUT:\n.....F                                                                   [100%]\n=================================== FAILURES ===================================\n__________ TestUniquenessClass.test_complex_return_types_is_supported __________\n\nself = <tests.test_unique.TestUniquenessClass object at 0x7f90c5415040>\n\n    def test_complex_return_types_is_supported(self):\n        \"\"\"The unique decorator supports complex return types\n        like the ones used in the profile provider.\"\"\"\n    \n        fake = Faker()\n    \n        for i in range(10):\n            fake.unique.pydict()\n    \n        for i in range(10):\n            fake.unique.pylist()\n    \n        for i in range(10):\n>           fake.unique.pyset()\n\ntests/test_unique.py:77: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nargs = (), kwargs = {}\n\n    @functools.wraps(function)\n    def wrapper(*args, **kwargs):\n        key = (name, args, tuple(sorted(kwargs.items())))\n    \n        generated = self._seen.setdefault(key, {self._sentinel})\n    \n        # With use of a sentinel value rather than None, we leave\n        # None open as a valid return value.\n        retval = self._sentinel\n    \n        for i in range(_UNIQUE_ATTEMPTS):\n            if _make_hashable(retval) not in generated:\n                break\n            retval = function(*args, **kwargs)\n        else:\n            raise UniquenessException(f\"Got duplicated values after {_UNIQUE_ATTEMPTS:,} iterations.\")\n    \n>       generated.add(_make_hashable(retval))\nE       TypeError: unhashable type: 'set'\n\nfaker/proxy.py:351: TypeError\n=========================== short test summary info ============================\nFAILED tests/test_unique.py::TestUniquenessClass::test_complex_return_types_is_supported\n1 failed, 5 passed in 0.29s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f0df3906ba0>",
+    "tool_calls": 22,
+    "task_index": 1
+   },
+   "segundos_reloj": 200.0
+  }
+ ]
+}
