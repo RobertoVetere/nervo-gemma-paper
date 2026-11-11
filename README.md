@@ -24,10 +24,10 @@ run checks, and their verdict decides what happens next.**
 
 | Question | Result | Evidence |
 |---|---|---|
-| Can a quantized model drive scripted tools reliably? | Rejected tool calls drop from **88% to 0 of 105** when every call has one field and long text travels through files | Hundreds of calls from evaluation traces |
-| Does reasoning help? | It depends on the agent: **+6 tasks** for a free-form agent, **−6** for a script-guided one | 40 random tasks, paired, sign test **p = 0.006** |
-| Does quantization change behaviour? | Same inputs, quantized weights: **twice as many failed edits** (24 vs 12 of 88, p = 0.04); the reasoning gain seen at full precision does not appear | Matched single-call probes on the deployed weights |
-| Is localization the bottleneck? | No. A model-free retriever ranks the changed function in its top 3 for **38 of 72** official tasks, and with the right file in hand **55 of 64** repair attempts still fail | Reference patches, hidden tests |
+| Can a quantized model drive scripted tools reliably? | With one-field calls and long text passed through files, **0 of 105** calls were rejected, against **81–88%** with a three-field call | Successive agent versions, evaluation traces |
+| Does reasoning help? | It depends on the agent: **+6 tasks** for a free-form agent, **−6** for a script-guided one | Exploratory: 40 random tasks, one run per cell, sign test **p = 0.006** |
+| Does quantization change behaviour? | In single-call probes the quantized model generates **a third as many tokens** when reasoning and fails **twice as many edits** by miscopying code (24 vs 11 of 88, p = 0.02) | Same pipeline; localization not held fixed |
+| Is localization the bottleneck? | No. With the right file in hand, **55 of 64** repair attempts still fail; rewriting whole functions removes copy errors but not wrong changes | Single-call probes, hidden tests |
 | Can single runs be trusted? | No. At temperature 0 with a fixed seed, **0 of 8** trajectories repeated | Two runs on the same tasks |
 
 <p align="center">
@@ -48,6 +48,7 @@ run checks, and their verdict decides what happens next.**
 | [`lab/oneshot/`](lab/oneshot/) | Single-call probes: localization and repair with full-precision vs quantized weights |
 | [`resultados/`](resultados/) | Per-task JSON results of every run cited in the paper |
 | [`scripts/`](scripts/) | Submission builder and validator, and the evaluation kernel |
+| [`docs/REPRODUCE.md`](docs/REPRODUCE.md) | Where every number in the paper comes from, and how to regenerate it |
 | [`docs/HISTORIAL_EJECUCIONES.md`](docs/HISTORIAL_EJECUCIONES.md) | Log of every evaluation run (Spanish) |
 
 ## Reproduce
@@ -56,7 +57,8 @@ Check the main table from the saved results, at no cost:
 
 ```bash
 python3 local/tabla_lote.py resultados/local_deepinfra/l40   # 2x2 table, Wilson intervals, McNemar tests
-python3 local/muestra.py --semilla 10 --n 40                   # the 40 sampled tasks
+python3 local/interaccion.py                                   # interaction sign test
+python3 lab/oneshot/resumen_cuantizacion.py                    # single-call probes, quantized vs unquantized
 ```
 
 Re-running agents requires the official evaluator wheels (`swegemma`, `adk_eval_core`, `adk_submission`,
@@ -79,7 +81,7 @@ maps every number in the paper to the file and command that produce it.
 
 The evaluation harness, tasks and quantized models are from the
 [Gemma 4 Developer Agent Competition](https://www.kaggle.com/competitions/gemma-4-developer-agent) (Markowitz et al., 2026).
-The free-form baseline agent is the public community single agent published as a Kaggle sample notebook. The task bank
+The free-form baseline is the public community single agent published as a Kaggle sample notebook (`gemma-4-harness-fixed-single-agent`). The task bank
 derives from D. Gluzdov's *gemma-4-task-soundness-and-local-results* dataset (CC BY 4.0).
 
 ## License
