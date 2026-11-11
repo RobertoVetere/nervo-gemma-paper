@@ -2,19 +2,19 @@
 
 ## Resumen
 
-Los modelos de lenguaje pequeños servidos con pesos de 4 bits son atractivos para agentes de código locales, pero se sabe poco de cómo conectarlos a un agente. Estudiamos Gemma 4 E4B y 31B (w4a16) como agentes que reparan repositorios con límites estrictos de tiempo, llamadas a herramientas y turnos, puntuados con tests ocultos. Aportamos cuatro hallazgos. (1) Los modelos cuantizados rompen las llamadas a herramientas de cinco formas recurrentes; una interfaz en la que cada llamada tiene un solo campo y los textos largos viajan por archivos reduce las llamadas rechazadas del 88 % a 0 de 105. (2) El razonamiento no es una ganancia fija: en 40 tareas al azar suma seis tareas resueltas a un agente libre y resta seis a uno guiado por scripts (interacción, test de signo p = 0,006). (3) La cuantización no es neutra: con los mismos prompts, el E4B cuantizado pierde todo el beneficio del razonamiento en arreglos de una llamada (9 → 5 de 22), copia mal el código a sustituir el doble de veces y abandona las tareas tras una fracción de las llamadas. (4) Las prácticas habituales de evaluación engañan: las tareas de ajuste inflan el acierto (7/8 frente a 14/40 al azar), las ejecuciones no se repiten ni con temperatura 0, y los bancos basados en issues sobrestiman el rendimiento ante descripciones escuetas de *pull requests*. Publicamos los agentes, un banco de 104 tareas validadas con oráculo, un puente que ejecuta el evaluador oficial contra cualquier API y un servidor con los pesos cuantizados exactos.
+Los modelos de lenguaje pequeños servidos con pesos de 4 bits son atractivos para agentes de código locales, pero se sabe poco de cómo conectarlos a un agente. Estudiamos Gemma 4 E4B y 31B (w4a16) como agentes que reparan repositorios con límites estrictos de tiempo, llamadas a herramientas y turnos, puntuados con tests ocultos. Aportamos cuatro resultados, de solidez desigual. (1) Las llamadas a herramientas se rompen de cinco formas recurrentes; una interfaz en la que cada llamada tiene un solo campo y los textos largos viajan por archivos reduce las llamadas rechazadas del 88 % a 0 de 105. (2) El razonamiento no es una ganancia fija: en 40 tareas al azar suma seis tareas resueltas a un agente libre y resta seis a uno guiado por scripts (interacción, test de signo p = 0,006, una ejecución por celda). (3) La cuantización no es neutra: con entradas idénticas, el E4B cuantizado copia mal el código a sustituir el doble de veces (24 frente a 12 de 88 intentos, p = 0,04), y la ganancia del razonamiento que se ve en precisión completa en arreglos de una llamada (5 → 9 de 22) no aparece (5 → 5), una observación con muestra pequeña coherente con lo visto dentro del agente. (4) Las prácticas habituales de evaluación engañan: las tareas de ajuste inflan el acierto (7/8 frente a 14/40 al azar), las ejecuciones no se repiten ni con temperatura 0, y los bancos basados en issues difieren, de formas que anulan las comprobaciones por ejecución, de las descripciones escuetas de *pull requests*. Publicamos los agentes, un banco de 104 tareas validadas con oráculo, un puente que ejecuta el evaluador oficial contra cualquier API y un servidor con los pesos cuantizados exactos.
 
 ## 1. Introducción
 
 Los agentes de código suelen construirse para modelos grandes detrás de APIs comerciales. Un modelo pequeño que corre en local, cuantizado para caber en hardware modesto, cambia el problema: escribe las llamadas a herramientas con menos fiabilidad, edita con menos precisión y su presupuesto de tiempo lo consumen los tokens que escribe. Qué decisiones de diseño se trasladan a este régimen está, en gran parte, sin probar.
 
-Partimos de una postura de diseño que llamamos *el prompt propone, el código decide*. El modelo elige qué cambiar; scripts deterministas localizan el código, aplican los cambios y ejecutan comprobaciones, y sus veredictos, no la autoevaluación del modelo, deciden el paso siguiente. La postura viene de un orquestador anterior de cadenas de prompts en el que validar cada paso dobló el acierto de un modelo de 0,5B en los problemas que casi resolvía, sin ayudar en los difíciles.
+Partimos de una postura de diseño que llamamos *el prompt propone, el código decide*. El modelo elige qué cambiar; scripts deterministas localizan el código, aplican los cambios y ejecutan comprobaciones, y sus veredictos, no la autoevaluación del modelo, deciden el paso siguiente. La postura viene de un orquestador anterior de cadenas de prompts en el que validar cada paso subió a un modelo de 0,5B del 25 % al 62,5 % en 16 problemas de aritmética, sin ayudar en los cinco más difíciles.
 
 La evaluamos en reparación de repositorios: dado un issue y una copia del repositorio, producir un parche que pase tests ocultos. Nuestras contribuciones son medidas, no un puesto en una clasificación:
 
 1. Una taxonomía de los fallos de llamadas de los modelos cuantizados y una regla de interfaz que los elimina (sección 4.1).
 2. Evidencia de que el razonamiento interactúa con la estructura del agente (sección 4.2).
-3. Una comparación emparejada entre pesos cuantizados y de precisión completa con entradas idénticas (sección 4.3).
+3. Una comparación entre pesos cuantizados y de precisión completa con entradas idénticas (sección 4.3), pequeña pero emparejada.
 4. Un recuperador sin modelo y un análisis de dónde están los fallos que quedan (sección 4.4), y tres trampas de evaluación (sección 5).
 
 ## 2. Escenario
@@ -25,7 +25,7 @@ La evaluamos en reparación de repositorios: dado un issue y una copia del repos
 
 **Marco del agente.** Los agentes se declaran en YAML sobre el Agent Development Kit de Google y solo pueden usar un conjunto cerrado de nueve herramientas (comando de terminal, leer/escribir/editar archivos, enviar el parche y consultas al grafo de código). El único código propio permitido son los scripts de una *skill*, invocados con una llamada de tres campos. El marco resume la conversación cada 15 eventos. Es el entorno de la competición de Kaggle *Gemma 4 Developer Agent*, cuyo evaluador oficial usamos sin modificar.
 
-**Datos.** *Banco*: 104 instancias de 35 repositorios, tomadas de una colección pública CC BY 4.0 [4] y conservadas solo si el oráculo oficial las resuelve con el parche de referencia; 65 se pueden resolver también en nuestro entorno local. *Oficiales*: 72 instancias de desarrollo medibles en local, de cuatro repositorios. Salvo que se diga otra cosa, todas las condiciones usan las mismas instancias y las comparaciones son emparejadas.
+**Datos.** *Banco*: 104 instancias de 24 repositorios, tomadas de una colección pública CC BY 4.0 [4] y conservadas solo si el oráculo oficial las resuelve con el parche de referencia; 65 se pueden resolver también en nuestro entorno local. *Oficiales*: 72 instancias de desarrollo medibles en local, de tres repositorios. Salvo que se diga otra cosa, todas las condiciones usan las mismas instancias y las comparaciones son emparejadas.
 
 ## 3. Diseño
 
@@ -46,7 +46,7 @@ La ejecución sustituye al juicio donde se puede. En una instancia, el 31B prote
 
 ### 4.1 Las llamadas se rompen de formas predecibles
 
-Los cinco fallos aparecieron solo con el modelo cuantizado detrás de vLLM, que deja al modelo escribir la llamada como texto y la trocea después; ninguno apareció con APIs comerciales.
+Observamos los cinco en ejecuciones con el modelo cuantizado. Los dos primeros vienen de convenciones del marco; los tres últimos, de cómo escribe el modelo las llamadas cuando vLLM las extrae de texto libre, y no aparecieron cuando los mismos agentes corrieron contra una API comercial que devuelve llamadas estructuradas.
 
 | Fallo | Causa | Remedio |
 |---|---|---|
@@ -61,7 +61,7 @@ Los cinco fallos aparecieron solo con el modelo cuantizado detrás de vLLM, que 
 | Herramientas planas (`edit_file`) | E4B | 810 | 12 (1,5 %) | 57 |
 | Herramientas planas | 31B | 459 | 3 (0,7 %) | 2 |
 | Skill, llamada de tres campos | 31B | 930 | 819 (88 %) | 0 |
-| Skill, llamada de tres campos, con reintento | E4B | 43 | 12 (28 %) | 1 |
+| Skill, llamada de tres campos (tres versiones del prompt) | E4B | 43 | 12 (28 %) | 1 |
 | **Instalación única + órdenes de un campo** | E4B, 31B | 105 | **0** (cota superior al 95 %: 2,8 %) | 4 |
 
 Las herramientas planas casi nunca fallan por formato, pero el modelo pequeño pierde cambios porque no reproduce el texto a sustituir. Los scripts arreglan los cambios, pero la llamada que los invoca se hunde. La interfaz de un campo conserva los scripts y elimina los fallos de formato, sin razonamiento.
@@ -91,15 +91,15 @@ Para separar el modelo del agente, hicimos llamadas sueltas: nosotros damos el c
 
 | Llamada suelta, E4B | Precisión completa | w4a16 |
 |---|---|---|
-| Arreglo sin razonamiento (22 intentos, 11 tareas difíciles) | 5 | 5 |
+| Arreglo sin razonamiento (22 intentos, 11 instancias) | 5 | 5 |
 | Arreglo con razonamiento | **9** | **5** |
 | Arreglo con los tests existentes añadidos al contexto | 5 | 6 |
 | Intentos perdidos porque el texto buscado no coincide con el código | 12 de 88 | **24 de 88** |
 | Localización en 40 tareas, símbolo correcto: lista de archivos / mapa del repositorio | 28 / 31 | 24 / 29 |
 
-La cuantización borra por completo la ganancia del razonamiento. Subir el presupuesto de razonamiento a 12.288 tokens dentro del agente libre no cambió nada (1 de 6 tareas en ambos casos): el modelo cuantizado escribía unos 200 tokens por llamada y solo 2 de 76 llamadas pasaron de 4.096. Dentro del agente libre, el E4B cuantizado paraba tras una mediana de 6,5 a 18 llamadas por tarea según la ejecución, frente a 26 en precisión completa; en una instancia editó a ciegas en la llamada 7, vio pasar los tests existentes y envió un parche equivocado, cuando el modelo de precisión completa la resolvió dos de dos veces con 27 llamadas.
+Con 22 intentos por celda, la diferencia en la ganancia del razonamiento (+4 frente a 0) no es significativa por sí sola (9/22 frente a 5/22, Fisher p = 0,33); los fallos de copia sí lo son (24/88 frente a 12/88, p = 0,04), y las diferencias de localización no. Dos observaciones dentro del agente apuntan en la misma dirección que la del razonamiento. Subir el presupuesto de razonamiento a 12.288 tokens dentro del agente libre no cambió nada (1 de 6 tareas en ambos casos): el modelo cuantizado escribía unos 200 tokens por llamada y solo 2 de 76 llamadas pasaron de 4.096. Y el E4B cuantizado dentro del agente libre usó una mediana de 6,5 a 18 llamadas por tarea en cuatro ejecuciones, frente a 26 en precisión completa en la muestra de 40; los conjuntos de tareas difieren, pero en la única instancia presente en ambos, el modelo cuantizado editó a ciegas en la llamada 7, vio pasar los tests existentes y envió un parche equivocado, mientras que el de precisión completa la resolvió en sus dos ejecuciones con 27 llamadas.
 
-Por tanto, las conclusiones sobre el razonamiento sacadas con pesos de precisión completa no se trasladan al modelo desplegado.
+Por tanto, las conclusiones sobre el razonamiento sacadas con pesos de precisión completa hay que volver a comprobarlas con los pesos desplegados antes de fiarse de ellas.
 
 ### 4.4 Dónde están los fallos que quedan
 
@@ -115,7 +115,7 @@ Por tanto, las conclusiones sobre el razonamiento sacadas con pesos de precisió
 
 **Las ejecuciones no se repiten.** Con temperatura 0, `top_p` 1 y semilla fija, 0 de 8 trayectorias fueron idénticas entre dos ejecuciones sobre las mismas instancias; con entradas idénticas, divergían en la llamada 3-5. Los kernels por lotes de vLLM no son invariantes al lote y ningún ajuste del cliente lo controla. Cada ejecución hay que leerla como una muestra.
 
-**Los bancos no se parecen al despliegue.** Las instancias oficiales son descripciones de *pull requests*, no issues: mediana de 78 palabras frente a 112 en el banco, 23 de 72 con menos de 30 palabras (2 de 40 en el banco), y ninguna con un ejemplo que nuestro extractor pueda ejecutar (7 de 40 en el banco). Las comprobaciones por ejecución como `verify.py` nunca se activan en ellas. El modelo pequeño resolvía el 40-50 % del banco pero solo 1-2 de un conjunto reservado de 58 instancias de repositorios privados, y no pudimos atribuir la diferencia al entorno (una réplica Docker del sandbox reprodujo 4 de 5 resultados del banco). Un banco local ordena versiones; no predice el despliegue.
+**Los bancos no se parecen al despliegue.** Las instancias oficiales son descripciones de *pull requests*, no issues: mediana de 78 palabras frente a 112 en el banco, 23 de 72 con menos de 30 palabras (2 de 40 en el banco), y ninguna con un ejemplo que nuestro extractor pueda ejecutar (7 de 40 en el banco). Las comprobaciones por ejecución como `verify.py` nunca se activan en ellas. Con pesos de precisión completa, el modelo pequeño resolvía el 40-50 % del banco; con los pesos desplegados, los mismos agentes sacaron 0,01 y 0,03 en un conjunto reservado de 58 instancias (en torno a 1-2 resueltas). El entorno no explicó la diferencia (una réplica Docker del sandbox reprodujo 4 de 5 resultados del banco), lo que deja los enunciados y los pesos. Un banco local ordena versiones; no predice el despliegue.
 
 ## 6. Trabajo relacionado
 
@@ -123,7 +123,7 @@ SWE-bench [1] definió la reparación de repositorios con tests ocultos; SWE-age
 
 ## 7. Limitaciones
 
-La mayoría de las comparaciones usan una ejecución por condición en 40 instancias o menos, así que solo se detectan efectos grandes. El cruce 2×2 usó pesos de precisión completa; la sección 4.3 sugiere que su efecto del razonamiento se reduciría con el modelo desplegado. Los dos agentes del cruce difieren en más que el razonamiento. Las llamadas sueltas cubren 11 instancias difíciles. Todos los resultados son de una familia de modelos y un marco de agentes.
+La mayoría de las comparaciones usan una ejecución por condición en 40 instancias o menos, así que solo se detectan efectos grandes, y las ejecuciones no se repiten (sección 5). El cruce 2×2 usó pesos de precisión completa; la sección 4.3 sugiere que su efecto del razonamiento se reduciría con el modelo desplegado. Los dos agentes del cruce difieren en más que el razonamiento. Las llamadas sueltas cubren 11 instancias con dos muestras cada una, demasiado pocas para que la diferencia del razonamiento sea significativa. Todos los resultados son de una familia de modelos y un marco de agentes.
 
 ## 8. Conclusión
 

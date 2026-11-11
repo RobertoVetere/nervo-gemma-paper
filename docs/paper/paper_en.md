@@ -2,19 +2,19 @@
 
 ## Abstract
 
-Small language models served with 4-bit weights are attractive for local coding agents, but how they should be wired into an agent is poorly understood. We study Gemma 4 E4B and 31B (w4a16) as repository-repair agents under hard limits on time, tool calls and turns, scored by hidden tests. We report four findings. (1) Quantized models break tool calls in five recurring ways; an interface in which every call has a single field and long text travels through files reduces rejected calls from 88% to 0 of 105. (2) Reasoning is not a fixed gain: on 40 random tasks it adds six solved tasks to a free-form agent and removes six from a script-guided one (interaction, sign test p = 0.006). (3) Quantization is not neutral: with the same prompts, the quantized E4B loses the entire benefit of reasoning on single-call fixes (9 → 5 of 22), miscopies the code to replace twice as often, and abandons tasks after a fraction of the calls. (4) Common evaluation practices mislead: tuning sets inflate success (7/8 vs 14/40 on random tasks), runs are not reproducible even at temperature 0, and issue-based benchmarks overstate performance on terse pull-request descriptions. We release the agents, a 104-task oracle-validated benchmark, a bridge that runs the official evaluator against any API, and a server for the exact quantized weights.
+Small language models served with 4-bit weights are attractive for local coding agents, but how they should be wired into an agent is poorly understood. We study Gemma 4 E4B and 31B (w4a16) as repository-repair agents under hard limits on time, tool calls and turns, scored by hidden tests. We report four results, of uneven strength. (1) Tool calls break in five recurring ways; an interface in which every call has a single field and long text travels through files reduces rejected calls from 88% to 0 of 105. (2) Reasoning is not a fixed gain: on 40 random tasks it adds six solved tasks to a free-form agent and removes six from a script-guided one (interaction, sign test p = 0.006, one run per cell). (3) Quantization is not neutral: with identical inputs, the quantized E4B miscopies the code to replace twice as often (24 vs 12 of 88 attempts, p = 0.04), and the reasoning gain seen at full precision on single-call fixes (5 → 9 of 22) does not appear (5 → 5), a small-sample observation consistent with agent-level runs. (4) Common evaluation practices mislead: tuning sets inflate success (7/8 vs 14/40 on random tasks), runs are not reproducible even at temperature 0, and issue-based benchmarks differ from terse pull-request descriptions in ways that disable execution-based checks. We release the agents, a 104-task oracle-validated benchmark, a bridge that runs the official evaluator against any API, and a server for the exact quantized weights.
 
 ## 1. Introduction
 
 Coding agents are usually built for large models behind commercial APIs. A small model running locally, quantized to fit modest hardware, changes the problem: it formats tool calls less reliably, edits less precisely, and its time budget is consumed by the tokens it writes. Which design choices transfer to this regime is largely untested.
 
-We take a design stance we call *the prompt proposes, the code decides*. The model chooses what to change; deterministic scripts locate code, apply edits and run checks, and their verdicts, not the model's self-assessment, decide what happens next. The stance comes from an earlier prompt-chaining harness in which validating each step doubled a 0.5B model's accuracy on problems it almost solved, without helping on hard ones.
+We take a design stance we call *the prompt proposes, the code decides*. The model chooses what to change; deterministic scripts locate code, apply edits and run checks, and their verdicts, not the model's self-assessment, decide what happens next. The stance comes from an earlier prompt-chaining harness in which validating each step raised a 0.5B model from 25% to 62.5% on 16 arithmetic problems, without helping on the five hardest.
 
 We evaluate this stance on repository repair: given an issue and a repository snapshot, produce a patch that passes hidden tests. Our contributions are measurements rather than a leaderboard result:
 
 1. A taxonomy of tool-call failures of quantized models and an interface rule that removes them (Section 4.1).
 2. Evidence that reasoning interacts with agent structure (Section 4.2).
-3. A matched comparison of quantized and full-precision weights on identical inputs (Section 4.3).
+3. A comparison of quantized and full-precision weights on identical inputs (Section 4.3), small but matched.
 4. A model-free retriever and an analysis of where the remaining failures lie (Section 4.4), and three evaluation pitfalls (Section 5).
 
 ## 2. Setting
@@ -25,7 +25,7 @@ We evaluate this stance on repository repair: given an issue and a repository sn
 
 **Agent framework.** Agents are declared in YAML on Google's Agent Development Kit and may only use a closed set of nine tools (shell command, file read/write/edit, patch submission and code-graph queries). The only custom code allowed is the scripts of a *skill*, invoked through a three-field call. The framework summarizes the conversation every 15 events. This is the setup of the Kaggle *Gemma 4 Developer Agent* competition, whose official evaluator we use unmodified.
 
-**Data.** *Bank*: 104 instances from 35 repositories, drawn from a public CC BY 4.0 collection [4] and kept only if the official oracle solves them with the reference patch; 65 are also solvable in our local environment. *Official*: 72 locally measurable development instances from four repositories. Unless stated otherwise, comparisons use the same instances for every condition and are paired.
+**Data.** *Bank*: 104 instances from 24 repositories, drawn from a public CC BY 4.0 collection [4] and kept only if the official oracle solves them with the reference patch; 65 are also solvable in our local environment. *Official*: 72 locally measurable development instances from three repositories. Unless stated otherwise, comparisons use the same instances for every condition and are paired.
 
 ## 3. Design
 
@@ -46,7 +46,7 @@ Execution replaces judgement where possible. In one instance the 31B guarded the
 
 ### 4.1 Tool calls break in predictable ways
 
-All five failures below appeared only with the quantized model behind vLLM, which lets the model write calls as text and parses them afterwards; none appeared against commercial APIs.
+We observed all five in runs with the quantized model. The first two stem from framework conventions; the last three from how the model writes calls when vLLM parses them out of free text, and they did not appear when the same agents ran against a commercial API that returns structured calls.
 
 | Failure | Cause | Remedy |
 |---|---|---|
@@ -61,7 +61,7 @@ All five failures below appeared only with the quantized model behind vLLM, whic
 | Flat tools (`edit_file`) | E4B | 810 | 12 (1.5%) | 57 |
 | Flat tools | 31B | 459 | 3 (0.7%) | 2 |
 | Skill, three-field call | 31B | 930 | 819 (88%) | 0 |
-| Skill, three-field call, with retry | E4B | 43 | 12 (28%) | 1 |
+| Skill, three-field call (three prompt versions) | E4B | 43 | 12 (28%) | 1 |
 | **One-time install + one-field commands** | E4B, 31B | 105 | **0** (95% upper bound 2.8%) | 4 |
 
 Flat tools rarely fail on format, but the small model loses edits because it does not reproduce the text to replace. Scripts fix the edits, yet the call that invokes them collapses. The one-field interface keeps the scripts and removes format failures, without reasoning.
@@ -89,15 +89,15 @@ To separate model from agent, we made single calls in which we supply the contex
 
 | Single call, E4B | Full precision | w4a16 |
 |---|---|---|
-| Fix, no reasoning (22 attempts, 11 hard tasks) | 5 | 5 |
+| Fix, no reasoning (22 attempts, 11 instances) | 5 | 5 |
 | Fix, with reasoning | **9** | **5** |
 | Fix, existing tests added to the context | 5 | 6 |
 | Attempts lost because the search text does not match the code | 12 of 88 | **24 of 88** |
 | Localization over 40 tasks, symbol correct: file list / repository map | 28 / 31 | 24 / 29 |
 
-Quantization erases the reasoning gain entirely. Raising the reasoning budget to 12,288 tokens inside the free-form agent changed nothing (1 of 6 tasks in both settings): the quantized model wrote about 200 tokens per call and only 2 of 76 calls exceeded 4,096. Inside the free-form agent, the quantized E4B stopped after a median of 6.5 to 18 calls per task in different runs, against 26 at full precision; in one instance it edited blindly at call 7, saw the existing tests pass, and submitted a wrong patch that the full-precision model solved twice with 27 calls.
+With 22 attempts per cell, the difference in reasoning gain (+4 vs 0) is not significant on its own (9/22 vs 5/22, Fisher p = 0.33); the copy failures are (24/88 vs 12/88, p = 0.04), and localization differences are not. Two agent-level observations point the same way as the reasoning result. Raising the reasoning budget to 12,288 tokens inside the free-form agent changed nothing (1 of 6 tasks in both settings): the quantized model wrote about 200 tokens per call and only 2 of 76 calls exceeded 4,096. And the quantized E4B inside the free-form agent used a median of 6.5 to 18 calls per task in four runs, against 26 at full precision on the 40-task sample; the task sets differ, but on the one instance present in both, the quantized model edited blindly at call 7, saw the existing tests pass and submitted a wrong patch, while the full-precision model solved it in both runs with 27 calls.
 
-Conclusions about reasoning drawn on full-precision weights therefore do not transfer to the deployed model.
+Conclusions about reasoning drawn on full-precision weights should therefore be re-checked on the deployed weights before they are trusted.
 
 ### 4.4 Where the remaining failures are
 
@@ -113,7 +113,7 @@ Conclusions about reasoning drawn on full-precision weights therefore do not tra
 
 **Runs are not reproducible.** With temperature 0, `top_p` 1 and a fixed seed, 0 of 8 trajectories were identical across two runs on the same instances; identical inputs diverged at call 3–5. vLLM's batched kernels are not batch-invariant, and no client setting controls this. Single runs must be read as samples.
 
-**Benchmarks differ from deployment.** The official instances are pull-request descriptions, not issues: median 78 words against 112 in the bank, 23 of 72 under 30 words (2 of 40 in the bank), and none with an example our extractor can run (7 of 40 in the bank). Execution-based checks such as `verify.py` therefore never trigger on them. The small model solved 40–50% of the bank but only 1–2 of a held-out set of 58 instances from private repositories, and we could not attribute the gap to the environment (a Docker replica of the sandbox reproduced 4 of 5 bank results). A local benchmark ranks versions; it does not predict deployment.
+**Benchmarks differ from deployment.** The official instances are pull-request descriptions, not issues: median 78 words against 112 in the bank, 23 of 72 under 30 words (2 of 40 in the bank), and none with an example our extractor can run (7 of 40 in the bank). Execution-based checks such as `verify.py` therefore never trigger on them. With full-precision weights, the small model solved 40–50% of the bank; with the deployed weights, the same agents scored 0.01 and 0.03 on a held-out set of 58 instances (roughly 1–2 solved). The environment did not explain the gap (a Docker replica of the sandbox reproduced 4 of 5 bank results), which leaves the statements and the weights. A local benchmark ranks versions; it does not predict deployment.
 
 ## 6. Related work
 
@@ -121,7 +121,7 @@ SWE-bench [1] defined repository repair with hidden tests; SWE-agent [2] showed 
 
 ## 7. Limitations
 
-Most comparisons use one run per condition on 40 or fewer instances, so only large effects are detectable. The 2×2 cross used full-precision weights; Section 4.3 suggests its reasoning effect would shrink with the deployed model. The two agents in the cross differ in more than reasoning. The single-call probes cover 11 hard instances. All results are for one model family and one agent framework.
+Most comparisons use one run per condition on 40 or fewer instances, so only large effects are detectable, and runs are not reproducible (Section 5). The 2×2 cross used full-precision weights; Section 4.3 suggests its reasoning effect would shrink with the deployed model. The two agents in the cross differ in more than reasoning. The single-call probes cover 11 instances with two samples each, too few for the reasoning difference to be significant. All results are for one model family and one agent framework.
 
 ## 8. Conclusion
 
