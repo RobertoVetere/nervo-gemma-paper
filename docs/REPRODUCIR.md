@@ -4,15 +4,16 @@ Cada cifra del paper sale de un archivo de este repositorio. Esta guía dice cu�
 
 | Cifra del paper | Dónde está | Cómo se recalcula |
 |---|---|---|
-| Cruce 2×2 del lote de 40 (sección 7), IC y p-valores | `resultados/local_deepinfra/l40/` (un JSON por agente y tarea) | `python3 local/tabla_lote.py resultados/local_deepinfra/l40` |
+| Cruce 2×2 del lote de 40 (sección 4.2, figura 2), IC y p-valores | `resultados/local_deepinfra/l40/` (un JSON por agente y tarea) | `python3 local/tabla_lote.py resultados/local_deepinfra/l40` |
 | Contraste de interacción (p = 0,006) | mismos JSON (`base_comunidad`, `e4b_t0`, `e4b_cmd`, `e4b_cmd_t`) | `resultados/local_deepinfra/RESUMEN.md`, sección del cruce 2×2; test de signo sobre (pub_t − pub_0) − (fixer_t − fixer_0) por tarea |
 | Variantes del prompt público en el filo (7, 8, 8, 11 frente a 12 y 11) | `resultados/local_deepinfra/filo14*/`, `datos/filo14.txt` | `RESUMEN.md` |
-| Dossier sin modelo (sección 5: 28/40, 38/72, ejemplos 7/40 y 0/72) | `lab/oneshot/dossier.py` | `python3 local/muestra.py --semilla 10 --n 40 > l40.txt; python3 lab/oneshot/eval_dossier.py l40.txt`; oficiales: `eval_dossier.py <72 ids de datos/oficiales_medibles_local.json> --oficial` (necesita `tasks.jsonl` y snapshots de la competición) |
+| Recuperador sin modelo (sección 4.4: 28/40, 38/72, ejemplos 7/40 y 0/72) | `lab/oneshot/dossier.py` | `python3 local/muestra.py --semilla 10 --n 40 > l40.txt; python3 lab/oneshot/eval_dossier.py l40.txt`; oficiales: `eval_dossier.py <72 ids de datos/oficiales_medibles_local.json> --oficial` (necesita `tasks.jsonl` y snapshots de la competición) |
 | Longitud de los enunciados (78 frente a 112 palabras) | `tasks.jsonl` de la competición y `datos/banco_nuevo/validation_tasks.jsonl` | palabras = `re.findall('[A-Za-z]{2,}', problem_statement)` |
-| Llamadas sueltas, cuantizado frente a sin cuantizar (sección 8) | `lab/oneshot/cadena3.jsonl` y `cadena3_cuantizado.jsonl` (arreglo), `loc.jsonl` y `loc_cuantizado.jsonl` (localización) | `lab/oneshot/sonda3.py` y `lab/oneshot/loc.py` (función entera frente a SEARCH: `cadena_funcion_cuantizado.jsonl`, `SONDA_CONDS=A,F`); con `NERVO_SONDA_MODAL=<url>/v1` usan el servidor `local/modal_vllm.py` (pesos oficiales cuantizados) |
+| Llamadas sueltas, cuantizado frente a precisión completa (sección 4.3; función entera: sección 4.4) | `lab/oneshot/cadena3.jsonl` y `cadena3_cuantizado.jsonl` (arreglo), `loc.jsonl` y `loc_cuantizado.jsonl` (localización) | `lab/oneshot/sonda3.py` y `lab/oneshot/loc.py` (función entera frente a SEARCH: `cadena_funcion_cuantizado.jsonl`, `SONDA_CONDS=A,F`); con `NERVO_SONDA_MODAL=<url>/v1` usan el servidor `local/modal_vllm.py` (pesos oficiales cuantizados) |
 | Determinismo (0 de 8), 31B dossier 4/8, E4B 1-2/8 en oficiales, llamadas por tarea en Kaggle | `docs/HISTORIAL_EJECUCIONES.md` (11-nov) y `resultados/*-20261111*.json` | workflow `Evaluar en Kaggle (L4)` |
+| Figura 2 (interacción) | `docs/paper/fig_interaction.png` | cifras de la tabla 2×2 |
 | Las 40 tareas | `resultados/local_deepinfra/l40/tareas.txt` | `python3 local/muestra.py --semilla 10 --n 40` |
-| Llamadas rechazadas por formato (sección 4) | `resultados/formato/RESUMEN.md`, con el identificador de cada run | `gh run download <run> -n salida-kaggle -D trazas/<run>` y `python3 -I resultados/formato/contar_formato.py trazas` |
+| Llamadas rechazadas por formato (sección 4.1) | `resultados/formato/RESUMEN.md`, con el identificador de cada run | `gh run download <run> -n salida-kaggle -D trazas/<run>` y `python3 -I resultados/formato/contar_formato.py trazas` |
 | Ejecuciones en Kaggle (3/4, tiempos) | `docs/HISTORIAL_EJECUCIONES.md` y `resultados/*.json` | workflow `Evaluar en Kaggle (L4)` |
 | Tareas de ajuste del 31B (6/8, 7/8), Docker (4/5) | `resultados/local_deepinfra/RESUMEN.md` y sus subcarpetas | igual que el lote, con esas tareas |
 | Nervo-Core (25 % → 62,5 %) | repositorio `nervo-core`, rama `feature/deepseek-api`, `docs/lab-results/` | `POST /v1/lab/eval` de ese repositorio |
