@@ -166,10 +166,10 @@ class Handler(BaseHTTPRequestHandler):
         with _lock:
             _contador['usd'] += coste
             gastado = round(_contador['usd'], 6)
-        registro = {'n': n, 't': time.strftime('%H:%M:%S'), 'segundos': segundos, 'intentos': intentos,
+        registro = {'n': n, 't': time.strftime('%H:%M:%S'), 'seconds': segundos, 'attempts': intentos,
                     'coste_usd': coste, 'gastado_usd': gastado, 'backend': self.server.backend,
                     'modelo_harness': modelo_harness, 'campos_vllm_quitados': quitados,
-                    'peticion': original, 'respuesta': resp, 'error': error}
+                    'peticion': original, 'answer': resp, 'error': error}
         with _lock, open(self.server.log_path, 'a') as f:
             f.write(json.dumps(registro, ensure_ascii=False) + '\n')
         if resp is None:

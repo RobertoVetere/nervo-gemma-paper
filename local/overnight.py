@@ -31,7 +31,7 @@ def correr(args, out, log):
 
 def leer(p):
     try:
-        t = json.loads(Path(p).read_text())['tareas'][0]
+        t = json.loads(Path(p).read_text())['tasks'][0]
         return t
     except Exception:
         return None
@@ -51,8 +51,8 @@ def resumen(d):
         raw = t.get('raw') or {}
         filas.setdefault(tarea, {})[var] = {
             'resuelta': bool(t.get('resolved')),
-            'llamadas': t.get('tool_calls'),
-            'segundos': round(t.get('duration_s') or 0),
+            'calls': t.get('tool_calls'),
+            'seconds': round(t.get('duration_s') or 0),
             'parche': t.get('patch_chars', 0),
             'error': (raw.get('error_message') or '')[:60],
         }
@@ -68,7 +68,7 @@ def resumen(d):
                 continue
             tot[v][0] += x['resuelta']
             tot[v][1] += 1
-            celdas.append(f"{'✅' if x['resuelta'] else '❌'} {x['llamadas']} calls {x['segundos']}s"
+            celdas.append(f"{'✅' if x['resuelta'] else '❌'} {x['calls']} calls {x['seconds']}s"
                           + (f" ({x['error']})" if x['error'] else ''))
         lin.append(f"| {tarea} | " + ' | '.join(celdas) + ' |')
     lin += ['', '**Total:** ' + ', '.join(f"{v} {a}/{n}" for v, (a, n) in tot.items())]

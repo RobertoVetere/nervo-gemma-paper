@@ -14,7 +14,6 @@ Backends: our vLLM server on Modal (--modal URL, ~/.modal_vllm_key, vLLM gemma4 
 weights (--modelo e4b) or the unquantized bf16 weights (--modelo e4b-bf16); or an API (DeepInfra). Note: in Nov 2026
 DeepInfra served google/gemma-4-E4B-it requests with google/gemma-4-31B-it-turbo (replaced_by), so its 'e4b' is a 31B.
 Usage: python3 -I call_format.py --items 80 --samples 2 [--context 36000] --model e4b --backend modal --modal <url>/v1 --out res.jsonl
-Output keys partly in Spanish (modelo = model, muestra = sample); see README, "Field names".
 """
 import argparse, ast, concurrent.futures as cf, glob, json, os, random, tarfile, tempfile, time, urllib.request
 
@@ -197,7 +196,7 @@ def main():
     hechos = set()
     if os.path.exists(a.out):
         for l in open(a.out):
-            x = json.loads(l); hechos.add((x['id'], x['iface'], x['muestra']))
+            x = json.loads(l); hechos.add((x['id'], x['iface'], x['sample']))
     trabajos = [(it, f, k) for it in items for f in TOOLS for k in range(a.muestras) if (it['id'], f, k) not in hechos]
     print(f'{len(items)} blocks, {len(trabajos)} calls', flush=True)
 
@@ -205,8 +204,8 @@ def main():
         it, f, k = t
         m, uso, err = llamar(a.backend, a.modelo, prompt(it, f), TOOLS[f], a.modal)
         r = puntuar(it, f, m)
-        return {'id': it['id'], 'iface': f, 'muestra': k, 'backend': a.backend, 'modelo': a.modelo + (f'+ctx{a.contexto // 1000}k' if a.contexto else ''),
-                'ends_quote': it['ends_quote'], 'specials': it['specials'], 'error': err, 'uso': uso, **r,
+        return {'id': it['id'], 'iface': f, 'sample': k, 'backend': a.backend, 'model': a.modelo + (f'+ctx{a.contexto // 1000}k' if a.contexto else ''),
+                'ends_quote': it['ends_quote'], 'specials': it['specials'], 'error': err, 'usage': uso, **r,
                 'raw': (json.dumps(m)[:4000] if m else '')}
     with open(a.out, 'a') as fo, cf.ThreadPoolExecutor(a.hilos) as ex:
         for res in ex.map(uno, trabajos):

@@ -14,7 +14,7 @@ MRK = {'Free-form agent (edit_file)': 'o', 'fixer (scripts, one-field calls)': '
 
 
 def solved(d, v):
-    return sum(int(bool((json.load(open(f)).get('tareas') or [{}])[0].get('resolved')))
+    return sum(int(bool((json.load(open(f)).get('tasks') or [{}])[0].get('resolved')))
                for f in glob.glob(os.path.join(d, v + '__*.json')))
 
 

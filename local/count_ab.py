@@ -16,7 +16,7 @@ if sys.argv[1] in ('--from-log', '--desde-log'):
         x = json.loads(l); msgs = x['peticion'].get('messages') or []
         s = str(msgs[0].get('content'))[:3000] if msgs else ''
         v = 'cmd' if 'run_command' in s else ('steps' if 'run_skill_script' in s else '?')
-        for ch in (x.get('respuesta') or {}).get('choices') or []:
+        for ch in (x.get('answer') or {}).get('choices') or []:
             for tc in (ch.get('message') or {}).get('tool_calls') or []:
                 var[tc['id']] = (v, tc['function']['name'])
         for m in msgs:
@@ -33,7 +33,7 @@ for a in ('steps', 'cmd'):
     print(f'{a:5}: {sum(r["rejected"] for r in R)} of {len(R)} tool calls rejected for format')
 s = {}
 for f in glob.glob(os.path.join(sys.argv[2], '*__*.json')):
-    v, t = os.path.basename(f)[:-5].split('__', 1); s[(v, t)] = bool(json.load(open(f))['tareas'][0].get('resolved'))
+    v, t = os.path.basename(f)[:-5].split('__', 1); s[(v, t)] = bool(json.load(open(f))['tasks'][0].get('resolved'))
 T = sorted({t for _, t in s})
 for v in ('e4b_steps', 'e4b_cmd'):
     print(f'{v}: solved {sum(s.get((v, t), False) for t in T)} of {len(T)}')

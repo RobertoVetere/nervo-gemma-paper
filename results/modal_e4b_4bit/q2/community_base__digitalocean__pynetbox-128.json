@@ -1,13 +1,13 @@
 {
  "variant": "variants/community_base",
- "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
- "presupuesto": {
+ "model": "gemma-4-e4b-it-qat-w4a16-ct",
+ "budget": {
   "timeout_seconds": 300,
   "max_tool_calls": 28,
   "max_time_minutes": 8,
   "max_turns": 80
  },
- "tareas": [
+ "tasks": [
   {
    "id": "digitalocean__pynetbox-128",
    "resolved": true,
@@ -34,7 +34,7 @@
     "tool_calls": 7,
     "task_index": 1
    },
-   "segundos_reloj": 65.2
+   "wall_seconds": 65.2
   }
  ]
 }

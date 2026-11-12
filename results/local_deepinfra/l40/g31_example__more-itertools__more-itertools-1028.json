@@ -1,13 +1,13 @@
 {
  "variant": "variants/g31_example",
- "modelo": "gemma-4-31b-it-qat-w4a16-ct",
- "presupuesto": {
+ "model": "gemma-4-31b-it-qat-w4a16-ct",
+ "budget": {
   "timeout_seconds": 300,
   "max_tool_calls": 28,
   "max_time_minutes": 8,
   "max_turns": 80
  },
- "tareas": [
+ "tasks": [
   {
    "id": "more-itertools__more-itertools-1028",
    "resolved": true,
@@ -34,7 +34,7 @@
     "tool_calls": 5,
     "task_index": 1
    },
-   "segundos_reloj": 65.6
+   "wall_seconds": 65.6
   }
  ]
 }

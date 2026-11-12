@@ -46,7 +46,7 @@ def main():
     if a.rehacer:
         subprocess.run(['rm', '-rf', str(out / 'snapshots')])
     (out / 'snapshots').mkdir(parents=True, exist_ok=True)
-    ok = set(json.loads((RAIZ / 'data/new_bench/scorable_kaggle.json').read_text())['tareas'])
+    ok = set(json.loads((RAIZ / 'data/new_bench/scorable_kaggle.json').read_text())['tasks'])
     tareas = [json.loads(l) for l in (RAIZ / 'data/new_bench/validation_tasks.jsonl').read_text().splitlines()]
     tareas = [t for t in tareas if t['instance_id'] in ok]
     if a.tasks:

@@ -22,7 +22,7 @@ row text says what each one was. "Quota" is Kaggle's weekly GPU quota, which cou
 | 07-Nov 09:43 | 42360919449 | battery-01 | Probes 02 + battery of 6 approaches × 8 tasks, E4B | All 0 | **No**: git "dubious ownership" (E8) |
 | 07-Nov 09:52 | 42361521280 | battery-01-31b | Same with the 31B | Cancelled (the kernel kept running on Kaggle) | No (E8) |
 | 07-Nov 10:05 | 42362476363 | battery-02-e4b | Battery with E8 fixed + capture of the harness kwargs + self-test, E4B | Control solved; harness self-test 3/3. Solved out of 8: localize_and_json 2, the rest 1 | **Yes** |
-| 07-Nov 10:06 | 42362495002 | battery-02-31b | Same with the 31B | The workflow downloaded the output of the **old** kernel (battery 01 of the 31B, with the git failure): no `captura` | **No** (E14: same kernel name still running) |
+| 07-Nov 10:06 | 42362495002 | battery-02-31b | Same with the 31B | The workflow downloaded the output of the **old** kernel (battery 01 of the 31B, with the git failure): no `capture` | **No** (E14: same kernel name still running) |
 | 07-Nov 10:19 | 42363450091 | battery-03-31b | Battery 02 fixed, with the 31B (capture + self-test + git fixed) | Controls OK (capture solved, harness self-test 3/3 and raw 3/3). Solved out of 8: one_plan_first 2, community 1, rest 0. 111/118 `edit_file` fail with 0 matches | Controls yes; **edit figures no (E15)**: the lab's `edit_file` is stricter than the official one |
 | 07-Nov 12:03 | 42370774010 | bat-real-01-e4b | **Real harness**, multi-variant kernel: community_base vs nervo_repro, E4B, 14 scorable tasks (including rich_3454 and requests_7315) | **3/14 each.** nervo_repro: 14/14 with a patch, fewer calls and less time. nervo_repro failures: 8 wrong file, 3 right file but wrong change. Community: 6 and 4. **E4B fails mostly at localization** | **Yes** |
 | 07-Nov 12:04 | 42370845784 | bat-real-01-31b | Same with the 31B, 8 tasks | **nervo_repro 6/8, community 5/8.** nervo_repro wins rich_2725 and uses fewer calls on requests. 31B failures: time (8 min) and wrong change, not localization | **Yes** |
@@ -50,15 +50,15 @@ import json
 d = json.load(open('output/nervo_results.json'))
 d['stage']                       # 'done' if it finished
 d['lab']['results']              # single probes: tool_calls, content, reasoning, seconds
-b = d['bateria']                 # battery
-b['captura']                     # capture: kwargs the harness uses to call the model + 'resolved' of the control task
-b['autoprueba']                  # self-test: which way of calling keeps edit_file arguments intact; 'elegido' = chosen
-b['resumen']                     # summary per approach: resueltas = solved, con_parche = with a patch, total
-b['resultados']                  # per (approach, task): patch, resolved, pasos (each model call), notas (notes)
+b = d['battery']                 # battery
+b['capture']                     # kwargs the harness uses to call the model + 'resolved' of the control task
+b['selftest']                    # which way of calling keeps edit_file arguments intact; 'chosen'
+b['summary_by_strategy']         # per approach: solved_count, with_patch, total
+b['results']                     # per (approach, task): patch, resolved, steps (each model call), notes
 ```
 
-What to check first in a battery: `captura.resolved` must be `True` (the community agent solving rich_3454 with the real
-harness is the control that the environment works), and `autoprueba.harness` must be `[True, True, True]` (arguments
+What to check first in a battery: `capture.resolved` must be `True` (the community agent solving rich_3454 with the real
+harness is the control that the environment works), and `selftest.harness` must be `[True, True, True]` (arguments
 intact when calling like the harness). Only then is the per-approach summary meaningful.
 
 ## 11 Nov 02:53 — E4B reasoning budget 12288 vs 4096, and 31B without reasoning (validation bench)

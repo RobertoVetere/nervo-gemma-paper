@@ -13,7 +13,7 @@ D = sys.argv[1] if len(sys.argv) > 1 else 'results/local_deepinfra/l40'
 def solved(variant):
     r = {}
     for f in glob.glob(f'{D}/{variant}__*.json'):
-        for t in json.load(open(f))['tareas']:
+        for t in json.load(open(f))['tasks']:
             r[t['id']] = int(bool(t.get('resolved')))
     return r
 

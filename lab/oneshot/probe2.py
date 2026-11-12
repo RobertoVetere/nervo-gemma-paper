@@ -48,17 +48,17 @@ def una(tid, modelo, i, k):
     tarea, d, pys = preparar_cache[tid]
     archivo, where, r0 = localizar(modelo, tarea, pys)
     gold = re.findall(r'^\+\+\+ b/(\S+\.py)', tarea['patch'], re.M)
-    fila = {'tarea': tid, 'modelo': modelo, 'muestra': i, 'archivo': archivo, 'where': where,
-            'archivo_ok': archivo in gold, 'loc_respuesta': r0['texto']}
+    fila = {'task': tid, 'model': modelo, 'sample': i, 'file': archivo, 'where': where,
+            'file_ok': archivo in gold, 'loc_answer': r0['texto']}
     if not archivo or not where or not os.path.exists(os.path.join(d, archivo)):
-        return {**fila, 'A': {'resuelve': False, 'motivo': 'invalid localization'}, 'B': {'resuelve': False, 'motivo': 'invalid localization'}}
+        return {**fila, 'A': {'solved': False, 'reason': 'invalid localization'}, 'B': {'solved': False, 'reason': 'invalid localization'}}
     for cond, extra in (('A', ['--solo']), ('B', [])):
         c = subprocess.run([sys.executable, CTX, d, archivo, where, *extra], capture_output=True, text=True)
         if c.returncode != 0:
-            fila[cond] = {'resuelve': False, 'motivo': 'symbol not found: ' + c.stderr.strip()[-80:]}; continue
+            fila[cond] = {'solved': False, 'reason': 'symbol not found: ' + c.stderr.strip()[-80:]}; continue
         r = arreglar(modelo, tarea, archivo, c.stdout)
         nota = puntuar_arreglo(d, tarea, archivo, r['texto'], f'{modelo}{i}{cond}{k}')
-        fila[cond] = {**nota, 'ctx_chars': len(c.stdout), 'respuesta': r['texto']}
+        fila[cond] = {**nota, 'ctx_chars': len(c.stdout), 'answer': r['texto']}
     return fila
 
 
@@ -76,9 +76,9 @@ def main():
     with cf.ThreadPoolExecutor(4) as ex, open(a.out, 'a') as out:
         for fila in ex.map(lambda x: una(*x), trabajos):
             out.write(json.dumps(fila, ensure_ascii=False) + '\n'); out.flush()
-            print(f"{fila['tarea'][:36]:36} {fila['modelo']:3} #{fila['muestra']} loc={fila['archivo_ok']!s:5} {fila['where']!s:32} "
-                  f"A={fila['A'].get('resuelve')!s:5} B={fila['B'].get('resuelve')!s:5} "
-                  f"{fila['A'].get('motivo','')[:30]} {fila['B'].get('motivo','')[:30]}", flush=True)
+            print(f"{fila['task'][:36]:36} {fila['model']:3} #{fila['sample']} loc={fila['file_ok']!s:5} {fila['where']!s:32} "
+                  f"A={fila['A'].get('solved')!s:5} B={fila['B'].get('solved')!s:5} "
+                  f"{fila['A'].get('reason','')[:30]} {fila['B'].get('reason','')[:30]}", flush=True)
 
 
 if __name__ == '__main__':

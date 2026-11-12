@@ -38,11 +38,11 @@ def llamar(modelo, prompt, razonar, tope=8192):
             t = time.time()
             d = json.load(urllib.request.urlopen(req, timeout=1200))
             m = d['choices'][0]['message']
-            return {'texto': m.get('content') or '', 'razonamiento': m.get('reasoning_content') or '',
-                    'uso': d.get('usage', {}), 'segundos': round(time.time() - t, 1)}
+            return {'texto': m.get('content') or '', 'reasoning_text': m.get('reasoning_content') or '',
+                    'usage': d.get('usage', {}), 'seconds': round(time.time() - t, 1)}
         except Exception as e:  # noqa: BLE001
             err = str(e); time.sleep(5 * (intento + 1))
-    return {'texto': '', 'razonamiento': '', 'uso': {}, 'error': err}
+    return {'texto': '', 'reasoning_text': '', 'usage': {}, 'error': err}
 
 
 def clase(src, nombre):
@@ -76,7 +76,7 @@ def aplicar(ruta, bl):
         hit = [i for i in range(len(lineas) - len(bus) + 1)
                if [l.rstrip() for l in lineas[i:i + len(bus)]] == bus]
         if len(hit) != 1:
-            return False, f'SEARCH no encaja ({len(hit)} coincidencias): {s[:80]!r}'
+            return False, f'SEARCH does not match ({len(hit)} matches): {s[:80]!r}'
         i = hit[0]; lineas[i:i + len(bus)] = r.splitlines(); src = '\n'.join(lineas) + '\n'
     open(ruta, 'w').write(src)
     return True, 'ok'
@@ -85,13 +85,13 @@ def aplicar(ruta, bl):
 def puntuar_arreglo(base, tarea, archivo, texto, n):
     bl = bloques(texto)
     if not bl:
-        return {'aplica': False, 'motivo': 'no SEARCH/REPLACE blocks', 'resuelve': False}
+        return {'applies': False, 'reason': 'no SEARCH/REPLACE blocks', 'solved': False}
     d = f'{base}_prueba_{n}'
     shutil.rmtree(d, ignore_errors=True); shutil.copytree(base, d)
     ok, motivo = aplicar(os.path.join(d, archivo), bl)
     if not ok:
         shutil.rmtree(d, ignore_errors=True)
-        return {'aplica': False, 'motivo': motivo, 'resuelve': False}
+        return {'applies': False, 'reason': motivo, 'solved': False}
     subprocess.run(['git', 'apply', '-'], cwd=d, input=tarea['test_patch'].encode(), check=True)
     f2p = subprocess.run([sys.executable, '-m', 'pytest', '-q', '-x', '-p', 'no:cacheprovider', *tarea['FAIL_TO_PASS']],
                          cwd=d, capture_output=True, text=True, timeout=300)
@@ -100,8 +100,8 @@ def puntuar_arreglo(base, tarea, archivo, texto, n):
                          cwd=d, capture_output=True, text=True, timeout=600)
     shutil.rmtree(d, ignore_errors=True)
     ult = lambda p: (p.stdout.strip().splitlines() or [''])[-1]
-    return {'aplica': True, 'f2p': f2p.returncode == 0, 'p2p': p2p.returncode == 0,
-            'resuelve': f2p.returncode == 0 and p2p.returncode == 0, 'f2p_salida': ult(f2p), 'p2p_salida': ult(p2p)}
+    return {'applies': True, 'f2p': f2p.returncode == 0, 'p2p': p2p.returncode == 0,
+            'solved': f2p.returncode == 0 and p2p.returncode == 0, 'f2p_output': ult(f2p), 'p2p_output': ult(p2p)}
 
 
 INSTR_EDIT = ('Answer with the code change only, as one or more SEARCH/REPLACE blocks for {archivo}, exactly in this format:\n'
@@ -163,19 +163,19 @@ def main():
     for k, (nv, m, r, i, resp) in enumerate(sorted(res, key=lambda x: x[:4])):
         t = resp['texto']
         if nv == 'L0':
-            nota = {'archivo_ok': archivo in t, 'clase_ok': a.clase in t,
-                    'metodo_ok': any(g in t for g in gold_where), 'resuelve': None}
+            nota = {'file_ok': archivo in t, 'class_ok': a.clase in t,
+                    'method_ok': any(g in t for g in gold_where), 'solved': None}
         else:
             nota = puntuar_arreglo(base, tarea, archivo, t, k)
-        fila = {'tarea': a.task, 'nivel': nv, 'modelo': m, 'razonar': r, 'muestra': i, **nota,
-                'tokens_salida': resp['uso'].get('completion_tokens'), 'segundos': resp.get('segundos'),
-                'error': resp.get('error'), 'respuesta': t, 'razonamiento': resp['razonamiento']}
+        fila = {'task': a.task, 'level': nv, 'model': m, 'reasoning_on': r, 'sample': i, **nota,
+                'output_tokens': resp['usage'].get('completion_tokens'), 'seconds': resp.get('seconds'),
+                'error': resp.get('error'), 'answer': t, 'reasoning_text': resp['reasoning_text']}
         filas.append(fila)
         print(f"{nv} {m:3} razonar={r} #{i} ", {k2: v for k2, v in nota.items() if k2 in
-              ('archivo_ok', 'clase_ok', 'metodo_ok', 'aplica', 'f2p', 'p2p', 'resuelve', 'motivo')}, flush=True)
+              ('file_ok', 'class_ok', 'method_ok', 'applies', 'f2p', 'p2p', 'solved', 'reason')}, flush=True)
     with open(out, 'w') as f:
         for x in filas: f.write(json.dumps(x, ensure_ascii=False) + '\n')
-    coste = sum((x.get('tokens_salida') or 0) for x in filas)
+    coste = sum((x.get('output_tokens') or 0) for x in filas)
     print('saved', out, 'output tokens', coste)
 
 

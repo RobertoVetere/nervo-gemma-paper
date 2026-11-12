@@ -9,7 +9,6 @@ Usage:
   python local/run_local.py --oracle                                 # bench check: does the official fix pass?
   python local/run_local.py --variant variants/community_base        # run an agent
 Data: --data points to a folder with tasks.jsonl and snapshots/<id>.tgz (see local/build_bench.py).
-Output JSON keys are in Spanish (modelo = model, presupuesto = budget, tareas = tasks); see README, "Field names".
 """
 import argparse
 import asyncio
@@ -121,7 +120,7 @@ def main():
     )
     evaluator = Evaluator(eval_config)
     by_id = {t.instance_id: t for t in load_tasks(data / 'tasks.jsonl')}
-    salida = {'variant': a.variant, 'modelo': modelo, 'presupuesto': ev, 'tareas': []}
+    salida = {'variant': a.variant, 'model': modelo, 'budget': ev, 'tasks': []}
 
     for tid in a.tasks.split(','):
         task = by_id[tid]
@@ -153,10 +152,10 @@ def main():
         except Exception as e:
             import traceback
             rec.update(resolved=False, error=f'{type(e).__name__}: {e}', trace=traceback.format_exc()[-4000:])
-        rec['segundos_reloj'] = round(time.time() - t0, 1)
-        salida['tareas'].append(rec)
+        rec['wall_seconds'] = round(time.time() - t0, 1)
+        salida['tasks'].append(rec)
         print(f"{tid}: resolved={rec.get('resolved')} calls={rec.get('tool_calls')} "
-              f"t={rec['segundos_reloj']}s patch={len(rec.get('patch') or '')} error={rec.get('error')}", flush=True)
+              f"t={rec['wall_seconds']}s patch={len(rec.get('patch') or '')} error={rec.get('error')}", flush=True)
 
     out = Path(a.out or work / f"salida_{'oraculo' if a.oracle else Path(a.variant).name}_{time.strftime('%H%M%S')}.json")
     out.write_text(json.dumps(salida, ensure_ascii=False, indent=1))

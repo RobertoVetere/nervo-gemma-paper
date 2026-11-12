@@ -17,7 +17,7 @@ def mcnemar(b, c):
 r = defaultdict(dict)
 for f in glob.glob(os.path.join(sys.argv[1], '*__*.json')):
     v, t = os.path.basename(f)[:-5].split('__', 1)
-    x = (json.load(open(f)).get('tareas') or [{}])[0]
+    x = (json.load(open(f)).get('tasks') or [{}])[0]
     r[v][t] = (bool(x.get('resolved')), x.get('tool_calls') or 0, x.get('duration_s') or 0, x.get('error') or '')
 med = lambda xs: sorted(xs)[len(xs) // 2]
 print('| Variant | Solved | 95% CI | Calls (median) | Seconds (median) | Time limit hit | Turn limit hit |')

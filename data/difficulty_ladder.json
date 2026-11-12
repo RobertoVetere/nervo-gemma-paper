@@ -1,392 +1,392 @@
 [
  {
   "id": "rich_3454",
-  "indice": 16.8,
-  "nivel": "Easy"
+  "index": 16.8,
+  "level": "Easy"
  },
  {
   "id": "rich_3278",
-  "indice": 18.8,
-  "nivel": "Easy"
+  "index": 18.8,
+  "level": "Easy"
  },
  {
   "id": "fastapi_14786",
-  "indice": 20.4,
-  "nivel": "Easy"
+  "index": 20.4,
+  "level": "Easy"
  },
  {
   "id": "fastapi_14479",
-  "indice": 21.1,
-  "nivel": "Easy"
+  "index": 21.1,
+  "level": "Easy"
  },
  {
   "id": "requests_7315",
-  "indice": 22.3,
-  "nivel": "Easy"
+  "index": 22.3,
+  "level": "Easy"
  },
  {
   "id": "rich_3894",
-  "indice": 22.5,
-  "nivel": "Easy"
+  "index": 22.5,
+  "level": "Easy"
  },
  {
   "id": "rich_3882",
-  "indice": 23.1,
-  "nivel": "Easy"
+  "index": 23.1,
+  "level": "Easy"
  },
  {
   "id": "rich_3043",
-  "indice": 23.6,
-  "nivel": "Easy"
+  "index": 23.6,
+  "level": "Easy"
  },
  {
   "id": "rich_3518",
-  "indice": 24.0,
-  "nivel": "Easy"
+  "index": 24.0,
+  "level": "Easy"
  },
  {
   "id": "rich_3905",
-  "indice": 25.5,
-  "nivel": "Easy"
+  "index": 25.5,
+  "level": "Easy"
  },
  {
   "id": "rich_3006",
-  "indice": 25.8,
-  "nivel": "Easy"
+  "index": 25.8,
+  "level": "Easy"
  },
  {
   "id": "rich_3105",
-  "indice": 25.8,
-  "nivel": "Easy"
+  "index": 25.8,
+  "level": "Easy"
  },
  {
   "id": "fastapi_5077",
-  "indice": 26.7,
-  "nivel": "Easy"
+  "index": 26.7,
+  "level": "Easy"
  },
  {
   "id": "fastapi_14492",
-  "indice": 26.8,
-  "nivel": "Easy"
+  "index": 26.8,
+  "level": "Easy"
  },
  {
   "id": "fastapi_14463",
-  "indice": 27.5,
-  "nivel": "Easy"
+  "index": 27.5,
+  "level": "Easy"
  },
  {
   "id": "rich_3067",
-  "indice": 28.7,
-  "nivel": "Easy"
+  "index": 28.7,
+  "level": "Easy"
  },
  {
   "id": "rich_2943",
-  "indice": 29.5,
-  "nivel": "Easy"
+  "index": 29.5,
+  "level": "Easy"
  },
  {
   "id": "rich_3471",
-  "indice": 29.7,
-  "nivel": "Easy"
+  "index": 29.7,
+  "level": "Easy"
  },
  {
   "id": "fastapi_13537",
-  "indice": 30.4,
-  "nivel": "Easy"
+  "index": 30.4,
+  "level": "Easy"
  },
  {
   "id": "requests_7205",
-  "indice": 30.5,
-  "nivel": "Easy"
+  "index": 30.5,
+  "level": "Easy"
  },
  {
   "id": "rich_3718",
-  "indice": 30.5,
-  "nivel": "Easy"
+  "index": 30.5,
+  "level": "Easy"
  },
  {
   "id": "rich_2725",
-  "indice": 30.6,
-  "nivel": "Easy"
+  "index": 30.6,
+  "level": "Easy"
  },
  {
   "id": "fastapi_15589",
-  "indice": 31.2,
-  "nivel": "Easy"
+  "index": 31.2,
+  "level": "Easy"
  },
  {
   "id": "fastapi_14487",
-  "indice": 32.0,
-  "nivel": "Easy"
+  "index": 32.0,
+  "level": "Easy"
  },
  {
   "id": "requests_7309",
-  "indice": 32.0,
-  "nivel": "Easy"
+  "index": 32.0,
+  "level": "Easy"
  },
  {
   "id": "rich_4077",
-  "indice": 32.4,
-  "nivel": "Easy"
+  "index": 32.4,
+  "level": "Easy"
  },
  {
   "id": "rich_3480",
-  "indice": 32.5,
-  "nivel": "Easy"
+  "index": 32.5,
+  "level": "Easy"
  },
  {
   "id": "requests_6644",
-  "indice": 33.0,
-  "nivel": "Easy"
+  "index": 33.0,
+  "level": "Easy"
  },
  {
   "id": "fastapi_15588",
-  "indice": 33.1,
-  "nivel": "Easy"
+  "index": 33.1,
+  "level": "Easy"
  },
  {
   "id": "rich_3052",
-  "indice": 33.1,
-  "nivel": "Easy"
+  "index": 33.1,
+  "level": "Easy"
  },
  {
   "id": "fastapi_14616",
-  "indice": 33.5,
-  "nivel": "Easy"
+  "index": 33.5,
+  "level": "Easy"
  },
  {
   "id": "fastapi_9425",
-  "indice": 33.7,
-  "nivel": "Easy"
+  "index": 33.7,
+  "level": "Easy"
  },
  {
   "id": "fastapi_14258",
-  "indice": 34.8,
-  "nivel": "Easy"
+  "index": 34.8,
+  "level": "Easy"
  },
  {
   "id": "fastapi_14873",
-  "indice": 34.9,
-  "nivel": "Easy"
+  "index": 34.9,
+  "level": "Easy"
  },
  {
   "id": "rich_3944",
-  "indice": 35.0,
-  "nivel": "Easy"
+  "index": 35.0,
+  "level": "Easy"
  },
  {
   "id": "fastapi_9555",
-  "indice": 35.3,
-  "nivel": "Medium"
+  "index": 35.3,
+  "level": "Medium"
  },
  {
   "id": "fastapi_14301",
-  "indice": 35.7,
-  "nivel": "Medium"
+  "index": 35.7,
+  "level": "Medium"
  },
  {
   "id": "fastapi_14794",
-  "indice": 36.0,
-  "nivel": "Medium"
+  "index": 36.0,
+  "level": "Medium"
  },
  {
   "id": "fastapi_14458",
-  "indice": 36.1,
-  "nivel": "Medium"
+  "index": 36.1,
+  "level": "Medium"
  },
  {
   "id": "fastapi_13920",
-  "indice": 37.2,
-  "nivel": "Medium"
+  "index": 37.2,
+  "level": "Medium"
  },
  {
   "id": "fastapi_9753",
-  "indice": 37.4,
-  "nivel": "Medium"
+  "index": 37.4,
+  "level": "Medium"
  },
  {
   "id": "fastapi_11194",
-  "indice": 37.5,
-  "nivel": "Medium"
+  "index": 37.5,
+  "level": "Medium"
  },
  {
   "id": "fastapi_14372",
-  "indice": 38.0,
-  "nivel": "Medium"
+  "index": 38.0,
+  "level": "Medium"
  },
  {
   "id": "requests_7427",
-  "indice": 38.1,
-  "nivel": "Medium"
+  "index": 38.1,
+  "level": "Medium"
  },
  {
   "id": "rich_3506",
-  "indice": 38.5,
-  "nivel": "Medium"
+  "index": 38.5,
+  "level": "Medium"
  },
  {
   "id": "rich_3470",
-  "indice": 38.6,
-  "nivel": "Medium"
+  "index": 38.6,
+  "level": "Medium"
  },
  {
   "id": "rich_3063",
-  "indice": 39.1,
-  "nivel": "Medium"
+  "index": 39.1,
+  "level": "Medium"
  },
  {
   "id": "rich_3521",
-  "indice": 39.7,
-  "nivel": "Medium"
+  "index": 39.7,
+  "level": "Medium"
  },
  {
   "id": "rich_3472",
-  "indice": 39.8,
-  "nivel": "Medium"
+  "index": 39.8,
+  "level": "Medium"
  },
  {
   "id": "rich_4079",
-  "indice": 40.8,
-  "nivel": "Medium"
+  "index": 40.8,
+  "level": "Medium"
  },
  {
   "id": "rich_4076",
-  "indice": 41.3,
-  "nivel": "Medium"
+  "index": 41.3,
+  "level": "Medium"
  },
  {
   "id": "rich_4075",
-  "indice": 41.7,
-  "nivel": "Medium"
+  "index": 41.7,
+  "level": "Medium"
  },
  {
   "id": "fastapi_5624",
-  "indice": 41.8,
-  "nivel": "Medium"
+  "index": 41.8,
+  "level": "Medium"
  },
  {
   "id": "rich_3772",
-  "indice": 42.6,
-  "nivel": "Medium"
+  "index": 42.6,
+  "level": "Medium"
  },
  {
   "id": "fastapi_14077",
-  "indice": 43.0,
-  "nivel": "Medium"
+  "index": 43.0,
+  "level": "Medium"
  },
  {
   "id": "rich_3535",
-  "indice": 44.2,
-  "nivel": "Medium"
+  "index": 44.2,
+  "level": "Medium"
  },
  {
   "id": "fastapi_15661",
-  "indice": 44.3,
-  "nivel": "Medium"
+  "index": 44.3,
+  "level": "Medium"
  },
  {
   "id": "rich_3934",
-  "indice": 44.3,
-  "nivel": "Medium"
+  "index": 44.3,
+  "level": "Medium"
  },
  {
   "id": "rich_3953",
-  "indice": 45.0,
-  "nivel": "Medium"
+  "index": 45.0,
+  "level": "Medium"
  },
  {
   "id": "rich_3935",
-  "indice": 46.1,
-  "nivel": "Medium"
+  "index": 46.1,
+  "level": "Medium"
  },
  {
   "id": "rich_3061",
-  "indice": 46.4,
-  "nivel": "Medium"
+  "index": 46.4,
+  "level": "Medium"
  },
  {
   "id": "rich_3777",
-  "indice": 46.4,
-  "nivel": "Medium"
+  "index": 46.4,
+  "level": "Medium"
  },
  {
   "id": "fastapi_14851",
-  "indice": 47.2,
-  "nivel": "Medium"
+  "index": 47.2,
+  "level": "Medium"
  },
  {
   "id": "rich_3468",
-  "indice": 47.6,
-  "nivel": "Medium"
+  "index": 47.6,
+  "level": "Medium"
  },
  {
   "id": "rich_3942",
-  "indice": 47.6,
-  "nivel": "Medium"
+  "index": 47.6,
+  "level": "Medium"
  },
  {
   "id": "fastapi_14306",
-  "indice": 48.0,
-  "nivel": "Medium"
+  "index": 48.0,
+  "level": "Medium"
  },
  {
   "id": "rich_4006",
-  "indice": 48.4,
-  "nivel": "Medium"
+  "index": 48.4,
+  "level": "Medium"
  },
  {
   "id": "fastapi_14986",
-  "indice": 48.9,
-  "nivel": "Medium"
+  "index": 48.9,
+  "level": "Medium"
  },
  {
   "id": "rich_3180",
-  "indice": 49.8,
-  "nivel": "Medium"
+  "index": 49.8,
+  "level": "Medium"
  },
  {
   "id": "rich_3676",
-  "indice": 50.8,
-  "nivel": "Medium"
+  "index": 50.8,
+  "level": "Medium"
  },
  {
   "id": "fastapi_14448",
-  "indice": 51.1,
-  "nivel": "Medium"
+  "index": 51.1,
+  "level": "Medium"
  },
  {
   "id": "fastapi_14419",
-  "indice": 52.9,
-  "nivel": "Medium"
+  "index": 52.9,
+  "level": "Medium"
  },
  {
   "id": "rich_3938",
-  "indice": 53.8,
-  "nivel": "Medium"
+  "index": 53.8,
+  "level": "Medium"
  },
  {
   "id": "fastapi_15280",
-  "indice": 56.0,
-  "nivel": "Hard"
+  "index": 56.0,
+  "level": "Hard"
  },
  {
   "id": "httpx_3672",
-  "indice": 56.8,
-  "nivel": "Hard"
+  "index": 56.8,
+  "level": "Hard"
  },
  {
   "id": "rich_3675",
-  "indice": 62.4,
-  "nivel": "Hard"
+  "index": 62.4,
+  "level": "Hard"
  },
  {
   "id": "rich_3930",
-  "indice": 69.3,
-  "nivel": "Hard"
+  "index": 69.3,
+  "level": "Hard"
  },
  {
   "id": "fastapi_15800",
-  "indice": 76.8,
-  "nivel": "Extreme"
+  "index": 76.8,
+  "level": "Extreme"
  }
 ]

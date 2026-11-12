@@ -97,7 +97,7 @@
     }
   ],
   "error": null,
-  "variantes": [
+  "variants": [
     "g31_example"
   ],
   "vllm_start_seconds": 410.8,
@@ -107,7 +107,7 @@
     "pallets__jinja-2022",
     "python-semver__python-semver-254"
   ],
-  "presupuestos": {
+  "budgets": {
     "g31_example": {
       "timeout_seconds": 300,
       "max_tool_calls": 28,
@@ -119,7 +119,7 @@
     "g31_example": {
       "resolved": 1,
       "total": 3,
-      "con_parche": 3
+      "with_patch": 3
     }
   }
 }

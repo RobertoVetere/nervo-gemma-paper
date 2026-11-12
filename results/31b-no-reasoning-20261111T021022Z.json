@@ -1,5 +1,5 @@
 {
-  "label": "31b-sin-razonar",
+  "label": "31b-no-reasoning",
   "stage": "done",
   "tasks": [
     {
@@ -128,7 +128,7 @@
     }
   ],
   "error": null,
-  "variantes": [
+  "variants": [
     "com31_t0"
   ],
   "vllm_start_seconds": 362.5,
@@ -139,7 +139,7 @@
     "pallets__click-2730",
     "ipython__traitlets-773"
   ],
-  "presupuestos": {
+  "budgets": {
     "com31_t0": {
       "timeout_seconds": 300,
       "max_tool_calls": 28,
@@ -151,7 +151,7 @@
     "com31_t0": {
       "resolved": 1,
       "total": 4,
-      "con_parche": 1
+      "with_patch": 1
     }
   }
 }

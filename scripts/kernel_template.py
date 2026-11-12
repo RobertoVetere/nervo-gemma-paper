@@ -335,14 +335,14 @@ def capturar_llamadas_harness(evaluator, task):
             limpio = {k: v for k, v in kw.items() if k not in ('messages', 'tools')}
             CAPTURA['kwargs'] = copy.deepcopy(limpio)
             CAPTURA['tools'] = copy.deepcopy(kw.get('tools'))
-            CAPTURA['mensajes_ejemplo'] = [
+            CAPTURA['example_messages'] = [
                 {k: (str(v)[:800] if k == 'content' else v) for k, v in m.items()} if isinstance(m, dict) else str(m)[:800]
                 for m in (kw.get('messages') or [])[:3]]
         return await orig(self, *a, **kw)
     ll.LiteLLMClient.acompletion = espia
     try:
         r = run_sync(lambda: evaluator.evaluate_task(task))
-        CAPTURA['tarea'] = task.instance_id
+        CAPTURA['task'] = task.instance_id
         CAPTURA['resolved'] = getattr(r, 'resolved', None)
         CAPTURA['patch_chars'] = len(getattr(r, 'agent_patch', '') or '')
     finally:
@@ -402,23 +402,23 @@ def run_bateria(evaluator, tasks, base='http://127.0.0.1:8000'):
     with urllib.request.urlopen(f'{base}/v1/models', timeout=60) as r:
         model_id = json.loads(r.read())['data'][0]['id']
     by_id = {t.instance_id: t for t in tasks}
-    state['bateria'] = {'config': cfg, 'resultados': []}
+    state['battery'] = {'config': cfg, 'results': []}
 
     # 1) capture how the official harness calls the model (one real task)
     state['stage'] = 'bateria_captura'; save_state()
     try:
-        capturar_llamadas_harness(evaluator, by_id[cfg.get('tarea_captura', cfg['tareas'][0])])
+        capturar_llamadas_harness(evaluator, by_id[cfg.get('capture_task', cfg['tasks'][0])])
     except Exception as e:
         CAPTURA['error'] = f'{type(e).__name__}: {e}'
         CAPTURA['trace'] = traceback.format_exc()[-2000:]
         log(f'CAPTURE failed: {CAPTURA["error"]}')
-    state['bateria']['captura'] = {k: (v if k != 'kwargs' else {kk: vv for kk, vv in v.items() if kk != 'api_key'})
+    state['battery']['capture'] = {k: (v if k != 'kwargs' else {kk: vv for kk, vv in v.items() if kk != 'api_key'})
                                    for k, v in CAPTURA.items()}
     save_state()
 
     # 2) self-test: the same probe with a raw call and with the harness call; use the one that arrives intact
-    sonda = cfg.get('sonda_autoprueba')
-    modelos = {'cruda': motor.Modelo(base, model_id)}
+    sonda = cfg.get('selftest_probe')
+    modelos = {'raw_call': motor.Modelo(base, model_id)}
     if CAPTURA.get('kwargs'):
         modelos['harness'] = hacer_modelo_replay(motor)(base, model_id)
     auto = {}
@@ -429,16 +429,16 @@ def run_bateria(evaluator, tasks, base='http://127.0.0.1:8000'):
             oks.append(args_intactos(resp))
             auto.setdefault(nombre + '_ejemplo', [c['args'] for c in resp.get('tool_calls', [])][:1] or resp.get('error'))
         auto[nombre] = oks
-    elegido = 'harness' if all(auto.get('harness') or [False]) else ('cruda' if all(auto.get('cruda') or [False]) else
-              ('harness' if 'harness' in modelos else 'cruda'))
-    auto['elegido'] = elegido
-    state['bateria']['autoprueba'] = auto
+    elegido = 'harness' if all(auto.get('harness') or [False]) else ('raw_call' if all(auto.get('raw_call') or [False]) else
+              ('harness' if 'harness' in modelos else 'raw_call'))
+    auto['chosen'] = elegido
+    state['battery']['selftest'] = auto
     log(f'SELFTEST {auto}')
     save_state()
     modelo = modelos[elegido]
 
     tareas = []
-    for tid in cfg['tareas']:
+    for tid in cfg['tasks']:
         t = evaluator._hydrate_task_from_secret(by_id[tid])
         sp, bsp, pp = resolve_task_snapshot_paths(evaluator.config.snapshots_dir, t.instance_id, t.repo)
         tareas.append({'id': tid, 'problem_statement': t.problem_statement, 'snapshot': sp if Path(sp).exists() else None,
@@ -446,12 +446,12 @@ def run_bateria(evaluator, tasks, base='http://127.0.0.1:8000'):
         log(f'BATTERY task {tid}: snapshot={sp} exists={Path(sp).exists()} base={bsp} patch={pp}')
 
     def guardar(res):
-        state['bateria']['resultados'] = res
+        state['battery']['results'] = res
         save_state()
 
-    res = motor.ejecutar_bateria(modelo, tareas, cfg['estrategias'], cfg['ctx'],
-                                 Path('/tmp/lab_trabajo'), paralelo=cfg.get('paralelo', 8),
-                                 deadline_s=cfg.get('deadline_s', 480), max_llamadas=cfg.get('max_llamadas', 30),
+    res = motor.ejecutar_bateria(modelo, tareas, cfg['strategies'], cfg['ctx'],
+                                 Path('/tmp/lab_trabajo'), paralelo=cfg.get('parallel', 8),
+                                 deadline_s=cfg.get('deadline_s', 480), max_llamadas=cfg.get('max_calls', 30),
                                  log=log, guardar=guardar)
     state['stage'] = 'bateria_verificar'; save_state()
     for fila in res:
@@ -459,22 +459,22 @@ def run_bateria(evaluator, tasks, base='http://127.0.0.1:8000'):
             fila['resolved'] = False
             continue
         try:
-            v = oracle_verify(by_id[fila['tarea']], evaluator, patch=fila['patch'])
+            v = oracle_verify(by_id[fila['task']], evaluator, patch=fila['patch'])
             fila['resolved'] = v.get('resolved')
             fila['test_exit_code'] = v.get('test_exit_code')
             fila['test_output'] = str(v.get('test_output', ''))[-1200:]
         except Exception as e:
             fila['resolved'] = None
             fila['verify_error'] = f'{type(e).__name__}: {e}'
-        log(f"VERIFIED {fila['estrategia']:18} {fila['tarea']:16} resolved={fila.get('resolved')}")
+        log(f"VERIFIED {fila['strategy']:18} {fila['task']:16} resolved={fila.get('resolved')}")
         guardar(res)
     resumen = {}
     for fila in res:
-        r = resumen.setdefault(fila['estrategia'], {'resueltas': 0, 'con_parche': 0, 'total': 0})
+        r = resumen.setdefault(fila['strategy'], {'solved_count': 0, 'with_patch': 0, 'total': 0})
         r['total'] += 1
-        r['con_parche'] += bool(fila.get('patch', '').strip())
-        r['resueltas'] += bool(fila.get('resolved'))
-    state['bateria']['resumen'] = resumen
+        r['with_patch'] += bool(fila.get('patch', '').strip())
+        r['solved_count'] += bool(fila.get('resolved'))
+    state['battery']['summary_by_strategy'] = resumen
     log(f'BATTERY summary: {resumen}')
     save_state()
 
@@ -535,7 +535,7 @@ def main() -> None:
         data_dir = cands[0].parent if cands else data_dir
 
     bundle = load_bundle()
-    state['variantes'] = list(bundle)
+    state['variants'] = list(bundle)
     state['stage'] = 'validate'; save_state()
     from adk_submission import validate_directory
     limits, gen_constraints = build_submission_limits()
@@ -607,7 +607,7 @@ def main() -> None:
         cfg_e, ev = make_eval_config(agent_dir, data_dir, models, limits, gen_constraints, adapters,
                                      WORKING_DIR / 'results' / name)
         evaluators[name] = Evaluator(cfg_e)
-        state.setdefault('presupuestos', {})[name] = ev
+        state.setdefault('budgets', {})[name] = ev
     first_eval = next(iter(evaluators.values()))
 
     if LAB:
@@ -659,10 +659,10 @@ def main() -> None:
 
     resumen = {}
     for t in state['tasks']:
-        r = resumen.setdefault(t['variant'], {'resolved': 0, 'total': 0, 'con_parche': 0})
+        r = resumen.setdefault(t['variant'], {'resolved': 0, 'total': 0, 'with_patch': 0})
         r['total'] += 1
         r['resolved'] += bool(t['resolved'])
-        r['con_parche'] += bool(t.get('patch_chars'))
+        r['with_patch'] += bool(t.get('patch_chars'))
     state['summary'] = resumen
     state['stage'] = 'done'; save_state()
     log(f'SUMMARY {resumen}')

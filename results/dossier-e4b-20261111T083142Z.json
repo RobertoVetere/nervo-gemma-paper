@@ -190,7 +190,7 @@
     }
   ],
   "error": null,
-  "variantes": [
+  "variants": [
     "dossier_e4b"
   ],
   "vllm_start_seconds": 332.8,
@@ -203,7 +203,7 @@
     "ipython__traitlets-773",
     "python-babel__babel-1196"
   ],
-  "presupuestos": {
+  "budgets": {
     "dossier_e4b": {
       "timeout_seconds": 300,
       "max_tool_calls": 28,
@@ -215,7 +215,7 @@
     "dossier_e4b": {
       "resolved": 1,
       "total": 6,
-      "con_parche": 6
+      "with_patch": 6
     }
   }
 }

@@ -97,7 +97,7 @@
     }
   ],
   "error": null,
-  "variantes": [
+  "variants": [
     "dossier_31b"
   ],
   "vllm_start_seconds": 406.7,
@@ -107,7 +107,7 @@
     "ipython__traitlets-773",
     "pallets__click-2730"
   ],
-  "presupuestos": {
+  "budgets": {
     "dossier_31b": {
       "timeout_seconds": 300,
       "max_tool_calls": 28,
@@ -119,7 +119,7 @@
     "dossier_31b": {
       "resolved": 3,
       "total": 3,
-      "con_parche": 3
+      "with_patch": 3
     }
   }
 }

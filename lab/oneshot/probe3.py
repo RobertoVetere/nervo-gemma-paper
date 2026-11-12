@@ -12,7 +12,6 @@ Per task and sample (without looking at the official patch or the hidden tests):
                 symbol (except new methods added to its class), it is rejected and the model is asked once to redo it.
   3. Score with the hidden tests (FAIL_TO_PASS and the PASS_TO_PASS files).
 Usage: python3 lab/oneshot/probe3.py --tasks t1,t2 --n 2   (NERVO_BENCH = folder with snapshots/, default ./bench)
-Output keys are in Spanish (tarea = task, muestra = sample, archivo = file, resuelve = solved); see README.
 """
 import argparse, ast, json, os, re, subprocess, sys, tarfile, concurrent.futures as cf
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -121,25 +120,25 @@ def una(tid, i):
     t = TAREAS[tid]; d = os.path.join(os.environ.get('NERVO_WORK', '/tmp/nervo_probes'), 'loc', tid)
     archivo, where = localizar(d, t['problem_statement'].strip())
     gold = re.findall(r'^\+\+\+ b/(\S+\.py)', t['patch'], re.M)
-    fila = {'tarea': tid, 'muestra': i, 'archivo': archivo, 'where': where, 'archivo_ok': archivo in gold}
+    fila = {'task': tid, 'sample': i, 'file': archivo, 'where': where, 'file_ok': archivo in gold}
     if not archivo or not where or not os.path.exists(os.path.join(d, archivo)):
         return {**fila, 'nota': 'invalid localization'}
     cod = subprocess.run([sys.executable, f'{AQUI}/context2.py', d, archivo, where, '--solo'], capture_output=True, text=True)
     if cod.returncode != 0:  # new method: give the class
         cod = subprocess.run([sys.executable, f'{AQUI}/context2.py', d, archivo, where.split('.')[0], '--solo'], capture_output=True, text=True)
     tests = subprocess.run([sys.executable, f'{AQUI}/existing_tests.py', d, where], capture_output=True, text=True).stdout
-    fila['tests_chars'] = len(tests); fila['hay_tests'] = not tests.startswith('# No existing')
+    fila['tests_chars'] = len(tests); fila['has_tests'] = not tests.startswith('# No existing')
     for cfg in CONFIGS:
         ctxs = {'A': cod.stdout, 'C': cod.stdout + '\n\n' + tests, 'F': cod.stdout}
         for cond in CONDS:
             ctx = ctxs[cond]
             if cond == 'F' and not nodo_funcion(os.path.join(d, archivo), where):
-                fila[f'{cfg}_F'] = {'resuelve': False, 'motivo': 'symbol is not an existing function', 'na': True}
+                fila[f'{cfg}_F'] = {'solved': False, 'reason': 'symbol is not an existing function', 'na': True}
                 continue
             r, rech = arreglar(cfg, t, archivo, where, ctx, d, cond)
             nota = puntuar_arreglo(d, t, archivo, r['texto'], f'{cfg}{cond}{i}')
-            fila[f'{cfg}_{cond}'] = {'resuelve': nota['resuelve'], 'f2p': nota.get('f2p'), 'motivo': nota.get('motivo', ''),
-                                     'rechazos': rech, 'tokens': r['uso'].get('completion_tokens'), 'vacia': not r['texto']}
+            fila[f'{cfg}_{cond}'] = {'solved': nota['solved'], 'f2p': nota.get('f2p'), 'reason': nota.get('reason', ''),
+                                     'rejections': rech, 'tokens': r['usage'].get('completion_tokens'), 'empty': not r['texto']}
     return fila
 
 
@@ -158,20 +157,20 @@ def main():
     with cf.ThreadPoolExecutor(4) as ex, open(a.out, 'w') as out:
         for f in ex.map(lambda x: una(*x), [(t, i) for t in tareas for i in range(a.n)]):
             filas.append(f); out.write(json.dumps(f, ensure_ascii=False) + '\n'); out.flush()
-            print(f"{f['tarea'][:34]:34} #{f['muestra']} loc={f['archivo_ok']!s:5} {str(f['where'])[:30]:30} tests={f.get('hay_tests')!s:5} " +
-                  ' '.join(f"{k}={'X' if f[k]['resuelve'] else '.'}" for k in f if '_' in k and isinstance(f[k], dict)), flush=True)
+            print(f"{f['task'][:34]:34} #{f['sample']} loc={f['file_ok']!s:5} {str(f['where'])[:30]:30} tests={f.get('has_tests')!s:5} " +
+                  ' '.join(f"{k}={'X' if f[k]['solved'] else '.'}" for k in f if '_' in k and isinstance(f[k], dict)), flush=True)
     print('\nSolved (of', len(filas), 'rows):')
     for cfg in CONFIGS:
         for c in CONDS:
-            print(f'  {cfg:6} {c}: solved', sum(bool(f.get(f'{cfg}_{c}', {}).get('resuelve')) for f in filas),
-                  '| SEARCH no encaja', sum('no encaja' in str(f.get(f'{cfg}_{c}', {}).get('motivo', '')) for f in filas),
-                  '| no block', sum('sin bloques' in str(f.get(f'{cfg}_{c}', {}).get('motivo', '')) for f in filas),
+            print(f'  {cfg:6} {c}: solved', sum(bool(f.get(f'{cfg}_{c}', {}).get('solved')) for f in filas),
+                  '| SEARCH does not match', sum('does not match' in str(f.get(f'{cfg}_{c}', {}).get('reason', '')) for f in filas),
+                  '| no block', sum('no SEARCH/REPLACE' in str(f.get(f'{cfg}_{c}', {}).get('reason', '')) for f in filas),
                   '| n/a (not a function)', sum(bool(f.get(f'{cfg}_{c}', {}).get('na')) for f in filas))
-        a_ = sum(bool(f.get(f'{cfg}_A', {}).get('resuelve')) for f in filas); c_ = sum(bool(f.get(f'{cfg}_C', {}).get('resuelve')) for f in filas)
-        sa = sum(bool(f.get(f'{cfg}_A', {}).get('resuelve')) and not f.get(f'{cfg}_C', {}).get('resuelve') for f in filas)
-        sc = sum(bool(f.get(f'{cfg}_C', {}).get('resuelve')) and not f.get(f'{cfg}_A', {}).get('resuelve') for f in filas)
-        vac = sum(bool(f.get(f'{cfg}_{c}', {}).get('vacia')) for f in filas for c in 'AC')
-        rech = sum(f.get(f'{cfg}_{c}', {}).get('rechazos', 0) for f in filas for c in 'AC')
+        a_ = sum(bool(f.get(f'{cfg}_A', {}).get('solved')) for f in filas); c_ = sum(bool(f.get(f'{cfg}_C', {}).get('solved')) for f in filas)
+        sa = sum(bool(f.get(f'{cfg}_A', {}).get('solved')) and not f.get(f'{cfg}_C', {}).get('solved') for f in filas)
+        sc = sum(bool(f.get(f'{cfg}_C', {}).get('solved')) and not f.get(f'{cfg}_A', {}).get('solved') for f in filas)
+        vac = sum(bool(f.get(f'{cfg}_{c}', {}).get('empty')) for f in filas for c in 'AC')
+        rech = sum(f.get(f'{cfg}_{c}', {}).get('rejections', 0) for f in filas for c in 'AC')
         print(f'  {cfg:6} A (code only) {a_:2}   C (+ existing tests) {c_:2}   only A {sa} / only C {sc}   empty answers {vac}   rejections {rech}')
 
 

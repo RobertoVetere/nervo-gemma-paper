@@ -1,7 +1,7 @@
 {
- "fuente": "oraculo-banco-nuevo-20261108T160142Z (Kaggle, harness oficial, sandbox subprocess)",
+ "source": "oraculo-banco-nuevo-20261108T160142Z (Kaggle, harness oficial, sandbox subprocess)",
  "n": 104,
- "tareas": [
+ "tasks": [
   "audreyr__cookiecutter-834",
   "brettcannon__gidgethub-174",
   "brettcannon__gidgethub-32",

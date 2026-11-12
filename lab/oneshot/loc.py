@@ -57,7 +57,7 @@ def leer(texto):
 def una(tid, modelo, cond):
     t = TAREAS[tid]; d = os.path.join(os.environ.get('NERVO_WORK', '/tmp/nervo_probes'), 'loc', tid)
     issue = t['problem_statement'].strip(); gold = oro(d, t['patch'])
-    if cond == 'lista':
+    if cond == 'file_list':
         pys = [p for p in subprocess.run(['git', 'ls-files', '*.py'], cwd=d, capture_output=True, text=True).stdout.split()
                if not M.SALTAR.search(p)]
         r = llamar(modelo, f'You are fixing a bug in a Python repository.\n\nISSUE:\n{issue}\n\nPYTHON FILES IN THE REPOSITORY:\n'
@@ -76,8 +76,8 @@ def una(tid, modelo, cond):
                            'Closest real symbols: ' + '; '.join(extra) + '. Answer again.)', 0, tope=300)
                 archivo, where = leer(r['texto'])
     f_ok, s_ok = acierto(archivo, where, gold)
-    return {'tarea': tid, 'modelo': modelo, 'cond': cond, 'archivo': archivo, 'where': where, 'oro': sorted(gold),
-            'archivo_ok': f_ok, 'simbolo_ok': s_ok, 'reintento': reintento, 'respuesta': r['texto']}
+    return {'task': tid, 'model': modelo, 'cond': cond, 'file': archivo, 'where': where, 'gold': sorted(gold),
+            'file_ok': f_ok, 'symbol_ok': s_ok, 'retry': reintento, 'answer': r['texto']}
 
 
 def main():
@@ -90,16 +90,16 @@ def main():
         d = os.path.join(os.environ.get('NERVO_WORK', '/tmp/nervo_probes'), 'loc', tid)
         if not os.path.isdir(d):
             os.makedirs(d); tarfile.open(os.path.join(os.environ.get('NERVO_BENCH', 'bench'), 'snapshots', f'{tid}.tgz')).extractall(d, filter='data')
-    trabajos = [(t, m, c) for t in tareas for m in a.modelos.split(',') for c in ('lista', 'mapa')]
+    trabajos = [(t, m, c) for t in tareas for m in a.modelos.split(',') for c in ('file_list', 'repo_map')]
     filas = []
     with cf.ThreadPoolExecutor(8) as ex, open(a.out, 'w') as out:
         for f in ex.map(lambda x: una(*x), trabajos):
             filas.append(f); out.write(json.dumps(f, ensure_ascii=False) + '\n'); out.flush()
     for m in a.modelos.split(','):
-        for c in ('lista', 'mapa'):
-            S = [f for f in filas if f['modelo'] == m and f['cond'] == c]
-            print(f'{m:3} {c:5} file {sum(f["archivo_ok"] for f in S)}/{len(S)}  symbol {sum(f["simbolo_ok"] for f in S)}/{len(S)}'
-                  f'  reintentos {sum(f["reintento"] for f in S)}')
+        for c in ('file_list', 'repo_map'):
+            S = [f for f in filas if f['model'] == m and f['cond'] == c]
+            print(f'{m:3} {c:5} file {sum(f["file_ok"] for f in S)}/{len(S)}  symbol {sum(f["symbol_ok"] for f in S)}/{len(S)}'
+                  f'  reintentos {sum(f["retry"] for f in S)}')
 
 
 if __name__ == '__main__':

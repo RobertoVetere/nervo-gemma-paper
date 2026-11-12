@@ -18,7 +18,7 @@ for d in sys.argv[1:]:
     r = {}
     for f in glob.glob(os.path.join(d, '*__*.json')):
         v, t = os.path.basename(f)[:-5].split('__', 1)
-        x = (json.load(open(f)).get('tareas') or [{}])[0]
+        x = (json.load(open(f)).get('tasks') or [{}])[0]
         r[(v, t)] = int(bool(x.get('resolved')))
     reps.append(r)
 tasks = sorted({t for r in reps for (_, t) in r})

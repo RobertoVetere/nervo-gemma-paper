@@ -1,5 +1,5 @@
 {
- "fuente": "or\u00e1culo local 8-nov (harness oficial 0.2.11, google-adk 1.36.1, Python 3.13, sandbox subprocess)",
+ "source": "oráculo local 8-nov (harness oficial 0.2.11, google-adk 1.36.1, Python 3.13, sandbox subprocess)",
  "n": 65,
  "repos": {
   "audreyr": 1,
@@ -20,7 +20,7 @@
   "slackapi": 4,
   "timothycrosley": 3
  },
- "tareas": [
+ "tasks": [
   "audreyr__cookiecutter-834",
   "callowayproject__bump-my-version-180",
   "digitalocean__pynetbox-128",

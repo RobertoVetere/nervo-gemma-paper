@@ -1,7 +1,7 @@
 {
- "fuente": "tareas oficiales de desarrollo (data/scorable_tasks.json) que el or\u00e1culo resuelve en local",
+ "source": "tareas oficiales de desarrollo (data/scorable_tasks.json) que el oráculo resuelve en local",
  "n": 72,
- "tareas": [
+ "tasks": [
   "fastapi_11194",
   "fastapi_13537",
   "fastapi_13920",

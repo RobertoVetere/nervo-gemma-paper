@@ -72,21 +72,6 @@ python3 lab/oneshot/summary_quantization.py                                # 4.5
 [`docs/REPRODUCE.md`](docs/REPRODUCE.md) maps every number to its file and command, and explains how to re-run the
 agents (official evaluator wheels and an OpenAI-compatible endpoint serving the model).
 
-## Field names in saved results
-
-Code and documentation are in English. Some keys inside the saved JSON results, and some internal variable names, are
-Spanish words, kept so that the raw records stay exactly as they were produced:
-
-| Key | Meaning | Key | Meaning |
-|---|---|---|---|
-| `tareas` / `tarea` | tasks / task | `modelo` | model |
-| `muestra` | sample | `archivo` | file |
-| `resuelve` / `resuelta` | solved | `motivo` | reason |
-| `llamadas` | calls | `segundos` | seconds |
-| `presupuesto` | budget | `razonar` | reasoning on/off |
-| `oro` | gold (official patch symbols) | `nivel` | level |
-| `lista` / `mapa` | localization from a file list / from the repository map | `bateria` | battery of approaches |
-
 ## Citation
 
 ```bibtex

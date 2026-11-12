@@ -35,7 +35,7 @@
     }
   ],
   "error": null,
-  "variantes": [
+  "variants": [
     "g31_steps"
   ],
   "vllm_start_seconds": 358.9,
@@ -43,7 +43,7 @@
   "sample": [
     "timothycrosley__isort-891"
   ],
-  "presupuestos": {
+  "budgets": {
     "g31_steps": {
       "timeout_seconds": 300,
       "max_tool_calls": 28,
@@ -55,7 +55,7 @@
     "g31_steps": {
       "resolved": 0,
       "total": 1,
-      "con_parche": 0
+      "with_patch": 0
     }
   }
 }

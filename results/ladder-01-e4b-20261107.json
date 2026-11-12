@@ -196,7 +196,7 @@
   }
  ],
  "error": null,
- "variantes": [
+ "variants": [
   "e4b_guiado",
   "nervo_repro"
  ],
@@ -212,7 +212,7 @@
   "rich_3882",
   "rich_3043"
  ],
- "presupuestos": {
+ "budgets": {
   "e4b_guiado": {
    "timeout_seconds": 300,
    "max_tool_calls": 28,
@@ -230,12 +230,12 @@
   "e4b_guiado": {
    "resolved": 3,
    "total": 8,
-   "con_parche": 7
+   "with_patch": 7
   },
   "nervo_repro": {
    "resolved": 3,
    "total": 8,
-   "con_parche": 7
+   "with_patch": 7
   }
  }
 }

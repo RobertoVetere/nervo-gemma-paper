@@ -500,7 +500,7 @@
     }
   ],
   "error": null,
-  "variantes": [
+  "variants": [
     "community_base",
     "nervo_repro"
   ],
@@ -516,7 +516,7 @@
     "requests_6644",
     "httpx_3672"
   ],
-  "presupuestos": {
+  "budgets": {
     "community_base": {
       "timeout_seconds": 300,
       "max_tool_calls": 28,
@@ -534,12 +534,12 @@
     "community_base": {
       "resolved": 5,
       "total": 8,
-      "con_parche": 7
+      "with_patch": 7
     },
     "nervo_repro": {
       "resolved": 6,
       "total": 8,
-      "con_parche": 7
+      "with_patch": 7
     }
   }
 }

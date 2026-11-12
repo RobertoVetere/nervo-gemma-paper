@@ -376,7 +376,7 @@
     }
   ],
   "error": null,
-  "variantes": [
+  "variants": [
     "community_base",
     "com_t16"
   ],
@@ -390,7 +390,7 @@
     "ipython__traitlets-773",
     "python-babel__babel-1196"
   ],
-  "presupuestos": {
+  "budgets": {
     "community_base": {
       "timeout_seconds": 300,
       "max_tool_calls": 28,
@@ -408,12 +408,12 @@
     "community_base": {
       "resolved": 1,
       "total": 6,
-      "con_parche": 6
+      "with_patch": 6
     },
     "com_t16": {
       "resolved": 1,
       "total": 6,
-      "con_parche": 5
+      "with_patch": 5
     }
   }
 }

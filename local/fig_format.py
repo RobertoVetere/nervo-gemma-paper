@@ -37,7 +37,7 @@ for f in files:
     for l in open(f):
         r = json.loads(l)
         if r['backend'] == 'modal':
-            c[(r['modelo'].replace('+ctx36k', ''), r['iface'])] += falla(r)
+            c[(r['model'].replace('+ctx36k', ''), r['iface'])] += falla(r)
 ORDEN = [('e4b-bf16', 'Gemma 4 E4B bf16'), ('e4b', 'Gemma 4 E4B 4-bit'), ('e2b-bf16', 'Gemma 4 E2B bf16'),
          ('e2b', 'Gemma 4 E2B 4-bit'), ('qwen3-4b-bf16', 'Qwen3-4B bf16'), ('qwen3-4b-awq', 'Qwen3-4B AWQ'),
          ('qwen3-1.7b-bf16', 'Qwen3-1.7B bf16')]

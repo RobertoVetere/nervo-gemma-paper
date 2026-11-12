@@ -23,7 +23,7 @@ def etiqueta(b_, m):  # readable label; DeepInfra answers requests for E4B with 
 rows = [json.loads(l) for f in sys.argv[1:] for l in open(f)]
 g = defaultdict(list)
 for r in rows:
-    g[(r['backend'], r['modelo'], r['iface'])].append(r)
+    g[(r['backend'], r['model'], r['iface'])].append(r)
 print('Model labels: e4b, e2b = official 4-bit (QAT w4a16) weights on our vLLM server; -bf16 = original weights; "31B (API; asked for e4b)" = DeepInfra, which served a 31B for E4B requests.\n')
 print('| Backend | Model | Interface | Calls | Not called | Fields lost / unparsable | Text not exact | Exact |')
 print('|---|---|---|---|---|---|---|---|')
@@ -65,8 +65,8 @@ for f in sorted({k[2] for k in g}):
 by = defaultdict(dict)
 for r in rows:
     if r['iface'] == 'three_field' and r['backend'] == 'modal':
-        by[r['modelo']].setdefault(r['id'], False)
-        by[r['modelo']][r['id']] |= bool(r['called'] and not r['args_ok'])
+        by[r['model']].setdefault(r['id'], False)
+        by[r['model']][r['id']] |= bool(r['called'] and not r['args_ok'])
 for (orig, cuant), ctx in [(p_, c_) for p_ in PARES for c_ in ('', '+ctx36k')]:
     q, b = by.get(cuant + ctx), by.get(orig + ctx)
     if q and b:

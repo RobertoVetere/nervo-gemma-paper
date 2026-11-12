@@ -44,7 +44,7 @@ def ancestros(nombre, cl, vistos=None):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('repo'); ap.add_argument('archivo'); ap.add_argument('clase')
+    ap.add_argument('repo'); ap.add_argument('file'); ap.add_argument('clase')
     ap.add_argument('--max', type=int, default=6000)
     a = ap.parse_args()
     cl = clases_del_repo(a.repo)

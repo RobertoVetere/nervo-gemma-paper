@@ -75,7 +75,7 @@ def usos(repo, nombre, metodo):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('repo'); ap.add_argument('archivo'); ap.add_argument('simbolo')
+    ap.add_argument('repo'); ap.add_argument('file'); ap.add_argument('simbolo')
     ap.add_argument('--max', type=int, default=6000)
     ap.add_argument('--only', '--solo', dest='solo', action='store_true', help='only the symbol code (control without context)')
     a = ap.parse_args()
@@ -122,7 +122,7 @@ def main():
             if u: partes.append(f'# Where {m} is called\n' + '\n'.join(x[:160] for x in u))
     if not partes and s[-1] in funcs:
         f = s[-1]
-        defs = sorted(funcs[f], key=lambda d: d['ruta'] != a.archivo)
+        defs = sorted(funcs[f], key=lambda d: d['ruta'] != a.file)
         partes.append(f'# {f} ({defs[0]["ruta"]})\n{defs[0]["codigo"]}')
         tokens = set(f.strip('_').split('_')) - {'', 'get', 'set', 'is', 'to', 'from', 'do'}
         mismo = [(n, d) for n, ds in funcs.items() for d in ds if n != f and d['ruta'] == defs[0]['ruta']]
