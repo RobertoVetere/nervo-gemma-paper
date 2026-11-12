@@ -47,3 +47,19 @@ for f in sorted({k[2] for k in g}):
         (fa, na), (fb, nb) = fails(('modal', m, f)), fails(('modal', m + '+ctx36k', f))
         if na and nb:
             print(f'{f}: context effect modal/{m}: {fa}/{na} -> {fb}/{nb}, Fisher p = {fisher(fa, na - fa, fb, nb - fb):.3f}')
+
+# Paired, block-level test (avoids treating the two samples of a block as independent): a block fails if any sample
+# lost fields with the nested interface; McNemar over the 80 blocks, 4-bit vs bf16 with long context.
+by = defaultdict(dict)
+for r in rows:
+    if r['iface'] == 'three_field' and r['backend'] == 'modal':
+        by[r['modelo']].setdefault(r['id'], False)
+        by[r['modelo']][r['id']] |= bool(r['called'] and not r['args_ok'])
+for ctx in ('', '+ctx36k'):
+    q, b = by.get('e4b' + ctx), by.get('e4b-bf16' + ctx)
+    if q and b:
+        ids = sorted(set(q) & set(b))
+        oq = sum(q[i] and not b[i] for i in ids); ob = sum(b[i] and not q[i] for i in ids); n = oq + ob
+        p = 1.0 if n == 0 else min(1.0, 2 * sum(math.comb(n, k) for k in range(min(oq, ob) + 1)) / 2 ** n)
+        print(f'blocks{ctx or " (short)"}: 4-bit {sum(q[i] for i in ids)}/{len(ids)} vs bf16 {sum(b[i] for i in ids)}/{len(ids)} '
+              f'blocks with lost fields; discordant {oq} vs {ob}, McNemar p = {p:.3f}')
