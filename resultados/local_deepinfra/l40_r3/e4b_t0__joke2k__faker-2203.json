@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/e4b_t0",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "joke2k__faker-2203",
+   "resolved": false,
+   "patch": "diff --git a/faker/proxy.py b/faker/proxy.py\nindex fc72a15..19ca420 100644\n--- a/faker/proxy.py\n+++ b/faker/proxy.py\n@@ -334,13 +334,26 @@ class UniqueProxy:\n             retval = self._sentinel\n \n             for i in range(_UNIQUE_ATTEMPTS):\n-                if retval not in generated:\n+                # If retval is a dict or list, we need to convert it to something hashable to check if it's in generated\n+                check_val = retval\n+                if isinstance(retval, dict):\n+                    check_val = tuple(sorted(retval.items(), key=lambda x: x[0]))\n+                elif isinstance(retval, list):\n+                    check_val = tuple(retval)\n+\n+                if check_val not in generated:\n                     break\n                 retval = function(*args, **kwargs)\n             else:\n                 raise UniquenessException(f\"Got duplicated values after {_UNIQUE_ATTEMPTS:,} iterations.\")\n \n-            generated.add(retval)\n+            # Again, convert to hashable if it's a dict or list\n+            final_val = retval\n+            if isinstance(retval, dict):\n+                final_val = tuple(sorted(retval.items(), key=lambda x: x[0]))\n+            elif isinstance(retval, list):\n+                final_val = tuple(retval)\n+            generated.add(final_val)\n \n             return retval",
+   "tool_calls": 25,
+   "duration_s": 64.1,
+   "error": null,
+   "raw": {
+    "task_id": "joke2k__faker-2203",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 64.08744816600006,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 27,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/r3/e4b_t0__joke2k__faker-2203/results/traces/trace_joke2k__faker-2203.json",
+    "metadata": "{}",
+    "repo": "joke2k/faker",
+    "agent_patch": "diff --git a/faker/proxy.py b/faker/proxy.py\nindex fc72a15..19ca420 100644\n--- a/faker/proxy.py\n+++ b/faker/proxy.py\n@@ -334,13 +334,26 @@ class UniqueProxy:\n             retval = self._sentinel\n \n             for i in range(_UNIQUE_ATTEMPTS):\n-                if retval not in generated:\n+                # If retval is a dict or list, we need to convert it to something hashable to check if it's in generated\n+                check_val = retval\n+                if isinstance(retval, dict):\n+                    check_val = tuple(sorted(retval.items(), key=lambda x: x[0]))\n+                elif isinstance(retval, list):\n+                    check_val = tuple(retval)\n+\n+                if check_val not in generated:\n                     break\n                 retval = function(*args, **kwargs)\n             else:\n                 raise UniquenessException(f\"Got duplicated values after {_UNIQUE_ATTEMPTS:,} iterations.\")\n \n-            generated.add(retval)\n+            # Again, convert to hashable if it's a dict or list\n+            final_val = retval\n+            if isinstance(retval, dict):\n+                final_val = tuple(sorted(retval.items(), key=lambda x: x[0]))\n+            elif isinstance(retval, list):\n+                final_val = tuple(retval)\n+            generated.add(final_val)\n \n             return retval\n \n",
+    "test_output": "STDOUT:\n.....F                                                                   [100%]\n=================================== FAILURES ===================================\n__________ TestUniquenessClass.test_complex_return_types_is_supported __________\n\nself = <tests.test_unique.TestUniquenessClass object at 0x7fd72c7c8f30>\n\n    def test_complex_return_types_is_supported(self):\n        \"\"\"The unique decorator supports complex return types\n        like the ones used in the profile provider.\"\"\"\n    \n        fake = Faker()\n    \n        for i in range(10):\n            fake.unique.pydict()\n    \n        for i in range(10):\n            fake.unique.pylist()\n    \n        for i in range(10):\n>           fake.unique.pyset()\n\ntests/test_unique.py:77: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nargs = (), kwargs = {}\n\n    @functools.wraps(function)\n    def wrapper(*args, **kwargs):\n        key = (name, args, tuple(sorted(kwargs.items())))\n    \n        generated = self._seen.setdefault(key, {self._sentinel})\n    \n        # With use of a sentinel value rather than None, we leave\n        # None open as a valid return value.\n        retval = self._sentinel\n    \n        for i in range(_UNIQUE_ATTEMPTS):\n            # If retval is a dict or list, we need to convert it to something hashable to check if it's in generated\n            check_val = retval\n            if isinstance(retval, dict):\n                check_val = tuple(sorted(retval.items(), key=lambda x: x[0]))\n            elif isinstance(retval, list):\n                check_val = tuple(retval)\n    \n            if check_val not in generated:\n                break\n            retval = function(*args, **kwargs)\n        else:\n            raise UniquenessException(f\"Got duplicated values after {_UNIQUE_ATTEMPTS:,} iterations.\")\n    \n        # Again, convert to hashable if it's a dict or list\n        final_val = retval\n        if isinstance(retval, dict):\n            final_val = tuple(sorted(retval.items(), key=lambda x: x[0]))\n        elif isinstance(retval, list):\n            final_val = tuple(retval)\n>       generated.add(final_val)\nE       TypeError: unhashable type: 'set'\n\nfaker/proxy.py:356: TypeError\n=========================== short test summary info ============================\nFAILED tests/test_unique.py::TestUniquenessClass::test_complex_return_types_is_supported\n1 failed, 5 passed in 0.30s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f0e1fd1c980>",
+    "tool_calls": 25,
+    "task_index": 1
+   },
+   "segundos_reloj": 64.2
+  }
+ ]
+}

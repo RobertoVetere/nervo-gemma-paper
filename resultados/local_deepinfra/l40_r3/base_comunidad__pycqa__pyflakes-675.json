@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/base_comunidad",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pycqa__pyflakes-675",
+   "resolved": true,
+   "patch": "diff --git a/pyflakes/checker.py b/pyflakes/checker.py\nindex 45c7a4a..b89126d 100644\n--- a/pyflakes/checker.py\n+++ b/pyflakes/checker.py\n@@ -588,10 +588,10 @@ class ExportBinding(Binding):\n                 if isinstance(node, ast.Str):\n                     self.names.append(node.s)\n \n-        if isinstance(source.value, (ast.List, ast.Tuple)):\n+        if hasattr(source, 'value') and isinstance(source.value, (ast.List, ast.Tuple)):\n             _add_to_names(source.value)\n         # If concatenating lists or tuples\n-        elif isinstance(source.value, ast.BinOp):\n+        elif hasattr(source, 'value') and isinstance(source.value, ast.BinOp):\n             currentValue = source.value\n             while isinstance(currentValue.right, (ast.List, ast.Tuple)):\n                 left = currentValue.left",
+   "tool_calls": 28,
+   "duration_s": 214.5,
+   "error": null,
+   "raw": {
+    "task_id": "pycqa__pyflakes-675",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 214.517859225,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 77,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/r3/base_comunidad__pycqa__pyflakes-675/results/traces/trace_pycqa__pyflakes-675.json",
+    "metadata": "{}",
+    "repo": "pycqa/pyflakes",
+    "agent_patch": "diff --git a/pyflakes/checker.py b/pyflakes/checker.py\nindex 45c7a4a..b89126d 100644\n--- a/pyflakes/checker.py\n+++ b/pyflakes/checker.py\n@@ -588,10 +588,10 @@ class ExportBinding(Binding):\n                 if isinstance(node, ast.Str):\n                     self.names.append(node.s)\n \n-        if isinstance(source.value, (ast.List, ast.Tuple)):\n+        if hasattr(source, 'value') and isinstance(source.value, (ast.List, ast.Tuple)):\n             _add_to_names(source.value)\n         # If concatenating lists or tuples\n-        elif isinstance(source.value, ast.BinOp):\n+        elif hasattr(source, 'value') and isinstance(source.value, ast.BinOp):\n             currentValue = source.value\n             while isinstance(currentValue.right, (ast.List, ast.Tuple)):\n                 left = currentValue.left\n",
+    "test_output": "STDOUT:\n.................................s...s.............s.................... [ 52%]\n...........s....................................................         [100%]\n132 passed, 4 skipped in 0.21s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7fe3d5d88980>",
+    "tool_calls": 28,
+    "task_index": 1
+   },
+   "segundos_reloj": 214.6
+  }
+ ]
+}

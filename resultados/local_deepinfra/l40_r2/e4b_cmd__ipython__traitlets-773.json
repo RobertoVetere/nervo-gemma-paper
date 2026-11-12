@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/e4b_cmd",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "ipython__traitlets-773",
+   "resolved": true,
+   "patch": "diff --git a/traitlets/traitlets.py b/traitlets/traitlets.py\nindex 0eae5d1..8f36373 100644\n--- a/traitlets/traitlets.py\n+++ b/traitlets/traitlets.py\n@@ -2179,6 +2179,19 @@ class Union(TraitType):\n         else:\n             return Union(self.trait_types + [other])\n \n+    def from_string(self, s):\n+        \"\"\"Get a value from a config string\"\"\"\n+        for trait_type in self.trait_types:\n+            try:\n+                v = trait_type.from_string(s)\n+                if v != s:\n+                    return v\n+                if isinstance(trait_type, Unicode):\n+                    return v\n+            except Exception:\n+                continue\n+        return s\n+\n \n # -----------------------------------------------------------------------------\n # Basic TraitTypes implementations/subclasses",
+   "tool_calls": 26,
+   "duration_s": 108.2,
+   "error": null,
+   "raw": {
+    "task_id": "ipython__traitlets-773",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 108.23352802099987,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 28,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/r2/e4b_cmd__ipython__traitlets-773/results/traces/trace_ipython__traitlets-773.json",
+    "metadata": "{}",
+    "repo": "ipython/traitlets",
+    "agent_patch": "diff --git a/traitlets/traitlets.py b/traitlets/traitlets.py\nindex 0eae5d1..8f36373 100644\n--- a/traitlets/traitlets.py\n+++ b/traitlets/traitlets.py\n@@ -2179,6 +2179,19 @@ class Union(TraitType):\n         else:\n             return Union(self.trait_types + [other])\n \n+    def from_string(self, s):\n+        \"\"\"Get a value from a config string\"\"\"\n+        for trait_type in self.trait_types:\n+            try:\n+                v = trait_type.from_string(s)\n+                if v != s:\n+                    return v\n+                if isinstance(trait_type, Unicode):\n+                    return v\n+            except Exception:\n+                continue\n+        return s\n+\n \n # -----------------------------------------------------------------------------\n # Basic TraitTypes implementations/subclasses\n",
+    "test_output": "STDOUT:\n........................................................................ [ 19%]\n........................................................................ [ 38%]\n........................................................................ [ 57%]\n........................................................................ [ 76%]\n........................................................................ [ 95%]\n..................                                                       [100%]\n=============================== warnings summary ===============================\ntraitlets/tests/test_traitlets.py::test_unicode_from_string[\"xx\"-xx]\ntraitlets/tests/test_traitlets.py::test_cunicode_from_string[\"xx\"-xx]\n  /tmp/swegemma_sandbox_a6fe5eaf-ec0_47f_ilub/workspace/traitlets/traitlets.py:2405: FutureWarning: Supporting extra quotes around strings is deprecated in traitlets 5.0. You can use 'xx' instead of '\"xx\"' if you require traitlets >=5.\n    warn(\n\ntraitlets/tests/test_traitlets.py::test_unicode_from_string['abc'-abc]\ntraitlets/tests/test_traitlets.py::test_cunicode_from_string['abc'-abc]\n  /tmp/swegemma_sandbox_a6fe5eaf-ec0_47f_ilub/workspace/traitlets/traitlets.py:2405: FutureWarning: Supporting extra quotes around strings is deprecated in traitlets 5.0. You can use 'abc' instead of \"'abc'\" if you require traitlets >=5.\n    warn(\n\ntraitlets/tests/test_traitlets.py::test_bytes_from_string[b\"xx\"-xx]\ntraitlets/tests/test_traitlets.py::test_cbytes_from_string[b\"xx\"-xx]\n  /tmp/swegemma_sandbox_a6fe5eaf-ec0_47f_ilub/workspace/traitlets/traitlets.py:2359: FutureWarning: Supporting extra quotes around Bytes is deprecated in traitlets 5.0. Use 'xx' instead of 'b\"xx\"'.\n    warn(\n\ntraitlets/tests/test_traitlets.py::test_bytes_from_string[b'abc'-abc]\ntraitlets/tests/test_traitlets.py::test_cbytes_from_string[b'abc'-abc]\n  /tmp/swegemma_sandbox_a6fe5eaf-ec0_47f_ilub/workspace/traitlets/traitlets.py:2359: FutureWarning: Supporting extra quotes around Bytes is deprecated in traitlets 5.0. Use 'abc' instead of \"b'abc'\".\n    warn(\n\ntraitlets/tests/test_traitlets.py::test_dict_from_string[{}-expected0]\n  /tmp/swegemma_sandbox_a6fe5eaf-ec0_47f_ilub/workspace/traitlets/traitlets.py:3271: FutureWarning: --None={} for dict-traits is deprecated in traitlets 5.0. You can pass --None <key=value> ... multiple times to add items to a dict.\n    warn(\n\ntraitlets/tests/test_traitlets.py::test_dict_from_string[{1: 2}-expected2]\n  /tmp/swegemma_sandbox_a6fe5eaf-ec0_47f_ilub/workspace/traitlets/traitlets.py:3271: FutureWarning: --None={1: 2} for dict-traits is deprecated in traitlets 5.0. You can pass --None <key=value> ... multiple times to add items to a dict.\n    warn(\n\ntraitlets/tests/test_traitlets.py::test_dict_from_string[{\"key\": \"value\"}-expected3]\n  /tmp/swegemma_sandbox_a6fe5eaf-ec0_47f_ilub/workspace/traitlets/traitlets.py:3271: FutureWarning: --None={\"key\": \"value\"} for dict-traits is deprecated in traitlets 5.0. You can pass --None <key=value> ... multiple times to add items to a dict.\n    warn(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n378 passed, 11 warnings in 0.53s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f980e8ac980>",
+    "tool_calls": 26,
+    "task_index": 1
+   },
+   "segundos_reloj": 108.3
+  }
+ ]
+}

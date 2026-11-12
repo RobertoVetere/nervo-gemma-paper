@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/base_comunidad",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pycqa__pyflakes-675",
+   "resolved": false,
+   "patch": "diff --git a/pyflakes/checker.py b/pyflakes/checker.py\nindex 45c7a4a..9128a90 100644\n--- a/pyflakes/checker.py\n+++ b/pyflakes/checker.py\n@@ -588,11 +588,15 @@ class ExportBinding(Binding):\n                 if isinstance(node, ast.Str):\n                     self.names.append(node.s)\n \n-        if isinstance(source.value, (ast.List, ast.Tuple)):\n-            _add_to_names(source.value)\n+        while hasattr(source, '_pyflakes_parent') and not isinstance(source, (ast.Assign, ast.AugAssign)):\n+            source = source._pyflakes_parent\n+\n+        value = getattr(source, 'value', None)\n+        if isinstance(value, (ast.List, ast.Tuple)):\n+            _add_to_names(value)\n         # If concatenating lists or tuples\n-        elif isinstance(source.value, ast.BinOp):\n-            currentValue = source.value\n+        elif isinstance(value, ast.BinOp):\n+            currentValue = value\n             while isinstance(currentValue.right, (ast.List, ast.Tuple)):\n                 left = currentValue.left\n                 right = currentValue.right",
+   "tool_calls": 17,
+   "duration_s": 177.0,
+   "error": null,
+   "raw": {
+    "task_id": "pycqa__pyflakes-675",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 177.03943929600018,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 20,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/r2/base_comunidad__pycqa__pyflakes-675/results/traces/trace_pycqa__pyflakes-675.json",
+    "metadata": "{}",
+    "repo": "pycqa/pyflakes",
+    "agent_patch": "diff --git a/pyflakes/checker.py b/pyflakes/checker.py\nindex 45c7a4a..9128a90 100644\n--- a/pyflakes/checker.py\n+++ b/pyflakes/checker.py\n@@ -588,11 +588,15 @@ class ExportBinding(Binding):\n                 if isinstance(node, ast.Str):\n                     self.names.append(node.s)\n \n-        if isinstance(source.value, (ast.List, ast.Tuple)):\n-            _add_to_names(source.value)\n+        while hasattr(source, '_pyflakes_parent') and not isinstance(source, (ast.Assign, ast.AugAssign)):\n+            source = source._pyflakes_parent\n+\n+        value = getattr(source, 'value', None)\n+        if isinstance(value, (ast.List, ast.Tuple)):\n+            _add_to_names(value)\n         # If concatenating lists or tuples\n-        elif isinstance(source.value, ast.BinOp):\n-            currentValue = source.value\n+        elif isinstance(value, ast.BinOp):\n+            currentValue = value\n             while isinstance(currentValue.right, (ast.List, ast.Tuple)):\n                 left = currentValue.left\n                 right = currentValue.right\n",
+    "test_output": "STDOUT:\n.................................s...s.............s.................... [ 52%]\n...........s.........................................F..........         [100%]\n=================================== FAILURES ===================================\n____________ TestSpecialAll.test_ignored_when_not_directly_assigned ____________\n\nself = <pyflakes.test.test_imports.TestSpecialAll testMethod=test_ignored_when_not_directly_assigned>\n\n    def test_ignored_when_not_directly_assigned(self):\n>       self.flakes('''\n        import bar\n        (__all__,) = (\"foo\",)\n        ''', m.UnusedImport)\n\npyflakes/test/test_imports.py:1061: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \npyflakes/test/harness.py:30: in flakes\n    self.assertEqual(outputs, expectedOutputs, '''\\\nE   AssertionError: Lists differ: [<cla[19 chars]es.UndefinedExport'>, <class 'pyflakes.messages.UnusedImport'>] != [<cla[19 chars]es.UnusedImport'>]\nE   \nE   First differing element 0:\nE   <class 'pyflakes.messages.UndefinedExport'>\nE   <class 'pyflakes.messages.UnusedImport'>\nE   \nE   First list contains 1 additional elements.\nE   First extra element 1:\nE   <class 'pyflakes.messages.UnusedImport'>\nE   \nE   - [<class 'pyflakes.messages.UndefinedExport'>,\nE   -  <class 'pyflakes.messages.UnusedImport'>]\nE   ? ^\nE   \nE   + [<class 'pyflakes.messages.UnusedImport'>]\nE   ? ^\nE    : for input:\nE   \nE           import bar\nE           (__all__,) = (\"foo\",)\nE           \nE   expected outputs:\nE   [<class 'pyflakes.messages.UnusedImport'>]\nE   but got:\nE   (none):3:1 undefined name 'foo' in __all__\nE   (none):2:1 'bar' imported but unused\n=========================== short test summary info ============================\nFAILED pyflakes/test/test_imports.py::TestSpecialAll::test_ignored_when_not_directly_assigned\n1 failed, 131 passed, 4 skipped in 0.22s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f558b778980>",
+    "tool_calls": 17,
+    "task_index": 1
+   },
+   "segundos_reloj": 177.1
+  }
+ ]
+}

@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/base_comunidad",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "more-itertools__more-itertools-689",
+   "resolved": false,
+   "patch": "diff --git a/more_itertools/more.py b/more_itertools/more.py\nindex 379f5f6..0857004 100755\n--- a/more_itertools/more.py\n+++ b/more_itertools/more.py\n@@ -4429,3 +4429,13 @@ def partial_product(*args):\n         previous.append(current)\n         current = future[0] if len(future) > 0 else None\n         future = future[1:]\n+\n+\n+def inverse_nth_permutation(iterable, r, perm):\n+    \"\"\"Equivalent to list(permutations(iterable, r)).index(perm)\"\"\"\n+    return permutation_index(perm, iterable)\n+\n+\n+def inverse_nth_product(args, product):\n+    \"\"\"Equivalent to list(product(*args)).index(product)\"\"\"\n+    return product_index(product, *args)\ndiff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex 3facc2e..12b25b4 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -72,11 +72,14 @@ __all__ = [\n     'triplewise',\n     'unique_everseen',\n     'unique_justseen',\n-]\n+,\n+    'inverse_nth_combination']\n \n _marker = object()\n \n \n+from .more import combination_index\n+\n def take(n, iterable):\n     \"\"\"Return first *n* items of the iterable as a list.\n \n@@ -928,3 +931,8 @@ def factor(n):\n                 return\n     if n >= 2:\n         yield n\n+\n+\n+def inverse_nth_combination(iterable, r, comb):\n+    \"\"\"Equivalent to list(combinations(iterable, r)).index(comb)\"\"\"\n+    return combination_index(comb, iterable)",
+   "tool_calls": 28,
+   "duration_s": 225.7,
+   "error": null,
+   "raw": {
+    "task_id": "more-itertools__more-itertools-689",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 225.74950513099998,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 30,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/r3/base_comunidad__more-itertools__more-itertools-689/results/traces/trace_more-itertools__more-itertools-689.json",
+    "metadata": "{}",
+    "repo": "more-itertools/more-itertools",
+    "agent_patch": "diff --git a/more_itertools/more.py b/more_itertools/more.py\nindex 379f5f6..0857004 100755\n--- a/more_itertools/more.py\n+++ b/more_itertools/more.py\n@@ -4429,3 +4429,13 @@ def partial_product(*args):\n         previous.append(current)\n         current = future[0] if len(future) > 0 else None\n         future = future[1:]\n+\n+\n+def inverse_nth_permutation(iterable, r, perm):\n+    \"\"\"Equivalent to list(permutations(iterable, r)).index(perm)\"\"\"\n+    return permutation_index(perm, iterable)\n+\n+\n+def inverse_nth_product(args, product):\n+    \"\"\"Equivalent to list(product(*args)).index(product)\"\"\"\n+    return product_index(product, *args)\ndiff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex 3facc2e..12b25b4 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -72,11 +72,14 @@ __all__ = [\n     'triplewise',\n     'unique_everseen',\n     'unique_justseen',\n-]\n+,\n+    'inverse_nth_combination']\n \n _marker = object()\n \n \n+from .more import combination_index\n+\n def take(n, iterable):\n     \"\"\"Return first *n* items of the iterable as a list.\n \n@@ -928,3 +931,8 @@ def factor(n):\n                 return\n     if n >= 2:\n         yield n\n+\n+\n+def inverse_nth_combination(iterable, r, comb):\n+    \"\"\"Equivalent to list(combinations(iterable, r)).index(comb)\"\"\"\n+    return combination_index(comb, iterable)\n",
+    "test_output": "STDOUT:\n\n==================================== ERRORS ====================================\n_____________________ ERROR collecting tests/test_more.py ______________________\n/usr/local/lib/python3.13/site-packages/_pytest/python.py:508: in importtestmodule\n    mod = import_path(\n/usr/local/lib/python3.13/site-packages/_pytest/pathlib.py:596: in import_path\n    importlib.import_module(module_name)\n/usr/local/lib/python3.13/importlib/__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1404: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1369: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1340: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:935: in _load_unlocked\n    ???\n/usr/local/lib/python3.13/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntests/test_more.py:35: in <module>\n    import more_itertools as mi\nmore_itertools/__init__.py:3: in <module>\n    from .more import *  # noqa\n    ^^^^^^^^^^^^^^^^^^^\nmore_itertools/more.py:28: in <module>\n    from .recipes import (\nE     File \"/tmp/swegemma_sandbox_9c80bcc8-8cc_3vc1hvd2/workspace/more_itertools/recipes.py\", line 75\nE       ,\nE       ^\nE   SyntaxError: invalid syntax\n=========================== short test summary info ============================\nERROR tests/test_more.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.47s\n\nSTDERR:\n",
+    "test_exit_code": 2,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f80c4890980>",
+    "tool_calls": 28,
+    "task_index": 1
+   },
+   "segundos_reloj": 225.8
+  }
+ ]
+}
