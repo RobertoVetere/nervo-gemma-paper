@@ -9,7 +9,7 @@ These commands read saved results only; they need no model, no GPU and no API ke
 runs them all (CPU only; it clones this repository).
 
 ```bash
-python3 lab/oneshot/summary_format.py results/call_format/*.jsonl          # 4.2: five small models, 6,720 calls (+ API)
+python3 lab/oneshot/summary_format.py results/call_format/*.jsonl          # 4.2: four small models (seven weight variants), 6,720 calls (+ API)
 python3 local/count_ab.py results/modal_e4b_4bit/ab_calls.jsonl results/modal_e4b_4bit/ab   # 4.3: interface A/B
 python3 local/replica_table.py results/local_deepinfra/l40 results/local_deepinfra/l40_r2 results/local_deepinfra/l40_r3   # 4.4: 31B (API)
 python3 local/replica_table.py results/modal_e4b_4bit/q1 results/modal_e4b_4bit/q2         # 4.4: E4B 4-bit

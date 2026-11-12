@@ -12,21 +12,21 @@ Coding agents are usually designed for large models behind commercial APIs. A sm
 
 We start from a simple principle: *the prompt proposes, the code decides*. The model chooses what to change; deterministic scripts find the code, apply the edit and run checks, and their verdict decides the next step. The principle comes from an earlier prompt-chaining tool in which validating each step raised a 0.5B model from 25% to 62.5% on 16 arithmetic problems (a single run).
 
-Our contributions: (1) a controlled test across five small models from two families showing that one long text per call is the only interface that keeps tool calls intact; (2) an A/B inside the agent that isolates the interface as the cause of format failures; (3) quantization effects measured on one server, with and without long context; (4) four evaluation pitfalls, including an API that silently served another model; and (5) a validated task set, tools to run the official evaluator outside the competition, and a notebook that regenerates every table. Hypotheses for the runs beyond E4B were registered in the repository before running them.
+Our contributions: (1) a controlled test across four small models from two families, with original and 4-bit weights, showing that one long text per call is the only interface that keeps tool calls intact; (2) an A/B inside the agent that isolates the interface as the cause of format failures; (3) quantization effects measured on one server, with and without long context; (4) four evaluation pitfalls, including an API that silently served another model; and (5) a validated task set, tools to run the official evaluator outside the competition, and a notebook that regenerates every table. Hypotheses for the runs beyond E4B were registered in the repository before running them.
 
 ## 2. Experimental setup
 
 **Task.** Each task is a Python repository at a fixed commit, an issue text, and hidden tests that the fix must make pass or keep passing. The agent runs in a sandbox without network, with limits of 8 minutes, 28 tool calls and 80 model turns.
 
-**Environment.** We use the evaluation environment of the Gemma 4 Developer Agent competition [1]: agents declared in YAML on Google's Agent Development Kit (ADK) [2], nine predefined tools, and custom code only as Python scripts in a *skill*, invoked with a three-field call. The framework summarizes the conversation every 15 events, after which the model no longer sees its instructions.
+**Environment.** We use the evaluation environment of the Gemma 4 Developer Agent competition [1]: agents declared in YAML on Google's Agent Development Kit (ADK) [2], nine predefined tools, and custom code only as Python scripts in a *skill*, invoked with a three-field call. The framework periodically replaces earlier turns with a model-written summary (compaction interval 15); the system instructions remain, but earlier tool calls and outputs do not.
 
 **Models.** Official 4-bit weights (Gemma 4 QAT w4a16 [3], Qwen3-4B AWQ) and original bf16 weights, served by us with vLLM 0.19.1 [4] and each family's tool-call parser, as the competition serves Gemma. A commercial API (DeepInfra) answered our requests for E4B with `gemma-4-31B-it-turbo`, as we found after the fact (4.6); those results are reported as 31B (API). Temperature is 0.2.
 
-**Task sets.** The *validation set* has 104 tasks from 24 repositories of a public CC BY 4.0 collection [5] whose reference patch passes in the competition environment; agent comparisons use 40 of them sampled at random. The competition's *test set* has 58 held-out tasks, seen only as an aggregate score.
+**Task sets.** The *validation set* has 104 tasks from 24 repositories of a public CC BY 4.0 collection [5] whose reference patch passes in the competition environment; agent comparisons use 40 sampled at random from the 65 that also pass outside the competition environment. The competition's *test set* has 58 held-out tasks, seen only as an aggregate score.
 
 ## 3. Method
 
-Our agent, `fixer`, has three tools (`run_command`, `write_file`, `submit_patch`) and one skill. Its only skill call copies the scripts into a git-ignored folder in the repository; after that, every step is a one-field shell command, and long text (the issue, test cases, the edit) goes through `write_file`. Steps: `evidence.py` lists candidate functions from tracebacks, quoted commands and issue strings; `show_function.py` shows a function and what it calls; `callers.py` lists its callers; the model writes test cases; `apply_edit.py` applies a search-and-replace edit or shows the closest real lines; `verify.py` runs the cases and a related test and returns `SUBMIT`, `FIX` or `NO_EDIT`. Every script ends with a `NEXT:` line giving the exact next command, because the last tool output survives a summary.
+Our agent, `fixer`, has three tools (`run_command`, `write_file`, `submit_patch`) and one skill. Its only skill call copies the scripts into a git-ignored folder in the repository; after that, every step is a one-field shell command, and long text (the issue, test cases, the edit) goes through `write_file`. Steps: `evidence.py` lists candidate functions from tracebacks, quoted commands and issue strings; `show_function.py` shows a function and what it calls; `callers.py` lists its callers; the model writes test cases; `apply_edit.py` applies a search-and-replace edit or shows the closest real lines; `verify.py` runs the cases and a related test and returns `SUBMIT`, `FIX` or `NO_EDIT`. Every script ends with a `NEXT:` line giving the exact next command, because the most recent tool output stays visible after a summary.
 
 ## 4. Experiments and results
 
@@ -40,11 +40,11 @@ Across the traces of successive agent versions run in the competition environmen
 | The skill does not load | Only lowercase names with hyphens are accepted | Validate names before running |
 | The call is written as text and never runs | The model imitates the prompt's code-like notation | Describe calls as lists of fields |
 | Fields are lost when an argument is long | Long text inside a multi-field call (4.2) | One long text per call, through files |
-| The same incomplete call is repeated 64 times | The summary removes the instructions | One-field commands and `NEXT` lines |
+| The same incomplete call is repeated 64 times | The summary drops the earlier calls that worked | One-field commands and `NEXT` lines |
 
 With the three-field skill call the 31B had 819 of 930 calls rejected (653 from the naming failure; 81% after fixing it). These traces compare successive versions; 4.2 and 4.3 test the cause directly.
 
-### 4.2 A controlled test across five small models
+### 4.2 A controlled test across four small models
 
 We asked each model to apply one edit with one tool call, copying an old and a new block of real code (6–30 lines, 80 blocks from the validation repositories, two samples each), through three interfaces: the skill call with the text nested in an `args` object, a flat `edit_file(path, old_string, new_string)`, and a single `content` field holding a search-and-replace block; with or without 10,000 tokens of previously read code before the request. A call fails structurally if it never runs (no call the parser can extract) or loses a required field.
 
@@ -100,16 +100,16 @@ On 11 tasks, two samples each, single calls located the code from a repository m
 
 **Runs do not repeat.** At temperature 0 with a fixed seed, 0 of 8 trajectories were identical across two runs, likely because batched inference is not batch-invariant [6]; a first-run effect shrank on replication (4.4).
 
-**Local success does not transfer.** The 4-bit E4B solved 23–35% of validation tasks on our server, but its agents scored 0.01 and 0.03 on the competition test set. Weights and vLLM version match the competition's, so the gap most likely lies in the tasks: test tasks are short pull-request descriptions (median 72 words against 108) without runnable examples.
+**Local success does not transfer.** The 4-bit E4B solved 9 to 14 of the 40 validation tasks on our server (4.4), but its agents scored 0.01 and 0.03 on the competition test set. Weights and vLLM version match the competition's, so the gap lies in the tasks, whose repositories and descriptions both differ: the competition's 72 development tasks (the test tasks are hidden) are short pull-request descriptions, median 72 words against 108 in validation, none with a runnable example.
 
 ## 5. Related work and convergent evidence
 
-SWE-bench [7] defined repository repair with hidden tests; SWE-agent [8] showed that the agent–computer interface matters, and Agentless [9] that a fixed localize–repair–validate pipeline can beat autonomous agents. We study the other end of the scale: an interface that a small quantized model cannot call incorrectly. Strict output formats degrade reasoning [16], and reasoning models overthink in agentic repair [17]. 4-bit weights are near-lossless on reasoning benchmarks [18], yet in agents they amplify failures the model already has: 2.5 times more failed tool calls for Gemma 4 31B with an unchanged score [19], and more missed calls in a 1.7B model [20]; we see amplification for Gemma under long context and for the smaller E2B. Other participants report agreeing results:
+SWE-bench [7] defined repository repair with hidden tests; SWE-agent [8] showed that the agent–computer interface matters, and Agentless [9] that a fixed localize–repair–validate pipeline can beat autonomous agents. We study the other end of the scale: an interface that a small quantized model cannot call incorrectly. Strict output formats degrade reasoning [16], and reasoning models overthink in agentic repair [17]. 4-bit weights are near-lossless on reasoning benchmarks [18], yet in agents they amplify failures the model already has, up to 2.5 times, with an unchanged score [19], and they nearly triple missed tool calls in Qwen3-1.7B but not in Qwen3-4B [20]; we likewise see amplification for E4B under long context and for the smaller E2B, and none for Qwen3-4B. Other participants report agreeing results:
 
 | Finding | This paper | Independent evidence |
 |---|---|---|
 | Interfaces steer; instructions do not | 286 of 621 vs 0 of 687 rejected (4.3) | Prompt rules rarely followed; interface changes worked [10] |
-| Long text in structured calls breaks | Five models, two families (4.2) | Single-string edits cut failures from 56% to 2% [11] |
+| Long text in structured calls breaks | Four models, two families (4.2) | Single-string edits cut failures from 56% to 2% [11] |
 | Reasoning is not a free gain | Depends on model and agent (4.4) | Keeping or dropping earlier reasoning changed nothing [13]; thinking did not help in the time budget [14] |
 | Localization is not the bottleneck | Retriever top 3 for 28 of 40 | Name lookup drives localization [15] |
 | One run is one sample | 0 of 8 identical; effects shrink | One leaderboard draw varies by about 1.5 tasks [12] |
@@ -122,8 +122,8 @@ Agent comparisons use 40 tasks; the 31B came through an API with an unknown serv
 
 For small quantized models, the interface decides whether an agent works, not how much it solves. Five rules:
 
-1. **One long text per call.** Put it in a single field or a file; multi-field calls with long text fail in every small model we tried.
-2. **Put the next step in the tool output**, the only text that survives a summary.
+1. **One long text per call.** Put it in a single field or a file; nested multi-field calls with long text failed in every small model we tried, and flat ones in most.
+2. **Put the next step in the tool output**, which stays visible when a summary replaces earlier turns.
 3. **Let code decide and check layout.** Scripts locate, apply and verify, and reject malformed edits.
 4. **Measure reasoning per model and design.**
 5. **Validate with the deployed weights and tasks like the target**, with repeated runs, and check which model answered.
@@ -132,7 +132,7 @@ No rule fixed the content of the change, where most failures remain.
 
 ## Reproducibility
 
-Code, agents, data and per-call and per-task results are at https://github.com/RobertoVetere/nervo-gemma-paper (tag `paper-v1`). `docs/REPRODUCE.md` lists the file and command behind every number; `notebooks/reproduce_paper.ipynb` regenerates every table on a CPU. The retriever and the 31B agents will be added after the competition closes (2 December 2026).
+Code, agents, data and per-call and per-task results are at https://github.com/RobertoVetere/nervo-gemma-paper (tag `paper-v1`). `docs/REPRODUCE.md` lists the file and command behind every number; `notebooks/reproduce_paper.ipynb` regenerates every table on a CPU. The retriever of Section 4.5 and the agents built on it will be added after the competition closes (2 December 2026).
 
 ## References
 
@@ -174,4 +174,4 @@ Code, agents, data and per-call and per-task results are at https://github.com/R
 
 [19] J. Jang, K. Yang, H. Lim, H. Park. Flat Score, Amplified Failures: How the Error Budget Masks Damage in Quantized LLM Agents. arXiv:2607.27275, 2026.
 
-[20] M. Roshaan, M. Aaliyan, S. Bin Zubair. Compression Breaks Discipline: Quantization Increases Missed Tool Calls in Small Language Models, but Not Mid-Size Ones. NeurIPS 2026 Workshop on SLMs for Agentic Systems.
+[20] M. Roshaan, M. Aaliyan, S. Bin Zubair. Compression Breaks Discipline: Quantization Increases Missed Tool Calls in Small Language Models, but Not Mid-Size Ones. NeurIPS 2026 Workshop.

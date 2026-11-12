@@ -24,7 +24,7 @@ run checks, and their verdict decides what happens next.**
 
 | Question | Result | Where |
 |---|---|---|
-| Which tool-call interface survives in small models? | One long text per call (a single field or a file) stayed at **0–9%** structural failures in every model; calls with several fields failed in up to **73%** | 6,720 single calls, five models, one vLLM server (paper 4.2, Figure 1) |
+| Which tool-call interface survives in small models? | One long text per call (a single field or a file) stayed at **0–9%** structural failures in every model; calls with several fields failed in up to **73%** | 6,720 single calls, four models with original and 4-bit weights, one vLLM server (paper 4.2, Figure 1) |
 | Is the interface the cause inside a real agent? | Same E4B, same scripts: **286 of 621** calls rejected with a three-field call, **0 of 687** with one-field commands; solved 8 vs 9 of 40 | Paper 4.3 |
 | Does 4-bit quantization matter? | Not for E4B's isolated calls; it amplified E4B's call failures under long context, more so for E2B, and not for Qwen3-4B | Paper 4.2, 4.5 |
 | Does reasoning help? | With a 31B it helped a free-form agent more than a script-guided one; the effect shrank on replication and vanished with 4-bit E4B | Three + two replicas on 40 tasks (paper 4.4, Figure 2) |
@@ -63,7 +63,7 @@ Hypotheses for the generalization runs were committed before running them: [`doc
 Check every table from the saved results, at no cost (no GPU, no API key):
 
 ```bash
-python3 lab/oneshot/summary_format.py results/call_format/*.jsonl      # 4.2: five models, three interfaces
+python3 lab/oneshot/summary_format.py results/call_format/*.jsonl      # 4.2: four models, three interfaces
 python3 local/count_ab.py results/modal_e4b_4bit/ab_calls.jsonl results/modal_e4b_4bit/ab   # 4.3: interface A/B
 python3 local/replica_table.py results/modal_e4b_4bit/q1 results/modal_e4b_4bit/q2      # 4.4: E4B 4-bit 2x2
 python3 lab/oneshot/summary_quantization.py                                # 4.5: single calls, bf16 vs 4-bit
