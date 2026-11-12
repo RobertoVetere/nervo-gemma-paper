@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/e4b_cmd",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "digitalocean__pynetbox-128",
+   "resolved": true,
+   "patch": "diff --git a/pynetbox/core/response.py b/pynetbox/core/response.py\nindex 5a8c14c..65fab46 100644\n--- a/pynetbox/core/response.py\n+++ b/pynetbox/core/response.py\n@@ -183,6 +183,14 @@ class Record(object):\n             cur_attr = getattr(self, i)\n             if isinstance(cur_attr, Record):\n                 yield i, dict(cur_attr)\n+            elif isinstance(cur_attr, list):\n+                l = []\n+                for j in cur_attr:\n+                    if isinstance(j, Record):\n+                        l.append(dict(j))\n+                    else:\n+                        l.append(j)\n+                yield i, l\n             else:\n                 yield i, cur_attr",
+   "tool_calls": 17,
+   "duration_s": 304.1,
+   "error": null,
+   "raw": {
+    "task_id": "digitalocean__pynetbox-128",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 304.10135537299993,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 19,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_ab/e4b_cmd__digitalocean__pynetbox-128/results/traces/trace_digitalocean__pynetbox-128.json",
+    "metadata": "{}",
+    "repo": "digitalocean/pynetbox",
+    "agent_patch": "diff --git a/pynetbox/core/response.py b/pynetbox/core/response.py\nindex 5a8c14c..65fab46 100644\n--- a/pynetbox/core/response.py\n+++ b/pynetbox/core/response.py\n@@ -183,6 +183,14 @@ class Record(object):\n             cur_attr = getattr(self, i)\n             if isinstance(cur_attr, Record):\n                 yield i, dict(cur_attr)\n+            elif isinstance(cur_attr, list):\n+                l = []\n+                for j in cur_attr:\n+                    if isinstance(j, Record):\n+                        l.append(dict(j))\n+                    else:\n+                        l.append(j)\n+                yield i, l\n             else:\n                 yield i, cur_attr\n \n",
+    "test_output": "STDOUT:\n.....                                                                    [100%]\n5 passed in 0.20s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f2514e90980>",
+    "tool_calls": 17,
+    "task_index": 1
+   },
+   "segundos_reloj": 304.2
+  }
+ ]
+}

@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/e4b_t0",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "more-itertools__more-itertools-566",
+   "resolved": false,
+   "patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex e470f3b..b51725c 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -53,24 +53,39 @@ __all__ = [\n     'tail',\n     'take',\n     'unique_everseen',\n-    'unique_justseen',\n-]\n+        'unique_justseen',\n+        'before_and_after',\n+    ]\n \n+    def before_and_after(iterable, n):\n+        \"\"\"Yield the n elements before the first element of iterable, and then yield all elements of iterable.\n \n-def take(n, iterable):\n-    \"\"\"Return first *n* items of the iterable as a list.\n+        If the iterable has fewer than n elements, all elements are yielded.\n \n-        >>> take(3, range(10))\n-        [0, 1, 2]\n+        >>> list(before_and_after([1, 2, 3], 2))\n+        [1, 2, 3]\n \n-    If there are fewer than *n* items in the iterable, all of them are\n-    returned.\n+        >>> list(before_and_after([1, 2, 3], 5))\n+        [1, 2, 3]\n \n-        >>> take(10, range(3))\n-        [0, 1, 2]\n-\n-    \"\"\"\n-    return list(islice(iterable, n))\n+        >>> list(before_and_after([], 2))\n+        []\n+        \"\"\"\n+        it = iter(iterable)\n+        before = []\n+        for _ in range(n):\n+            try:\n+                before.append(next(it))\n+            except StopIteration:\n+                # If we run out of elements before reaching n, yield what we have and stop.\n+                yield from before\n+                return\n+\n+        # Yield the first n elements\n+        yield from before\n+\n+        # Yield the rest\n+        yield from it\n \n \n def tabulate(function, start=0):",
+   "tool_calls": 13,
+   "duration_s": 277.0,
+   "error": null,
+   "raw": {
+    "task_id": "more-itertools__more-itertools-566",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 276.982537117,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 17,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q1/e4b_t0__more-itertools__more-itertools-566/results/traces/trace_more-itertools__more-itertools-566.json",
+    "metadata": "{}",
+    "repo": "more-itertools/more-itertools",
+    "agent_patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex e470f3b..b51725c 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -53,24 +53,39 @@ __all__ = [\n     'tail',\n     'take',\n     'unique_everseen',\n-    'unique_justseen',\n-]\n+        'unique_justseen',\n+        'before_and_after',\n+    ]\n \n+    def before_and_after(iterable, n):\n+        \"\"\"Yield the n elements before the first element of iterable, and then yield all elements of iterable.\n \n-def take(n, iterable):\n-    \"\"\"Return first *n* items of the iterable as a list.\n+        If the iterable has fewer than n elements, all elements are yielded.\n \n-        >>> take(3, range(10))\n-        [0, 1, 2]\n+        >>> list(before_and_after([1, 2, 3], 2))\n+        [1, 2, 3]\n \n-    If there are fewer than *n* items in the iterable, all of them are\n-    returned.\n+        >>> list(before_and_after([1, 2, 3], 5))\n+        [1, 2, 3]\n \n-        >>> take(10, range(3))\n-        [0, 1, 2]\n-\n-    \"\"\"\n-    return list(islice(iterable, n))\n+        >>> list(before_and_after([], 2))\n+        []\n+        \"\"\"\n+        it = iter(iterable)\n+        before = []\n+        for _ in range(n):\n+            try:\n+                before.append(next(it))\n+            except StopIteration:\n+                # If we run out of elements before reaching n, yield what we have and stop.\n+                yield from before\n+                return\n+\n+        # Yield the first n elements\n+        yield from before\n+\n+        # Yield the rest\n+        yield from it\n \n \n def tabulate(function, start=0):\n",
+    "test_output": "STDOUT:\n\n==================================== ERRORS ====================================\n____________________ ERROR collecting tests/test_recipes.py ____________________\n/usr/local/lib/python3.13/site-packages/_pytest/python.py:508: in importtestmodule\n    mod = import_path(\n/usr/local/lib/python3.13/site-packages/_pytest/pathlib.py:596: in import_path\n    importlib.import_module(module_name)\n/usr/local/lib/python3.13/importlib/__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1404: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1369: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1340: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:935: in _load_unlocked\n    ???\n/usr/local/lib/python3.13/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntests/test_recipes.py:8: in <module>\n    import more_itertools as mi\nmore_itertools/__init__.py:1: in <module>\n    from .more import *  # noqa\n    ^^^^^^^^^^^^^^^^^^^\nmore_itertools/more.py:29: in <module>\n    from .recipes import (\nE     File \"/tmp/swegemma_sandbox_2b562d47-41c_p1cyxdev/workspace/more_itertools/recipes.py\", line 60\nE       def before_and_after(iterable, n):\nE   IndentationError: unexpected indent\n=========================== short test summary info ============================\nERROR tests/test_recipes.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.40s\n\nSTDERR:\n",
+    "test_exit_code": 2,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7fe9bb2ac980>",
+    "tool_calls": 13,
+    "task_index": 1
+   },
+   "segundos_reloj": 277.0
+  }
+ ]
+}

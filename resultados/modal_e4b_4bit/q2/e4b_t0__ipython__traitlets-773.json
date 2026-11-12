@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/e4b_t0",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "ipython__traitlets-773",
+   "resolved": false,
+   "patch": "diff --git a/traitlets/traitlets.py b/traitlets/traitlets.py\nindex 0eae5d1..07a7a50 100644\n--- a/traitlets/traitlets.py\n+++ b/traitlets/traitlets.py\n@@ -2127,6 +2127,20 @@ class Union(TraitType):\n         specified trait types. A Union traitlet cannot have metadata on\n         its own, besides the metadata of the listed types.\n \n+        Parameters\n+        \"\"\"\n+        if isinstance(trait_types, str):\n+            try:\n+                trait_types = literal_eval(trait_types)\n+            except (ValueError, TypeError) as e:\n+                raise TypeError(f\"Union trait types string '{trait_types}' could not be parsed: {e}\") from e\n+\n+        if not isinstance(trait_types, (list, tuple)):\n+            raise TypeError(f\"Union trait_types must be a list or tuple of types, got {type(trait_types)}\")\n+        This trait allows values that are allowed by at least one of the\n+        specified trait types. A Union traitlet cannot have metadata on\n+        its own, besides the metadata of the listed types.\n+\n         Parameters\n         ----------\n         trait_types : sequence\n@@ -3083,8 +3097,8 @@ class Dict(Instance):\n         d2['s'] must be text\n         >>> d2 = Dict(per_key_traits={\"n\": Integer(), \"s\": Unicode()})\n \n-        d3's keys must be text\n-        d3's values must be integers\n+        # d3's keys must be text\n+        # d3's values must be integers\n         >>> d3 = Dict(value_trait=Integer(), key_trait=Unicode())\n \n         \"\"\"\n@@ -3444,12 +3458,7 @@ class UseEnum(TraitType):\n \n \n class Callable(TraitType):\n-    \"\"\"A trait which is callable.\n-\n-    Notes\n-    -----\n-    Classes are callable, as are instances\n-    with a __call__() method.\"\"\"\n+    \"\"\"A trait which is callable.\"\"\"\n \n     info_text = \"a callable\"",
+   "tool_calls": 24,
+   "duration_s": 326.8,
+   "error": null,
+   "raw": {
+    "task_id": "ipython__traitlets-773",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 326.8382352140002,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 27,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q2/e4b_t0__ipython__traitlets-773/results/traces/trace_ipython__traitlets-773.json",
+    "metadata": "{}",
+    "repo": "ipython/traitlets",
+    "agent_patch": "diff --git a/traitlets/traitlets.py b/traitlets/traitlets.py\nindex 0eae5d1..07a7a50 100644\n--- a/traitlets/traitlets.py\n+++ b/traitlets/traitlets.py\n@@ -2127,6 +2127,20 @@ class Union(TraitType):\n         specified trait types. A Union traitlet cannot have metadata on\n         its own, besides the metadata of the listed types.\n \n+        Parameters\n+        \"\"\"\n+        if isinstance(trait_types, str):\n+            try:\n+                trait_types = literal_eval(trait_types)\n+            except (ValueError, TypeError) as e:\n+                raise TypeError(f\"Union trait types string '{trait_types}' could not be parsed: {e}\") from e\n+\n+        if not isinstance(trait_types, (list, tuple)):\n+            raise TypeError(f\"Union trait_types must be a list or tuple of types, got {type(trait_types)}\")\n+        This trait allows values that are allowed by at least one of the\n+        specified trait types. A Union traitlet cannot have metadata on\n+        its own, besides the metadata of the listed types.\n+\n         Parameters\n         ----------\n         trait_types : sequence\n@@ -3083,8 +3097,8 @@ class Dict(Instance):\n         d2['s'] must be text\n         >>> d2 = Dict(per_key_traits={\"n\": Integer(), \"s\": Unicode()})\n \n-        d3's keys must be text\n-        d3's values must be integers\n+        # d3's keys must be text\n+        # d3's values must be integers\n         >>> d3 = Dict(value_trait=Integer(), key_trait=Unicode())\n \n         \"\"\"\n@@ -3444,12 +3458,7 @@ class UseEnum(TraitType):\n \n \n class Callable(TraitType):\n-    \"\"\"A trait which is callable.\n-\n-    Notes\n-    -----\n-    Classes are callable, as are instances\n-    with a __call__() method.\"\"\"\n+    \"\"\"A trait which is callable.\"\"\"\n \n     info_text = \"a callable\"\n \n",
+    "test_output": "STDOUT:\n\n==================================== ERRORS ====================================\n______________ ERROR collecting traitlets/tests/test_traitlets.py ______________\n/usr/local/lib/python3.13/site-packages/_pytest/python.py:508: in importtestmodule\n    mod = import_path(\n/usr/local/lib/python3.13/site-packages/_pytest/pathlib.py:596: in import_path\n    importlib.import_module(module_name)\n/usr/local/lib/python3.13/importlib/__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1404: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1369: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1312: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:488: in _call_with_frames_removed\n    ???\n<frozen importlib._bootstrap>:1404: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1369: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1312: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:488: in _call_with_frames_removed\n    ???\n<frozen importlib._bootstrap>:1404: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1369: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1340: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:935: in _load_unlocked\n    ???\n<frozen importlib._bootstrap_external>:1027: in exec_module\n    ???\n<frozen importlib._bootstrap>:488: in _call_with_frames_removed\n    ???\ntraitlets/__init__.py:4: in <module>\n    from . import traitlets\nE     File \"/tmp/swegemma_sandbox_c7910353-fe7_52f8_e0g/workspace/traitlets/traitlets.py\", line 3461\nE       \"\"\"A trait which is callable.\"\"\"\nE                                    ^\nE   SyntaxError: unterminated triple-quoted string literal (detected at line 3469)\n=========================== short test summary info ============================\nERROR traitlets/tests/test_traitlets.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.12s\n\nSTDERR:\n",
+    "test_exit_code": 2,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f0149b24980>",
+    "tool_calls": 24,
+    "task_index": 1
+   },
+   "segundos_reloj": 326.9
+  }
+ ]
+}

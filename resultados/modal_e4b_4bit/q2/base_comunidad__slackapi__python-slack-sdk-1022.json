@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/base_comunidad",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "slackapi__python-slack-sdk-1022",
+   "resolved": false,
+   "patch": "diff --git a/slack_sdk/models/views/__init__.py b/slack_sdk/models/views/__init__.py\nindex f524fa5..6732805 100644\n--- a/slack_sdk/models/views/__init__.py\n+++ b/slack_sdk/models/views/__init__.py\n@@ -72,7 +72,10 @@ class View(JsonObject):\n         self.close = TextObject.parse(close, default_type=PlainTextObject.type)\n         self.blocks = Block.parse_all(blocks)\n         self.private_metadata = private_metadata\n-        self.state = state\n+        if isinstance(state, dict):\n+            self.state = ViewState(**state)\n+        else:\n+            self.state = state\n         self.hash = hash\n         self.clear_on_close = clear_on_close\n         self.notify_on_close = notify_on_close",
+   "tool_calls": 6,
+   "duration_s": 87.0,
+   "error": null,
+   "raw": {
+    "task_id": "slackapi__python-slack-sdk-1022",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 86.99419454500003,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 10,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q2/base_comunidad__slackapi__python-slack-sdk-1022/results/traces/trace_slackapi__python-slack-sdk-1022.json",
+    "metadata": "{}",
+    "repo": "slackapi/python-slack-sdk",
+    "agent_patch": "diff --git a/slack_sdk/models/views/__init__.py b/slack_sdk/models/views/__init__.py\nindex f524fa5..6732805 100644\n--- a/slack_sdk/models/views/__init__.py\n+++ b/slack_sdk/models/views/__init__.py\n@@ -72,7 +72,10 @@ class View(JsonObject):\n         self.close = TextObject.parse(close, default_type=PlainTextObject.type)\n         self.blocks = Block.parse_all(blocks)\n         self.private_metadata = private_metadata\n-        self.state = state\n+        if isinstance(state, dict):\n+            self.state = ViewState(**state)\n+        else:\n+            self.state = state\n         self.hash = hash\n         self.clear_on_close = clear_on_close\n         self.notify_on_close = notify_on_close\n",
+    "test_output": "STDOUT:\n............................................................FF.....      [100%]\n=================================== FAILURES ===================================\n______________________ ViewTests.test_load_modal_view_009 ______________________\n\nself = <tests.slack_sdk.models.test_views.ViewTests testMethod=test_load_modal_view_009>\n\n    def test_load_modal_view_009(self):\n        with open(\"tests/slack_sdk_fixture/view_modal_009.json\") as file:\n>           self.verify_loaded_view_object(file)\n\ntests/slack_sdk/models/test_views.py:430: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/slack_sdk/models/test_views.py:34: in verify_loaded_view_object\n    self.assertDictEqual(input, view.to_dict())\nE   AssertionError: {'id': 'VNM522E2U', 'team_id': 'T9M4RL1JM',[668 chars]34H'} != {'app_id': 'AAD3351BQ', 'blocks': [{'block_[656 chars]dal'}\nE     {'app_id': 'AAD3351BQ',\nE      'blocks': [{'block_id': 'edit_details',\nE                  'element': {'action_id': 'detail_input',\nE                              'type': 'plain_text_input'},\nE                  'label': {'text': 'Edit details', 'type': 'plain_text'},\nE                  'type': 'input'}],\nE      'bot_id': 'BADF7A34H',\nE      'callback_id': 'view_4',\nE      'clear_on_close': True,\nE      'close': {'emoji': True, 'text': 'Back', 'type': 'plain_text'},\nE      'external_id': 'some-unique-id',\nE      'hash': '1569362015.55b5e41b',\nE      'id': 'VNM522E2U',\nE      'notify_on_close': False,\nE      'private_metadata': 'secret',\nE      'root_view_id': 'VNN729E3U',\nE   -  'state': {'values': {}},\nE   +  'state': {},\nE      'submit': {'emoji': True, 'text': 'Save', 'type': 'plain_text'},\nE      'team_id': 'T9M4RL1JM',\nE      'title': {'emoji': True, 'text': 'Pushed Modal', 'type': 'plain_text'},\nE      'type': 'modal'}\n______________________ ViewTests.test_load_modal_view_010 ______________________\n\nself = <tests.slack_sdk.models.test_views.ViewTests testMethod=test_load_modal_view_010>\n\n    def test_load_modal_view_010(self):\n        with open(\"tests/slack_sdk_fixture/view_modal_010.json\") as file:\n>           self.verify_loaded_view_object(file)\n\ntests/slack_sdk/models/test_views.py:434: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/slack_sdk/models/test_views.py:34: in verify_loaded_view_object\n    self.assertDictEqual(input, view.to_dict())\nE   AssertionError: {'id': 'VMHU10V25', 'team_id': 'T8N4K1JN', [639 chars]94H'} != {'app_id': 'AA4928AQ', 'blocks': [{'block_i[627 chars]dal'}\nE     {'app_id': 'AA4928AQ',\nE      'blocks': [{'block_id': 'a_block_id',\nE                  'element': {'action_id': 'an_action_id',\nE                              'type': 'plain_text_input'},\nE                  'label': {'emoji': True,\nE                            'text': 'A simple label',\nE                            'type': 'plain_text'},\nE                  'optional': False,\nE                  'type': 'input'}],\nE      'bot_id': 'BA13894H',\nE      'callback_id': 'identify_your_modals',\nE      'clear_on_close': False,\nE      'external_id': 'some-unique-id',\nE      'hash': '156772938.1827394',\nE      'id': 'VMHU10V25',\nE      'notify_on_close': False,\nE      'private_metadata': 'Shh it is a secret',\nE      'root_view_id': 'VMHU10V25',\nE   -  'state': {'values': {}},\nE   +  'state': {},\nE      'submit': {'text': 'Create', 'type': 'plain_text'},\nE      'team_id': 'T8N4K1JN',\nE      'title': {'text': 'Quite a plain modal', 'type': 'plain_text'},\nE      'type': 'modal'}\n=========================== short test summary info ============================\nFAILED tests/slack_sdk/models/test_views.py::ViewTests::test_load_modal_view_009\nFAILED tests/slack_sdk/models/test_views.py::ViewTests::test_load_modal_view_010\n2 failed, 65 passed in 0.27s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f8506d88d70>",
+    "tool_calls": 6,
+    "task_index": 1
+   },
+   "segundos_reloj": 87.2
+  }
+ ]
+}

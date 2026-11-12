@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/base_comunidad",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "more-itertools__more-itertools-892",
+   "resolved": false,
+   "patch": "diff --git a/more_itertools/more.py b/more_itertools/more.py\nindex 7fa96ad..e56aaa1 100755\n--- a/more_itertools/more.py\n+++ b/more_itertools/more.py\n@@ -1792,7 +1792,7 @@ def zip_offset(*iterables, offsets, longest=False, fillvalue=None):\n     return zip(*staggered)\n \n \n-def sort_together(iterables, key_list=(0,), key=None, reverse=False):\n+def sort_together(iterables, key_list=(0,), key=None, reverse=False, strict=False):\n     \"\"\"Return the input iterables sorted together, with *key_list* as the\n     priority for sorting. All iterables are trimmed to the length of the\n     shortest one.\n@@ -1801,7 +1801,11 @@ def sort_together(iterables, key_list=(0,), key=None, reverse=False):\n     iterable represents a column of data, the key list determines which\n     columns are used for sorting.\n \n-    By default, all iterables are sorted using the ``0``-th iterable::\n+    if strict:\n+        iterables = [list(it) for it in iterables]\n+        lengths = [len(l) for l in iterables]\n+        if not all(l == lengths[0] for l in lengths):\n+            raise UnequalIterablesError(f\"Iterables have different lengths: {lengths}\")\n \n         >>> iterables = [(4, 3, 2, 1), ('a', 'b', 'c', 'd')]\n         >>> sort_together(iterables)",
+   "tool_calls": 17,
+   "duration_s": 237.7,
+   "error": null,
+   "raw": {
+    "task_id": "more-itertools__more-itertools-892",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 237.657159633,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 20,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q2/base_comunidad__more-itertools__more-itertools-892/results/traces/trace_more-itertools__more-itertools-892.json",
+    "metadata": "{}",
+    "repo": "more-itertools/more-itertools",
+    "agent_patch": "diff --git a/more_itertools/more.py b/more_itertools/more.py\nindex 7fa96ad..e56aaa1 100755\n--- a/more_itertools/more.py\n+++ b/more_itertools/more.py\n@@ -1792,7 +1792,7 @@ def zip_offset(*iterables, offsets, longest=False, fillvalue=None):\n     return zip(*staggered)\n \n \n-def sort_together(iterables, key_list=(0,), key=None, reverse=False):\n+def sort_together(iterables, key_list=(0,), key=None, reverse=False, strict=False):\n     \"\"\"Return the input iterables sorted together, with *key_list* as the\n     priority for sorting. All iterables are trimmed to the length of the\n     shortest one.\n@@ -1801,7 +1801,11 @@ def sort_together(iterables, key_list=(0,), key=None, reverse=False):\n     iterable represents a column of data, the key list determines which\n     columns are used for sorting.\n \n-    By default, all iterables are sorted using the ``0``-th iterable::\n+    if strict:\n+        iterables = [list(it) for it in iterables]\n+        lengths = [len(l) for l in iterables]\n+        if not all(l == lengths[0] for l in lengths):\n+            raise UnequalIterablesError(f\"Iterables have different lengths: {lengths}\")\n \n         >>> iterables = [(4, 3, 2, 1), ('a', 'b', 'c', 'd')]\n         >>> sort_together(iterables)\n",
+    "test_output": "STDOUT:\n..................................................................................... [ 15%]\n......................................................... [ 26%]\n...................................................F.................... [ 40%]\n................................................................................ [ 55%]\n....................................................................................................................................... [ 80%]\n........................................................................................ [ 96%]\n.................                                                        [100%]\n=================================== FAILURES ===================================\n_________________________ SortTogetherTest.test_strict _________________________\n\nself = <tests.test_more.SortTogetherTest testMethod=test_strict>\n\n    def test_strict(self):\n        # Test for list of lists or tuples\n>       self.assertRaises(\n            mi.UnequalIterablesError,\n            lambda: mi.sort_together(\n                [(4, 3, 2, 1), ('a', 'b', 'c')], strict=True\n            ),\n        )\nE       AssertionError: UnequalIterablesError not raised by <lambda>\n\ntests/test_more.py:2178: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_more.py::SortTogetherTest::test_strict - AssertionError: Un...\n1 failed, 533 passed, 2219 subtests passed in 2.03s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7fe9d118cd70>",
+    "tool_calls": 17,
+    "task_index": 1
+   },
+   "segundos_reloj": 237.8
+  }
+ ]
+}

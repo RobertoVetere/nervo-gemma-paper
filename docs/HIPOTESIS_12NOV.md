@@ -28,3 +28,28 @@ call to install, then one-field `run_command`). Same skill scripts and steps.
 - Report every model and condition run, including those that contradict the hypotheses.
 - Block-level McNemar for H1; per-cell counts and paired per-task comparisons for H2 and H3; no new tests added after
   seeing the data without saying so.
+
+---
+
+## Outcomes (added after the runs, 12 November 2026, afternoon)
+
+Numbers from `lab/oneshot/resumen_formato.py resultados/formato_llamadas/*.jsonl`, `local/contar_ab.py` and
+`local/tabla_replicas.py resultados/modal_e4b_4bit/q1 resultados/modal_e4b_4bit/q2`. Structural failure = the call
+never runs or loses a required field (re-scored from the raw message; content that ignores the SEARCH/REPLACE layout
+is counted separately, not as a lost field).
+
+- **H1a — partly held.** Nested failed more than single-field in every model (p ≤ 0.008), but not always more than
+  flat: Qwen3-1.7B short context, nested 9 vs flat 30 of 160.
+- **H1b — failed.** Flat stayed ≤ 2% only for E4B (E2B bf16 short 10/160; Qwen 74–99/160). Single field stayed ≤ 2%
+  except Qwen3-4B AWQ long (8/160) and Qwen3-1.7B long (15/160).
+- **H1c — held only for E4B.** E2B 4-bit was worse than bf16 in both contexts (blocks 45 vs 21 short, 55 vs 36 long);
+  Qwen3-4B AWQ did not differ from bf16 (59 vs 54, 52 vs 53).
+- Smaller models failed more: held for E2B vs E4B; Qwen3-1.7B failed less than Qwen3-4B in short context and more in
+  long context.
+- **H2a — held in direction.** E4B 4-bit, free-form agent: 12, 12 without reasoning; 13, 14 with reasoning.
+- **H2b — failed.** `fixer`: 9, 12 without; 12, 10 with. Turn-limit hits 0 in all `fixer` cells.
+- Expected level 3–10 of 40: exceeded (9–14 of 40).
+- **H3a — held.** Three-field 286 of 621 calls rejected for format; one-field 0 of 687.
+- **H3b — held.** Solved 8 vs 9 of 40 (one task only with one-field).
+- Not pre-registered and reported as such: per-model McNemar of single field vs flat, and the re-scoring that
+  separates lost fields from layout errors.

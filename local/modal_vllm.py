@@ -16,13 +16,21 @@ import modal
 
 MODELO = os.environ.get('NERVO_VLLM_MODELO', 'gemma-4-e4b-it-qat-w4a16-ct')
 GPUS = int(os.environ.get('NERVO_VLLM_GPUS', '1'))
-REPOS_HF = {
-    'gemma-4-e4b-it-qat-w4a16-ct': 'google/gemma-4-E4B-it-qat-w4a16-ct',
-    'gemma-4-31b-it-qat-w4a16-ct': 'google/gemma-4-31B-it-qat-w4a16-ct',
-    'gemma-4-e4b-it': 'google/gemma-4-E4B-it',  # unquantized bf16 weights, for quantized-vs-unquantized comparisons
+# served name -> (Hugging Face repo, tool parser, reasoning parser, app slug)
+MODELOS = {
+    'gemma-4-e4b-it-qat-w4a16-ct': ('google/gemma-4-E4B-it-qat-w4a16-ct', 'gemma4', 'gemma4', 'e4b'),
+    'gemma-4-31b-it-qat-w4a16-ct': ('google/gemma-4-31B-it-qat-w4a16-ct', 'gemma4', 'gemma4', '31b'),
+    'gemma-4-e4b-it': ('google/gemma-4-E4B-it', 'gemma4', 'gemma4', 'e4b-bf16'),
+    'gemma-4-e2b-it-qat-w4a16-ct': ('google/gemma-4-E2B-it-qat-w4a16-ct', 'gemma4', 'gemma4', 'e2b'),
+    'gemma-4-e2b-it': ('google/gemma-4-E2B-it', 'gemma4', 'gemma4', 'e2b-bf16'),
+    'qwen3-4b': ('Qwen/Qwen3-4B', 'hermes', 'qwen3', 'qwen3-4b-bf16'),
+    'qwen3-4b-awq': ('Qwen/Qwen3-4B-AWQ', 'hermes', 'qwen3', 'qwen3-4b-awq'),
+    'qwen3-1.7b': ('Qwen/Qwen3-1.7B', 'hermes', 'qwen3', 'qwen3-1-7b-bf16'),
 }
+REPOS_HF = {k: v[0] for k, v in MODELOS.items()}
+SUFIJO = os.environ.get('NERVO_VLLM_SUFIJO', '')  # second copy of the same model as a separate app (e.g. '-b')
 CLAVE = hashlib.sha256((os.environ.get('MODAL_TOKEN_SECRET', '') + ':vllm').encode()).hexdigest()[:40]
-CORTO = ('e4b' if 'e4b' in MODELO else '31b') + ('-bf16' if 'qat' not in MODELO else '')
+CORTO = MODELOS[MODELO][3] + SUFIJO
 
 app = modal.App(f'nervo-vllm-{CORTO}')
 modelos = modal.Volume.from_name('nervo-modelos', create_if_missing=True)
@@ -31,7 +39,7 @@ imagen = (
     .pip_install('vllm==0.19.1', 'huggingface_hub>=1.5,<2')
     .run_commands('pip install --no-deps transformers==5.13.1 compressed-tensors==0.15.0.1 flashinfer-python==0.6.6 '
                   'flashinfer-cubin==0.6.6 xgrammar==0.2.5.post1 tokenizers==0.22.2 safetensors==0.8.0')
-    .env({'NERVO_VLLM_MODELO': MODELO, 'NERVO_VLLM_GPUS': str(GPUS),
+    .env({'NERVO_VLLM_MODELO': MODELO, 'NERVO_VLLM_GPUS': str(GPUS), 'NERVO_VLLM_SUFIJO': SUFIJO,
           'NERVO_VLLM_CLAVE': CLAVE})
 )
 
@@ -48,12 +56,16 @@ def servir():
         from huggingface_hub import snapshot_download
         snapshot_download(REPOS_HF[modelo], local_dir=destino)
         modelos.commit()
-    subprocess.Popen([
-        'vllm', 'serve', destino, '--served-model-name', modelo, '--host', '0.0.0.0', '--port', '8000',
-        '--tool-call-parser', 'gemma4', '--reasoning-parser', 'gemma4', '--enable-auto-tool-choice',
-        '--max-model-len', '32768', '--gpu-memory-utilization', '0.90', '--dtype', 'bfloat16',
-        '--tensor-parallel-size', os.environ['NERVO_VLLM_GPUS'], '--api-key', os.environ['NERVO_VLLM_CLAVE'],
-    ])
+    _, tool_parser, reasoning_parser, _ = MODELOS[modelo]
+    gemma = modelo.startswith('gemma')
+    cmd = ['vllm', 'serve', destino, '--served-model-name', modelo, '--host', '0.0.0.0', '--port', '8000',
+           '--tool-call-parser', tool_parser, '--reasoning-parser', reasoning_parser, '--enable-auto-tool-choice',
+           '--max-model-len', '32768', '--gpu-memory-utilization', '0.90',
+           '--dtype', 'bfloat16' if gemma else 'auto',
+           '--tensor-parallel-size', os.environ['NERVO_VLLM_GPUS'], '--api-key', os.environ['NERVO_VLLM_CLAVE']]
+    if gemma:  # as the official harness (thinking_token_budget)
+        cmd += ['--reasoning-config', '{"reasoning_start_str": "<|channel>", "reasoning_end_str": "<channel|>"}']
+    subprocess.Popen(cmd)
 
 
 @app.function(image=imagen, timeout=900)

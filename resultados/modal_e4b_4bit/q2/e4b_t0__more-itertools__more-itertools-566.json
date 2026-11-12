@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/e4b_t0",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "more-itertools__more-itertools-566",
+   "resolved": false,
+   "patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex e470f3b..b986b6c 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -592,10 +592,23 @@ def nth_combination(iterable, r, index):\n             c, n = c * (n - r) // n, n - 1\n         result.append(pool[-1 - n])\n \n-    return tuple(result)\n-\n-\n-def prepend(value, iterator):\n+    def before_and_after(iterable, n):\n+        \"\"\"Yield up to n elements, then the rest, and stop.\"\"\"\n+        it = iter(iterable)\n+        for _ in range(n):\n+            try:\n+                yield next(it)\n+            except StopIteration:\n+                return\n+\n+        for item in it:\n+            yield item\n+\n+    def prepend(value, iterator):\n+        \\\"\\\"\\\"Yield *value*, followed by the elements in *iterator*.\\n\\n        >>> value = '0'\\n        >>> iterator = ['1', '2', '3']\n+            >>> list(prepend(value, iterator))\\n        ['0', '1', '2', '3']\n+    \\n    To prepend multiple values, see :func:`itertools.chain`\n+        or :func:`value_chain`.\\n\\n    \\\"\\\"\\\"\n     \"\"\"Yield *value*, followed by the elements in *iterator*.\n \n         >>> value = '0'\ndiff --git a/more_itertools/recipes.pyi b/more_itertools/recipes.pyi\nindex 69ff32d..1ada8b6 100644\n--- a/more_itertools/recipes.pyi\n+++ b/more_itertools/recipes.pyi\n@@ -103,3 +103,4 @@ def nth_combination(\n ) -> Tuple[_T, ...]: ...\n def prepend(value: _T, iterator: Iterable[_U]) -> Iterator[Union[_T, _U]]: ...\n def convolve(signal: Iterable[_T], kernel: Iterable[_T]) -> Iterator[_T]: ...\n+def before_and_after(iterable: Iterable[_T], n: int) -> Iterator[_T]: ...",
+   "tool_calls": 18,
+   "duration_s": 263.5,
+   "error": null,
+   "raw": {
+    "task_id": "more-itertools__more-itertools-566",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 263.4916339839997,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 23,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q2/e4b_t0__more-itertools__more-itertools-566/results/traces/trace_more-itertools__more-itertools-566.json",
+    "metadata": "{}",
+    "repo": "more-itertools/more-itertools",
+    "agent_patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex e470f3b..b986b6c 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -592,10 +592,23 @@ def nth_combination(iterable, r, index):\n             c, n = c * (n - r) // n, n - 1\n         result.append(pool[-1 - n])\n \n-    return tuple(result)\n-\n-\n-def prepend(value, iterator):\n+    def before_and_after(iterable, n):\n+        \"\"\"Yield up to n elements, then the rest, and stop.\"\"\"\n+        it = iter(iterable)\n+        for _ in range(n):\n+            try:\n+                yield next(it)\n+            except StopIteration:\n+                return\n+\n+        for item in it:\n+            yield item\n+\n+    def prepend(value, iterator):\n+        \\\"\\\"\\\"Yield *value*, followed by the elements in *iterator*.\\n\\n        >>> value = '0'\\n        >>> iterator = ['1', '2', '3']\n+            >>> list(prepend(value, iterator))\\n        ['0', '1', '2', '3']\n+    \\n    To prepend multiple values, see :func:`itertools.chain`\n+        or :func:`value_chain`.\\n\\n    \\\"\\\"\\\"\n     \"\"\"Yield *value*, followed by the elements in *iterator*.\n \n         >>> value = '0'\ndiff --git a/more_itertools/recipes.pyi b/more_itertools/recipes.pyi\nindex 69ff32d..1ada8b6 100644\n--- a/more_itertools/recipes.pyi\n+++ b/more_itertools/recipes.pyi\n@@ -103,3 +103,4 @@ def nth_combination(\n ) -> Tuple[_T, ...]: ...\n def prepend(value: _T, iterator: Iterable[_U]) -> Iterator[Union[_T, _U]]: ...\n def convolve(signal: Iterable[_T], kernel: Iterable[_T]) -> Iterator[_T]: ...\n+def before_and_after(iterable: Iterable[_T], n: int) -> Iterator[_T]: ...\n",
+    "test_output": "STDOUT:\n\n==================================== ERRORS ====================================\n____________________ ERROR collecting tests/test_recipes.py ____________________\n/usr/local/lib/python3.13/site-packages/_pytest/python.py:508: in importtestmodule\n    mod = import_path(\n/usr/local/lib/python3.13/site-packages/_pytest/pathlib.py:596: in import_path\n    importlib.import_module(module_name)\n/usr/local/lib/python3.13/importlib/__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1404: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1369: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1340: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:935: in _load_unlocked\n    ???\n/usr/local/lib/python3.13/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntests/test_recipes.py:8: in <module>\n    import more_itertools as mi\nmore_itertools/__init__.py:1: in <module>\n    from .more import *  # noqa\n    ^^^^^^^^^^^^^^^^^^^\nmore_itertools/more.py:29: in <module>\n    from .recipes import (\nE     File \"/tmp/swegemma_sandbox_d9eec60b-f52_m4pd4zxq/workspace/more_itertools/recipes.py\", line 608\nE       \\\"\\\"\\\"Yield *value*, followed by the elements in *iterator*.\\n\\n        >>> value = '0'\\n        >>> iterator = ['1', '2', '3']\nE        ^\nE   SyntaxError: unexpected character after line continuation character\n=========================== short test summary info ============================\nERROR tests/test_recipes.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.21s\n\nSTDERR:\n",
+    "test_exit_code": 2,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f60a0b8c980>",
+    "tool_calls": 18,
+    "task_index": 1
+   },
+   "segundos_reloj": 263.6
+  }
+ ]
+}

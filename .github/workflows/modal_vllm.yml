@@ -9,6 +9,9 @@ on:
       app:
         description: "solo logs: nombre de la app"
         default: "nervo-vllm-e4b"
+      sufijo:
+        description: "sufijo del nombre de la app para una segunda copia del mismo modelo (p. ej. -b)"
+        default: ""
       gpus:
         description: "Número de L4 (E4B: 1; 31B: 4)"
         default: "1"
@@ -23,6 +26,7 @@ jobs:
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
       NERVO_VLLM_MODELO: ${{ inputs.modelo }}
       NERVO_VLLM_GPUS: ${{ inputs.gpus }}
+      NERVO_VLLM_SUFIJO: ${{ inputs.sufijo }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

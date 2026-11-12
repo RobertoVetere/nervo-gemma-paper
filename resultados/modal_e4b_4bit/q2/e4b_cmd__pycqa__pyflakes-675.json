@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/e4b_cmd",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pycqa__pyflakes-675",
+   "resolved": false,
+   "patch": "diff --git a/pyflakes/checker.py b/pyflakes/checker.py\nindex 45c7a4a..5c345f0 100644\n--- a/pyflakes/checker.py\n+++ b/pyflakes/checker.py\n@@ -588,7 +588,9 @@ class ExportBinding(Binding):\n                 if isinstance(node, ast.Str):\n                     self.names.append(node.s)\n \n-        if isinstance(source.value, (ast.List, ast.Tuple)):\n+        if isinstance(source.value, ast.List):\n+            _add_to_names(source.value)\n+        elif isinstance(source.value, ast.Tuple):\n             _add_to_names(source.value)\n         # If concatenating lists or tuples\n         elif isinstance(source.value, ast.BinOp):",
+   "tool_calls": 11,
+   "duration_s": 81.3,
+   "error": null,
+   "raw": {
+    "task_id": "pycqa__pyflakes-675",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 81.31108272699976,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 14,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q2/e4b_cmd__pycqa__pyflakes-675/results/traces/trace_pycqa__pyflakes-675.json",
+    "metadata": "{}",
+    "repo": "pycqa/pyflakes",
+    "agent_patch": "diff --git a/pyflakes/checker.py b/pyflakes/checker.py\nindex 45c7a4a..5c345f0 100644\n--- a/pyflakes/checker.py\n+++ b/pyflakes/checker.py\n@@ -588,7 +588,9 @@ class ExportBinding(Binding):\n                 if isinstance(node, ast.Str):\n                     self.names.append(node.s)\n \n-        if isinstance(source.value, (ast.List, ast.Tuple)):\n+        if isinstance(source.value, ast.List):\n+            _add_to_names(source.value)\n+        elif isinstance(source.value, ast.Tuple):\n             _add_to_names(source.value)\n         # If concatenating lists or tuples\n         elif isinstance(source.value, ast.BinOp):\n",
+    "test_output": "STDOUT:\n.................................s...s.............s.................... [ 52%]\n...........s.........................................F..........         [100%]\n=================================== FAILURES ===================================\n____________ TestSpecialAll.test_ignored_when_not_directly_assigned ____________\n\nself = <pyflakes.test.test_imports.TestSpecialAll testMethod=test_ignored_when_not_directly_assigned>\n\n    def test_ignored_when_not_directly_assigned(self):\n>       self.flakes('''\n        import bar\n        (__all__,) = (\"foo\",)\n        ''', m.UnusedImport)\n\npyflakes/test/test_imports.py:1061: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \npyflakes/test/harness.py:23: in flakes\n    w = checker.Checker(\npyflakes/checker.py:918: in __init__\n    self.handleChildren(tree)\npyflakes/checker.py:1373: in handleChildren\n    self.handleNode(node, tree)\npyflakes/checker.py:1418: in handleNode\n    handler(node)\npyflakes/checker.py:1373: in handleChildren\n    self.handleNode(node, tree)\npyflakes/checker.py:1418: in handleNode\n    handler(node)\npyflakes/checker.py:2262: in TUPLE\n    self.handleChildren(node)\npyflakes/checker.py:1373: in handleChildren\n    self.handleNode(node, tree)\npyflakes/checker.py:1418: in handleNode\n    handler(node)\npyflakes/checker.py:2048: in NAME\n    self.handleNodeStore(node)\npyflakes/checker.py:1297: in handleNodeStore\n    binding = ExportBinding(name, node._pyflakes_parent, self.scope)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <[AttributeError(\"'ExportBinding' object has no attribute 'name'\") raised in repr()] ExportBinding object at 0x7fb3ccc07ac0>\nname = '__all__', source = <ast.Tuple object at 0x7fb3cc929850>\nscope = <ModuleScope at 0x7fb3cc8bbc50 {'__build_class__': <Builtin object '__build_class__' at 0x7fb3cc8dd490>, 'frozenset': ...divmod': <Builtin object 'divmod' at 0x7fb3cc8bd370>, 'bar': <Importation object 'bar' from line 2 at 0x7fb3cc927af0>}>\n\n    def __init__(self, name, source, scope):\n        if '__all__' in scope and isinstance(source, ast.AugAssign):\n            self.names = list(scope['__all__'].names)\n        else:\n            self.names = []\n    \n        def _add_to_names(container):\n            for node in container.elts:\n                if isinstance(node, ast.Str):\n                    self.names.append(node.s)\n    \n>       if isinstance(source.value, ast.List):\n                      ^^^^^^^^^^^^\nE       AttributeError: 'Tuple' object has no attribute 'value'\n\npyflakes/checker.py:591: AttributeError\n=========================== short test summary info ============================\nFAILED pyflakes/test/test_imports.py::TestSpecialAll::test_ignored_when_not_directly_assigned\n1 failed, 131 passed, 4 skipped in 0.46s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7fbfc278cd70>",
+    "tool_calls": 11,
+    "task_index": 1
+   },
+   "segundos_reloj": 81.4
+  }
+ ]
+}

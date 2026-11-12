@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/e4b_cmd",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "python-markdown__markdown-1359",
+   "resolved": false,
+   "patch": "diff --git \"a/\\\".fixer/edit.txt\\\"\" \"b/\\\".fixer/edit.txt\\\"\"\nnew file mode 100644\nindex 0000000..b8441ca\n--- /dev/null\n+++ \"b/\\\".fixer/edit.txt\\\"\"\n@@ -0,0 +1,12 @@\n+<<<<<<< SEARCH\n+    def _unescape(self, m):\n+        return chr(int(m.group(1)))\n+=======\n+    def _unescape(self, m):\n+        match = m.group(0)\n+        # If the match is a backslash followed only by digits, treat it as a literal sequence\n+        # and do not attempt to convert it to a character, preventing corruption of paths/attributes.\n+        if match.startswith('\\\\') and match[1:].isdigit():\n+            return match\n+        return chr(int(m.group(1)))\n+>>>>>>> REPLACE\n\\ No newline at end of file",
+   "tool_calls": 21,
+   "duration_s": 153.9,
+   "error": null,
+   "raw": {
+    "task_id": "python-markdown__markdown-1359",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 153.87344923900002,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 24,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q1/e4b_cmd__python-markdown__markdown-1359/results/traces/trace_python-markdown__markdown-1359.json",
+    "metadata": "{}",
+    "repo": "python-markdown/markdown",
+    "agent_patch": "diff --git \"a/\\\".fixer/edit.txt\\\"\" \"b/\\\".fixer/edit.txt\\\"\"\nnew file mode 100644\nindex 0000000..b8441ca\n--- /dev/null\n+++ \"b/\\\".fixer/edit.txt\\\"\"\n@@ -0,0 +1,12 @@\n+<<<<<<< SEARCH\n+    def _unescape(self, m):\n+        return chr(int(m.group(1)))\n+=======\n+    def _unescape(self, m):\n+        match = m.group(0)\n+        # If the match is a backslash followed only by digits, treat it as a literal sequence\n+        # and do not attempt to convert it to a character, preventing corruption of paths/attributes.\n+        if match.startswith('\\\\') and match[1:].isdigit():\n+            return match\n+        return chr(int(m.group(1)))\n+>>>>>>> REPLACE\n\\ No newline at end of file\n",
+    "test_output": "STDOUT:\n.F                                                                       [100%]\n=================================== FAILURES ===================================\n___________________ TestRawHtml.test_inline_html_backslashes ___________________\n\nself = <tests.test_syntax.inline.test_raw_html.TestRawHtml testMethod=test_inline_html_backslashes>\n\n    def test_inline_html_backslashes(self):\n>       self.assertMarkdownRenders('<img src=\"..\\\\..\\\\foo.png\">', '<p><img src=\"..\\\\..\\\\foo.png\"></p>')\n\ntests/test_syntax/inline/test_raw_html.py:33: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nmarkdown/test_tools.py:73: in assertMarkdownRenders\n    self.assertMultiLineEqual(output, expected)\nE   AssertionError: '<p><img src=\"..\\\\\\x0246\\x03.\\\\foo.png\"></p>' != '<p><img src=\"..\\\\..\\\\foo.png\"></p>'\nE   - <p><img src=\"..\\\u000246\u0003.\\foo.png\"></p>\nE   ?                 ^^^^\nE   + <p><img src=\"..\\..\\foo.png\"></p>\nE   ?                 ^\n=========================== short test summary info ============================\nFAILED tests/test_syntax/inline/test_raw_html.py::TestRawHtml::test_inline_html_backslashes\n1 failed, 1 passed in 0.09s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f068646c980>",
+    "tool_calls": 21,
+    "task_index": 1
+   },
+   "segundos_reloj": 154.0
+  }
+ ]
+}

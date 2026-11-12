@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/e4b_t0",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "more-itertools__more-itertools-855",
+   "resolved": false,
+   "patch": "diff --git a/more_itertools/more.py b/more_itertools/more.py\nindex 7b48190..7534ed0 100755\n--- a/more_itertools/more.py\n+++ b/more_itertools/more.py\n@@ -3561,11 +3561,12 @@ def _sample_unweighted(iterable, k):\n \n \n def _sample_weighted(iterable, k, weights):\n+    import random\n     # Implementation of \"A-ExpJ\" from the 2006 paper by Efraimidis et al. :\n     # \"Weighted random sampling with a reservoir\".\n \n     # Log-transform for numerical stability for weights that are small/large\n-    weight_keys = (log(random()) / weight for weight in weights)\n+    weight_keys = (log(random.random()) / weight for weight in weights)\n \n     # Fill up the reservoir (collection of samples) with the first `k`\n     # weight-keys and elements, then heapify the list.\n@@ -3575,7 +3576,7 @@ def _sample_weighted(iterable, k, weights):\n     # The number of jumps before changing the reservoir is a random variable\n     # with an exponential distribution. Sample it using random() and logs.\n     smallest_weight_key, _ = reservoir[0]\n-    weights_to_skip = log(random()) / smallest_weight_key\n+    weights_to_skip = log(random.random()) / smallest_weight_key\n \n     for weight, element in zip(weights, iterable):\n         if weight >= weights_to_skip:\n@@ -3587,12 +3588,15 @@ def _sample_weighted(iterable, k, weights):\n             weight_key = log(r_2) / weight\n             heapreplace(reservoir, (weight_key, element))\n             smallest_weight_key, _ = reservoir[0]\n-            weights_to_skip = log(random()) / smallest_weight_key\n+            weights_to_skip = log(random.random()) / smallest_weight_key\n         else:\n             weights_to_skip -= weight\n \n     # Equivalent to [element for weight_key, element in sorted(reservoir)]\n-    return [heappop(reservoir)[1] for _ in range(k)]\n+    selected = [heappop(reservoir)[1] for _ in range(k)]\n+    import random\n+    random.shuffle(selected)\n+    return selected\n \n \n def sample(iterable, k, weights=None):",
+   "tool_calls": 15,
+   "duration_s": 177.0,
+   "error": null,
+   "raw": {
+    "task_id": "more-itertools__more-itertools-855",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 176.97895984099978,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 18,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q1/e4b_t0__more-itertools__more-itertools-855/results/traces/trace_more-itertools__more-itertools-855.json",
+    "metadata": "{}",
+    "repo": "more-itertools/more-itertools",
+    "agent_patch": "diff --git a/more_itertools/more.py b/more_itertools/more.py\nindex 7b48190..7534ed0 100755\n--- a/more_itertools/more.py\n+++ b/more_itertools/more.py\n@@ -3561,11 +3561,12 @@ def _sample_unweighted(iterable, k):\n \n \n def _sample_weighted(iterable, k, weights):\n+    import random\n     # Implementation of \"A-ExpJ\" from the 2006 paper by Efraimidis et al. :\n     # \"Weighted random sampling with a reservoir\".\n \n     # Log-transform for numerical stability for weights that are small/large\n-    weight_keys = (log(random()) / weight for weight in weights)\n+    weight_keys = (log(random.random()) / weight for weight in weights)\n \n     # Fill up the reservoir (collection of samples) with the first `k`\n     # weight-keys and elements, then heapify the list.\n@@ -3575,7 +3576,7 @@ def _sample_weighted(iterable, k, weights):\n     # The number of jumps before changing the reservoir is a random variable\n     # with an exponential distribution. Sample it using random() and logs.\n     smallest_weight_key, _ = reservoir[0]\n-    weights_to_skip = log(random()) / smallest_weight_key\n+    weights_to_skip = log(random.random()) / smallest_weight_key\n \n     for weight, element in zip(weights, iterable):\n         if weight >= weights_to_skip:\n@@ -3587,12 +3588,15 @@ def _sample_weighted(iterable, k, weights):\n             weight_key = log(r_2) / weight\n             heapreplace(reservoir, (weight_key, element))\n             smallest_weight_key, _ = reservoir[0]\n-            weights_to_skip = log(random()) / smallest_weight_key\n+            weights_to_skip = log(random.random()) / smallest_weight_key\n         else:\n             weights_to_skip -= weight\n \n     # Equivalent to [element for weight_key, element in sorted(reservoir)]\n-    return [heappop(reservoir)[1] for _ in range(k)]\n+    selected = [heappop(reservoir)[1] for _ in range(k)]\n+    import random\n+    random.shuffle(selected)\n+    return selected\n \n \n def sample(iterable, k, weights=None):\n",
+    "test_output": "STDOUT:\n............................................................................................ [ 17%]\n......................................................... [ 28%]\n........................................................................ [ 42%]\n................................................................................ [ 57%]\n.................................. [ 64%]\n....................F....................................................................................................... [ 87%]\n................................................................   [100%]\n=================================== FAILURES ===================================\n___________________________ SampleTests.test_strict ____________________________\n\nself = <tests.test_more.SampleTests testMethod=test_strict>\n\n    def test_strict(self):\n        data = ['1', '2', '3', '4', '5']\n>       self.assertEqual(set(mi.sample(data, 6, strict=False)), set(data))\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: sample() got an unexpected keyword argument 'strict'\n\ntests/test_more.py:4164: TypeError\n=========================== short test summary info ============================\nFAILED tests/test_more.py::SampleTests::test_strict - TypeError: sample() got...\n1 failed, 522 passed, 2211 subtests passed in 1.73s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f2d53a8c980>",
+    "tool_calls": 15,
+    "task_index": 1
+   },
+   "segundos_reloj": 177.0
+  }
+ ]
+}

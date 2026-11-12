@@ -19,7 +19,9 @@ import argparse, ast, concurrent.futures as cf, glob, json, os, random, tarfile,
 
 MOD_DI = {'e4b': 'google/gemma-4-E4B-it', '31b': 'google/gemma-4-31B-it'}
 MOD_Q = {'e4b': 'gemma-4-e4b-it-qat-w4a16-ct', '31b': 'gemma-4-31b-it-qat-w4a16-ct',
-         'e4b-bf16': 'gemma-4-e4b-it'}  # same vLLM server and parser, unquantized weights
+         'e4b-bf16': 'gemma-4-e4b-it',  # same vLLM server and parser, unquantized weights
+         'e2b': 'gemma-4-e2b-it-qat-w4a16-ct', 'e2b-bf16': 'gemma-4-e2b-it',
+         'qwen3-4b-awq': 'qwen3-4b-awq', 'qwen3-4b-bf16': 'qwen3-4b', 'qwen3-1.7b-bf16': 'qwen3-1.7b'}
 
 S = {'type': 'string'}
 TOOLS = {

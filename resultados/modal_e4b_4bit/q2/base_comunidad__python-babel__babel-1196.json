@@ -1,0 +1,40 @@
+{
+ "variant": "variantes/base_comunidad",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "python-babel__babel-1196",
+   "resolved": false,
+   "patch": "diff --git a/babel/messages/extract.py b/babel/messages/extract.py\nindex dcf62f2..2914e18 100644\n--- a/babel/messages/extract.py\n+++ b/babel/messages/extract.py\n@@ -565,11 +565,7 @@ def extract_python(\n                     messages.append(None)\n \n                 messages = tuple(messages) if len(messages) > 1 else messages[0]\n-                # Comments don't apply unless they immediately\n-                # precede the message\n-                if translator_comments and \\\n-                        translator_comments[-1][0] < message_lineno - 1:\n-                    translator_comments = []\n+                # Comments are associated with the message regardless of line proximity\n \n                 yield (message_lineno, funcname, messages,\n                        [comment[1] for comment in translator_comments])\n@@ -751,11 +747,8 @@ def extract_javascript(\n                 else:\n                     messages = None\n \n-                # Comments don't apply unless they immediately precede the\n-                # message\n-                if translator_comments and \\\n-                   translator_comments[-1][0] < message_lineno - 1:\n-                    translator_comments = []\n+                # Proximity check removed to allow comments preceding messages.\n+\n \n                 if messages is not None:\n                     yield (message_lineno, funcname, messages,",
+   "tool_calls": 28,
+   "duration_s": 457.6,
+   "error": "Agent exceeded tool call budget (28 calls)",
+   "raw": {
+    "task_id": "python-babel__babel-1196",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 457.5711095689994,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 31,
+    "error_message": "Agent exceeded tool call budget (28 calls)",
+    "trace_path": "/home/claude/trabajo_lotes/q2/base_comunidad__python-babel__babel-1196/results/traces/trace_python-babel__babel-1196.json",
+    "metadata": "{}",
+    "repo": "python-babel/babel",
+    "agent_patch": "diff --git a/babel/messages/extract.py b/babel/messages/extract.py\nindex dcf62f2..2914e18 100644\n--- a/babel/messages/extract.py\n+++ b/babel/messages/extract.py\n@@ -565,11 +565,7 @@ def extract_python(\n                     messages.append(None)\n \n                 messages = tuple(messages) if len(messages) > 1 else messages[0]\n-                # Comments don't apply unless they immediately\n-                # precede the message\n-                if translator_comments and \\\n-                        translator_comments[-1][0] < message_lineno - 1:\n-                    translator_comments = []\n+                # Comments are associated with the message regardless of line proximity\n \n                 yield (message_lineno, funcname, messages,\n                        [comment[1] for comment in translator_comments])\n@@ -751,11 +747,8 @@ def extract_javascript(\n                 else:\n                     messages = None\n \n-                # Comments don't apply unless they immediately precede the\n-                # message\n-                if translator_comments and \\\n-                   translator_comments[-1][0] < message_lineno - 1:\n-                    translator_comments = []\n+                # Proximity check removed to allow comments preceding messages.\n+\n \n                 if messages is not None:\n                     yield (message_lineno, funcname, messages,\n",
+    "test_output": "STDOUT:\n...........FFF............................                               [100%]\n=================================== FAILURES ===================================\n____________ ExtractPythonTestCase.test_invalid_translator_comments ____________\n\nself = <tests.messages.test_extract.ExtractPythonTestCase testMethod=test_invalid_translator_comments>\n\n        def test_invalid_translator_comments(self):\n            buf = BytesIO(b\"\"\"\n    # NOTE: this shouldn't apply to any messages\n    hello = 'there'\n    \n    msg = _(u'Foo Bar')\n    \"\"\")\n            messages = list(extract.extract_python(buf, ('_',), ['NOTE:'], {}))\n            assert messages[0][2] == 'Foo Bar'\n>           assert messages[0][3] == []\nE           assert ['NOTE: this ...any messages'] == []\nE             \nE             Left contains one more item: \"NOTE: this shouldn't apply to any messages\"\nE             Use -v to get more diff\n\ntests/messages/test_extract.py:292: AssertionError\n___________ ExtractPythonTestCase.test_invalid_translator_comments2 ____________\n\nself = <tests.messages.test_extract.ExtractPythonTestCase testMethod=test_invalid_translator_comments2>\n\n        def test_invalid_translator_comments2(self):\n            buf = BytesIO(b\"\"\"\n    # NOTE: Hi!\n    hithere = _('Hi there!')\n    \n    # NOTE: you should not be seeing this in the .po\n    rows = [[v for v in range(0,10)] for row in range(0,10)]\n    \n    # this (NOTE:) should not show up either\n    hello = _('Hello')\n    \"\"\")\n            messages = list(extract.extract_python(buf, ('_',), ['NOTE:'], {}))\n            assert messages[0][2] == 'Hi there!'\n            assert messages[0][3] == ['NOTE: Hi!']\n            assert messages[1][2] == 'Hello'\n>           assert messages[1][3] == []\nE           AssertionError: assert ['NOTE: you s...s in the .po'] == []\nE             \nE             Left contains one more item: 'NOTE: you should not be seeing this in the .po'\nE             Use -v to get more diff\n\ntests/messages/test_extract.py:309: AssertionError\n___________ ExtractPythonTestCase.test_invalid_translator_comments3 ____________\n\nself = <tests.messages.test_extract.ExtractPythonTestCase testMethod=test_invalid_translator_comments3>\n\n        def test_invalid_translator_comments3(self):\n            buf = BytesIO(b\"\"\"\n    # NOTE: Hi,\n    \n    # there!\n    hithere = _('Hi there!')\n    \"\"\")\n            messages = list(extract.extract_python(buf, ('_',), ['NOTE:'], {}))\n            assert messages[0][2] == 'Hi there!'\n>           assert messages[0][3] == []\nE           AssertionError: assert ['NOTE: Hi,'] == []\nE             \nE             Left contains one more item: 'NOTE: Hi,'\nE             Use -v to get more diff\n\ntests/messages/test_extract.py:320: AssertionError\n=========================== short test summary info ============================\nFAILED tests/messages/test_extract.py::ExtractPythonTestCase::test_invalid_translator_comments\nFAILED tests/messages/test_extract.py::ExtractPythonTestCase::test_invalid_translator_comments2\nFAILED tests/messages/test_extract.py::ExtractPythonTestCase::test_invalid_translator_comments3\n3 failed, 39 passed in 0.19s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7fa07f990d70>",
+    "tool_calls": 28,
+    "task_index": 1
+   },
+   "segundos_reloj": 457.6
+  }
+ ]
+}
