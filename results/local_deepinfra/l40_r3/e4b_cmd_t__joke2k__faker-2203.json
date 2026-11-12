@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_cmd_t",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "joke2k__faker-2203",
+   "resolved": false,
+   "patch": "diff --git a/faker/proxy.py b/faker/proxy.py\nindex fc72a15..b70dccc 100644\n--- a/faker/proxy.py\n+++ b/faker/proxy.py\n@@ -296,6 +296,16 @@ class Faker:\n         return list(self._factory_map.items())\n \n \n+def _make_hashable(obj):\n+    if isinstance(obj, dict):\n+        return tuple(sorted((k, _make_hashable(v)) for k, v in obj.items()))\n+    if isinstance(obj, (list, tuple)):\n+        return tuple(_make_hashable(i) for i in obj)\n+    if isinstance(obj, set):\n+        return tuple(sorted(_make_hashable(i) for i in obj))\n+    return obj\n+\n+\n class UniqueProxy:\n     def __init__(self, proxy: Faker):\n         self._proxy = proxy\n@@ -334,13 +344,13 @@ class UniqueProxy:\n             retval = self._sentinel\n \n             for i in range(_UNIQUE_ATTEMPTS):\n-                if retval not in generated:\n+                if _make_hashable(retval) not in generated:\n                     break\n                 retval = function(*args, **kwargs)\n             else:\n                 raise UniquenessException(f\"Got duplicated values after {_UNIQUE_ATTEMPTS:,} iterations.\")\n \n-            generated.add(retval)\n+            generated.add(_make_hashable(retval))\n \n             return retval",
+   "tool_calls": 14,
+   "duration_s": 127.4,
+   "error": null,
+   "raw": {
+    "task_id": "joke2k__faker-2203",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 127.44059548300015,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 16,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/r3/e4b_cmd_t__joke2k__faker-2203/results/traces/trace_joke2k__faker-2203.json",
+    "metadata": "{}",
+    "repo": "joke2k/faker",
+    "agent_patch": "diff --git a/faker/proxy.py b/faker/proxy.py\nindex fc72a15..b70dccc 100644\n--- a/faker/proxy.py\n+++ b/faker/proxy.py\n@@ -296,6 +296,16 @@ class Faker:\n         return list(self._factory_map.items())\n \n \n+def _make_hashable(obj):\n+    if isinstance(obj, dict):\n+        return tuple(sorted((k, _make_hashable(v)) for k, v in obj.items()))\n+    if isinstance(obj, (list, tuple)):\n+        return tuple(_make_hashable(i) for i in obj)\n+    if isinstance(obj, set):\n+        return tuple(sorted(_make_hashable(i) for i in obj))\n+    return obj\n+\n+\n class UniqueProxy:\n     def __init__(self, proxy: Faker):\n         self._proxy = proxy\n@@ -334,13 +344,13 @@ class UniqueProxy:\n             retval = self._sentinel\n \n             for i in range(_UNIQUE_ATTEMPTS):\n-                if retval not in generated:\n+                if _make_hashable(retval) not in generated:\n                     break\n                 retval = function(*args, **kwargs)\n             else:\n                 raise UniquenessException(f\"Got duplicated values after {_UNIQUE_ATTEMPTS:,} iterations.\")\n \n-            generated.add(retval)\n+            generated.add(_make_hashable(retval))\n \n             return retval\n \n",
+    "test_output": "STDOUT:\n.....F                                                                   [100%]\n=================================== FAILURES ===================================\n__________ TestUniquenessClass.test_complex_return_types_is_supported __________\n\nself = <tests.test_unique.TestUniquenessClass object at 0x7fb81d68d040>\n\n    def test_complex_return_types_is_supported(self):\n        \"\"\"The unique decorator supports complex return types\n        like the ones used in the profile provider.\"\"\"\n    \n        fake = Faker()\n    \n        for i in range(10):\n            fake.unique.pydict()\n    \n        for i in range(10):\n            fake.unique.pylist()\n    \n        for i in range(10):\n>           fake.unique.pyset()\n\ntests/test_unique.py:77: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nfaker/proxy.py:347: in wrapper\n    if _make_hashable(retval) not in generated:\n       ^^^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nobj = {datetime.datetime(1988, 1, 3, 0, 10, 14, 143863), 'MSdsWpBOZIeuNFaLMdey', datetime.datetime(1986, 5, 7, 7, 9, 52, 421121), 'qWHyijxChbVlbMAbVPPK', 4293, 'jaSGtUcRYwIqObxkZBsA', ...}\n\n    def _make_hashable(obj):\n        if isinstance(obj, dict):\n            return tuple(sorted((k, _make_hashable(v)) for k, v in obj.items()))\n        if isinstance(obj, (list, tuple)):\n            return tuple(_make_hashable(i) for i in obj)\n        if isinstance(obj, set):\n>           return tuple(sorted(_make_hashable(i) for i in obj))\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE           TypeError: '<' not supported between instances of 'str' and 'datetime.datetime'\n\nfaker/proxy.py:305: TypeError\n=========================== short test summary info ============================\nFAILED tests/test_unique.py::TestUniquenessClass::test_complex_return_types_is_supported\n1 failed, 5 passed in 0.27s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f60b9b8cd70>",
+    "tool_calls": 14,
+    "task_index": 1
+   },
+   "segundos_reloj": 127.6
+  }
+ ]
+}

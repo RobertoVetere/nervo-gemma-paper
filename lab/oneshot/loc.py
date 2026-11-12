@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
-"""¿Localiza mejor el modelo con el mapa del repositorio? Solo localización, una llamada (y un reintento validado).
+"""Does the model localize better with the repository map? Localization only, one call (plus one validated retry).
 
-Condiciones: lista (issue + nombres de archivo)  /  mapa (issue + mapa.py, y si el símbolo no existe, un reintento
-con los 5 reales más parecidos). Se puntúa contra los símbolos que toca el parche oficial (archivo y símbolo).
-Uso: python3 lab/oneshot/loc.py --tareas-archivo lote40.txt --modelos e4b,31b
+Conditions: lista = list (issue + file names)  /  mapa = map (issue + repo_map.py output; if the symbol does not exist,
+one retry with the 5 closest real symbols). Scored against the symbols the official patch touches (file and symbol).
+Usage: python3 lab/oneshot/loc.py --tasks-file batch40.txt --models e4b,31b
 """
 import argparse, ast, json, os, re, shutil, subprocess, sys, tarfile, concurrent.futures as cf
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from sonda import llamar  # noqa: E402
-import mapa as M  # noqa: E402
+from probe import llamar  # noqa: E402
+import repo_map as M  # noqa: E402
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-TAREAS = {json.loads(l)['instance_id']: json.loads(l) for l in open(f'{RAIZ}/datos/banco_nuevo/validation_tasks.jsonl')}
+TAREAS = {json.loads(l)['instance_id']: json.loads(l) for l in open(f'{RAIZ}/data/new_bench/validation_tasks.jsonl')}
 PREG = ('\n\nWhich file and which class, method or function must change to fix this issue? If the fix needs a NEW method '
         'or function, name it as Class.new_name or new_name. Answer in exactly 2 lines:\nFILE: path/to/file.py\n'
         'WHERE: Class.method, Class, or function_name')
 
 
 def oro(repo, parche):
-    """Símbolos que toca el parche oficial: {(archivo, 'Clase.metodo' | 'Clase' | 'funcion')}."""
+    """Symbols the official patch touches: {(file, 'Class.method' | 'Class' | 'function')}."""
     out = set()
     for bloque in re.split(r'^(?=--- (?:a/|/dev/null))', parche, flags=re.M):
         m = re.search(r'^\+\+\+ b/(\S+\.py)', bloque, re.M)
@@ -55,7 +55,7 @@ def leer(texto):
 
 
 def una(tid, modelo, cond):
-    t = TAREAS[tid]; d = f'/home/claude/sondas_loc/{tid}'
+    t = TAREAS[tid]; d = os.path.join(os.environ.get('NERVO_WORK', '/tmp/nervo_probes'), 'loc', tid)
     issue = t['problem_statement'].strip(); gold = oro(d, t['patch'])
     if cond == 'lista':
         pys = [p for p in subprocess.run(['git', 'ls-files', '*.py'], cwd=d, capture_output=True, text=True).stdout.split()
@@ -82,14 +82,14 @@ def una(tid, modelo, cond):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--tareas-archivo', required=True); ap.add_argument('--modelos', default='e4b,31b')
+    ap.add_argument('--tasks-file', '--tareas-archivo', dest='tareas_archivo', required=True); ap.add_argument('--models', '--modelos', dest='modelos', default='e4b,31b')
     ap.add_argument('--out', default=f'{RAIZ}/lab/oneshot/loc.jsonl')
     a = ap.parse_args()
     tareas = open(a.tareas_archivo).read().split()
     for tid in tareas:
-        d = f'/home/claude/sondas_loc/{tid}'
+        d = os.path.join(os.environ.get('NERVO_WORK', '/tmp/nervo_probes'), 'loc', tid)
         if not os.path.isdir(d):
-            os.makedirs(d); tarfile.open(f'/home/claude/banco/snapshots/{tid}.tgz').extractall(d, filter='data')
+            os.makedirs(d); tarfile.open(os.path.join(os.environ.get('NERVO_BENCH', 'bench'), 'snapshots', f'{tid}.tgz')).extractall(d, filter='data')
     trabajos = [(t, m, c) for t in tareas for m in a.modelos.split(',') for c in ('lista', 'mapa')]
     filas = []
     with cf.ThreadPoolExecutor(8) as ex, open(a.out, 'w') as out:
@@ -98,7 +98,7 @@ def main():
     for m in a.modelos.split(','):
         for c in ('lista', 'mapa'):
             S = [f for f in filas if f['modelo'] == m and f['cond'] == c]
-            print(f'{m:3} {c:5} archivo {sum(f["archivo_ok"] for f in S)}/{len(S)}  símbolo {sum(f["simbolo_ok"] for f in S)}/{len(S)}'
+            print(f'{m:3} {c:5} file {sum(f["archivo_ok"] for f in S)}/{len(S)}  symbol {sum(f["simbolo_ok"] for f in S)}/{len(S)}'
                   f'  reintentos {sum(f["reintento"] for f in S)}')
 
 

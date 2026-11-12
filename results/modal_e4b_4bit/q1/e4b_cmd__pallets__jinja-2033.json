@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_cmd",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pallets__jinja-2033",
+   "resolved": true,
+   "patch": "diff --git a/src/jinja2/sandbox.py b/src/jinja2/sandbox.py\nindex ce27615..7a64484 100644\n--- a/src/jinja2/sandbox.py\n+++ b/src/jinja2/sandbox.py\n@@ -60,7 +60,7 @@ _mutable_spec: t.Tuple[t.Tuple[t.Type[t.Any], t.FrozenSet[str]], ...] = (\n     ),\n     (\n         abc.MutableSequence,\n-        frozenset([\"append\", \"reverse\", \"insert\", \"sort\", \"extend\", \"remove\"]),\n+        frozenset([\"append\", \"reverse\", \"insert\", \"sort\", \"extend\", \"remove\", \"clear\", \"pop\"]),\n     ),\n     (\n         deque,",
+   "tool_calls": 20,
+   "duration_s": 196.7,
+   "error": null,
+   "raw": {
+    "task_id": "pallets__jinja-2033",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 196.65207906399996,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 22,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q1/e4b_cmd__pallets__jinja-2033/results/traces/trace_pallets__jinja-2033.json",
+    "metadata": "{}",
+    "repo": "pallets/jinja",
+    "agent_patch": "diff --git a/src/jinja2/sandbox.py b/src/jinja2/sandbox.py\nindex ce27615..7a64484 100644\n--- a/src/jinja2/sandbox.py\n+++ b/src/jinja2/sandbox.py\n@@ -60,7 +60,7 @@ _mutable_spec: t.Tuple[t.Tuple[t.Type[t.Any], t.FrozenSet[str]], ...] = (\n     ),\n     (\n         abc.MutableSequence,\n-        frozenset([\"append\", \"reverse\", \"insert\", \"sort\", \"extend\", \"remove\"]),\n+        frozenset([\"append\", \"reverse\", \"insert\", \"sort\", \"extend\", \"remove\", \"clear\", \"pop\"]),\n     ),\n     (\n         deque,\n",
+    "test_output": "STDOUT:\n...............                                                          [100%]\n15 passed in 0.05s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f894ee8cd70>",
+    "tool_calls": 20,
+    "task_index": 1
+   },
+   "segundos_reloj": 196.7
+  }
+ ]
+}

@@ -1,29 +1,29 @@
-name: Evaluar en Modal (4x L4)
-# Mismo kernel que "Evaluar en Kaggle (L4)", pero en Modal: sin cuota semanal, pago por segundo.
-# Necesita los secretos MODAL_TOKEN_ID y MODAL_TOKEN_SECRET (y los de Kaggle para descargar las tareas oficiales).
+name: Evaluate on Modal (4x L4)
+# Same kernel as "Evaluate on Kaggle (L4)", but on Modal: no weekly quota, pay per second.
+# Needs the secrets MODAL_TOKEN_ID and MODAL_TOKEN_SECRET (and the Kaggle ones to download the official tasks).
 on:
   workflow_dispatch:
     inputs:
       variant:
-        description: "Variantes: ',' = mismo contenedor (en serie); ';' = contenedores distintos (en paralelo)"
+        description: "Variants: ',' = same container (in series); ';' = separate containers (in parallel)"
         required: true
       tasks:
-        description: "Ids de tareas separados por comas"
+        description: "Comma-separated task ids"
         required: true
       model:
-        description: "Modelo (vacío = el que declare la variante)"
+        description: "Model (empty = the one the variant declares)"
         default: ""
-      banco:
-        description: "1 = banco nuevo (snapshots desde GitHub); 0 = tareas oficiales de la competición"
+      bench:
+        description: "1 = validation bench (snapshots from GitHub); 0 = official competition tasks"
         default: "0"
       label:
-        description: "Etiqueta de la ejecución"
+        description: "Run label"
         default: "modal"
-      esperar:
-        description: "0 = lanzar y salir (no gasta minutos de Actions; recoger con 'Recoger resultados de Modal'); 1 = esperar"
+      wait:
+        description: "0 = launch and exit (no Actions minutes spent; collect with 'Collect Modal results'); 1 = wait"
         default: "0"
 jobs:
-  evaluar:
+  evaluate:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     defaults:
@@ -41,10 +41,10 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install modal==1.6.3 kaggle six pyyaml
-      - name: Comprobar secretos
+      - name: Check secrets
         run: |
-          [ -n "$MODAL_TOKEN_ID" ] && [ -n "$MODAL_TOKEN_SECRET" ] || { echo "::error::faltan los secretos MODAL_TOKEN_ID / MODAL_TOKEN_SECRET"; exit 1; }
-      - name: Harness oficial (swegemma, adk_submission, adk_eval_core)
+          [ -n "$MODAL_TOKEN_ID" ] && [ -n "$MODAL_TOKEN_SECRET" ] || { echo "::error::missing secrets MODAL_TOKEN_ID / MODAL_TOKEN_SECRET"; exit 1; }
+      - name: Official harness (swegemma, adk_submission, adk_eval_core)
         run: |
           mkdir -p modal_wheels
           kaggle datasets files metric/gemma-4-developer-agent-wheelhouse --page-size 200 > wh.txt
@@ -52,26 +52,26 @@ jobs:
             kaggle datasets download metric/gemma-4-developer-agent-wheelhouse -f "$w" -p modal_wheels -q
           done
           ls -la modal_wheels
-      - name: Caché de datos de la competición (recuperar)
+      - name: Competition data cache (restore)
         uses: actions/cache/restore@v4
         with:
-          path: datos
-          key: datos-v1-${{ github.run_id }}
-          restore-keys: datos-v1-
-      - name: Datos de las tareas
+          path: comp_data
+          key: comp-data-v1-${{ github.run_id }}
+          restore-keys: comp-data-v1-
+      - name: Task data
         run: |
-          python3 local/preparar_datos_modal.py --tareas "${{ inputs.tasks }}" ${{ inputs.banco == '1' && '--banco' || '' }} --out datos.tar
-      - name: Caché de datos de la competición (guardar ya, aunque luego falle algo)
+          python3 local/prepare_modal_data.py --tasks "${{ inputs.tasks }}" ${{ inputs.bench == '1' && '--bench' || '' }} --dir comp_data --out data.tar
+      - name: Competition data cache (save now, even if something fails later)
         uses: actions/cache/save@v4
         with:
-          path: datos
-          key: datos-v1-${{ github.run_id }}
-      - name: Renderizar el kernel
+          path: comp_data
+          key: comp-data-v1-${{ github.run_id }}
+      - name: Render the kernel
         run: |
-          # Un kernel por variante (o por repetición, si una variante se repite en la lista): cada uno va a su contenedor.
+          # One kernel per variant (or per replica, if a variant is repeated in the list): each goes to its own container.
           MODEL_ARG=""; [ -n "${{ inputs.model }}" ] && MODEL_ARG="--model ${{ inputs.model }}"
           KERNELS=""; i=0
-          # ';' separa contenedores; ',' pone varias variantes en el MISMO contenedor (un solo vLLM, una tras otra).
+          # ';' separates containers; ',' puts several variants in the SAME container (one vLLM, one after the other).
           for v in $(echo "${{ inputs.variant }}" | tr ';' ' '); do
             python3 scripts/render_kernel.py --out kernel_$i --variant "$v" --tasks "${{ inputs.tasks }}" \
               --n-tasks 0 --label "${{ inputs.label }}-$i" $MODEL_ARG
@@ -79,33 +79,33 @@ jobs:
           done
           echo "KERNELS=$KERNELS" >> $GITHUB_ENV
           V="${{ inputs.variant }}"; V="${V%%;*}"; V="${V%%,*}"
-          MODELO="${{ inputs.model }}"
-          [ -z "$MODELO" ] && MODELO=$(sed -n 's/^model:[[:space:]]*//p' "$V/agent.yaml" | head -1 | tr -d '"\r ')
-          echo "modelo: $MODELO"
-          echo "MODELO=$MODELO" >> $GITHUB_ENV
+          MODEL="${{ inputs.model }}"
+          [ -z "$MODEL" ] && MODEL=$(sed -n 's/^model:[[:space:]]*//p' "$V/agent.yaml" | head -1 | tr -d '"\r ')
+          echo "model: $MODEL"
+          echo "MODEL=$MODEL" >> $GITHUB_ENV
           ls kernel_*
-      - name: Comprobar el entorno en Modal (sin GPU)
+      - name: Check the environment on Modal (no GPU)
         run: modal run local/modal_eval.py::solo_comprobar
-      - name: Subir los datos al volumen de Modal (una vez para todos los contenedores)
+      - name: Upload the data to the Modal volume (once for all containers)
         run: |
           modal volume create nervo-datos 2>/dev/null || true
-          modal volume put nervo-datos datos.tar "datos-${{ github.run_id }}.tar" --force
-      - name: Ejecutar en Modal
+          modal volume put nervo-datos data.tar "data-${{ github.run_id }}.tar" --force
+      - name: Run on Modal
         run: |
-          if [ "${{ inputs.esperar }}" = "1" ]; then
-            modal run local/modal_eval.py::main --kernel "$KERNELS" --datos "datos-${{ github.run_id }}.tar" --modelo "$MODELO" --out salida
+          if [ "${{ inputs.wait }}" = "1" ]; then
+            modal run local/modal_eval.py::main --kernel "$KERNELS" --datos "data-${{ github.run_id }}.tar" --modelo "$MODEL" --out output
           else
-            modal run --detach local/modal_eval.py::main --kernel "$KERNELS" --datos "datos-${{ github.run_id }}.tar" \
-              --modelo "$MODELO" --esperar 0 --nombre "${{ inputs.label }}-${{ github.run_id }}"
+            modal run --detach local/modal_eval.py::main --kernel "$KERNELS" --datos "data-${{ github.run_id }}.tar" \
+              --modelo "$MODEL" --esperar 0 --nombre "${{ inputs.label }}-${{ github.run_id }}"
           fi
-      - name: Guardar resultados
+      - name: Save results
         if: always()
         run: |
-          mkdir -p resultados; hay=0
-          for f in salida/*/salida/nervo_results.json; do
-            [ -f "$f" ] || continue; hay=1
+          mkdir -p results; found=0
+          for f in output/*/output/nervo_results.json; do
+            [ -f "$f" ] || continue; found=1
             i=$(echo "$f" | cut -d/ -f2)
-            cp "$f" "resultados/${{ inputs.label }}-$i-modal-$(date -u +%Y%m%dT%H%M%SZ).json"
+            cp "$f" "results/${{ inputs.label }}-$i-modal-$(date -u +%Y%m%dT%H%M%SZ).json"
             python3 - "$f" <<'E'
           import json, sys
           r = json.load(open(sys.argv[1]))
@@ -114,12 +114,12 @@ jobs:
               print(('OK ' if t.get('resolved') else 'NO '), t.get('variant'), t['id'], 'calls', t.get('tool_calls'), 't', t.get('duration_s'), t.get('error') or '')
           E
           done
-          if [ "$hay" = 1 ]; then
+          if [ "$found" = 1 ]; then
             git config user.name "nervo-bot"; git config user.email "nervo-bot@users.noreply.github.com"
-            git add resultados && git commit -m "Resultados Modal: ${{ inputs.label }}" && git pull --rebase -q && git push -q || true
+            git add results && git commit -m "Modal results: ${{ inputs.label }}" && git pull --rebase -q && git push -q || true
           fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: salida-modal
-          path: salida
+          name: modal-output
+          path: output

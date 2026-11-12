@@ -1,0 +1,21 @@
+# com_v4: public agent (community_base) + repomap skill: first the repository map (classes with signatures and functions
+# of the files most related to the issue). Agent name = skill name (lesson from v4). Everything else identical.
+# Origen: the public community single agent
+# ("gemma-4-harness-fixed-single-agent", Kaggle sample notebook), same tools as published,
+# same sampling and budgets as nervo v4. Only the prompt differs.
+name: repomap
+model: gemma-4-e4b-it-qat-w4a16-ct
+instruction: !include prompts/system.md
+tools:
+  - run_command
+  - read_file
+  - edit_file
+  - write_file
+  - get_status
+  - submit_patch
+  - get_code_neighbors
+  - search_similar_code
+  - get_code_subgraph
+generate_content_config: !include configs/sampling.yaml
+skills:
+  - skills/repomap

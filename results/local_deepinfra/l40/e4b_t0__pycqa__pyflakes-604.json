@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_t0",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pycqa__pyflakes-604",
+   "resolved": false,
+   "patch": "diff --git a/pyflakes/checker.py b/pyflakes/checker.py\nindex 0d65506..e32da60 100644\n--- a/pyflakes/checker.py\n+++ b/pyflakes/checker.py\n@@ -991,8 +991,8 @@ class Checker(object):\n                 all_binding = None\n \n             if all_binding:\n-                all_names = set(all_binding.names)\n-                undefined = all_names.difference(scope)\n+                all_names = all_binding.names\n+                undefined = [name for name in all_names if name not in scope]\n             else:\n                 all_names = undefined = []",
+   "tool_calls": 5,
+   "duration_s": 28.6,
+   "error": null,
+   "raw": {
+    "task_id": "pycqa__pyflakes-604",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 28.552177662000076,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 7,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/l40/e4b_t0__pycqa__pyflakes-604/results/traces/trace_pycqa__pyflakes-604.json",
+    "metadata": "{}",
+    "repo": "pycqa/pyflakes",
+    "agent_patch": "diff --git a/pyflakes/checker.py b/pyflakes/checker.py\nindex 0d65506..e32da60 100644\n--- a/pyflakes/checker.py\n+++ b/pyflakes/checker.py\n@@ -991,8 +991,8 @@ class Checker(object):\n                 all_binding = None\n \n             if all_binding:\n-                all_names = set(all_binding.names)\n-                undefined = all_names.difference(scope)\n+                all_names = all_binding.names\n+                undefined = [name for name in all_names if name not in scope]\n             else:\n                 all_names = undefined = []\n \n",
+    "test_output": "STDOUT:\n....................FF........................                           [100%]\n=================================== FAILURES ===================================\n________________ TestTypeAnnotations.test_quoted_TypeVar_bound _________________\n\nself = <pyflakes.test.test_type_annotations.TestTypeAnnotations testMethod=test_quoted_TypeVar_bound>\n\n    def test_quoted_TypeVar_bound(self):\n>       self.flakes(\"\"\"\n        from typing import TypeVar, Optional, List\n    \n        T = TypeVar('T', bound='Optional[int]')\n        S = TypeVar('S', int, bound='List[int]')\n        \"\"\")\n\npyflakes/test/test_type_annotations.py:535: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \npyflakes/test/harness.py:30: in flakes\n    self.assertEqual(outputs, expectedOutputs, '''\\\nE   AssertionError: Lists differ: [<class 'pyflakes.messages.UnusedImport'>,[37 chars]rt'>] != []\nE   \nE   First list contains 2 additional elements.\nE   First extra element 0:\nE   <class 'pyflakes.messages.UnusedImport'>\nE   \nE   + []\nE   - [<class 'pyflakes.messages.UnusedImport'>,\nE   -  <class 'pyflakes.messages.UnusedImport'>] : for input:\nE   \nE           from typing import TypeVar, Optional, List\nE   \nE           T = TypeVar('T', bound='Optional[int]')\nE           S = TypeVar('S', int, bound='List[int]')\nE           \nE   expected outputs:\nE   []\nE   but got:\nE   (none):2:1 'typing.Optional' imported but unused\nE   (none):2:1 'typing.List' imported but unused\n_____________ TestTypeAnnotations.test_quoted_TypeVar_constraints ______________\n\nself = <pyflakes.test.test_type_annotations.TestTypeAnnotations testMethod=test_quoted_TypeVar_constraints>\n\n    def test_quoted_TypeVar_constraints(self):\n>       self.flakes(\"\"\"\n        from typing import TypeVar, Optional\n    \n        T = TypeVar('T', 'str', 'Optional[int]', bytes)\n        \"\"\")\n\npyflakes/test/test_type_annotations.py:528: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \npyflakes/test/harness.py:30: in flakes\n    self.assertEqual(outputs, expectedOutputs, '''\\\nE   AssertionError: Lists differ: [<class 'pyflakes.messages.UnusedImport'>] != []\nE   \nE   First list contains 1 additional elements.\nE   First extra element 0:\nE   <class 'pyflakes.messages.UnusedImport'>\nE   \nE   - [<class 'pyflakes.messages.UnusedImport'>]\nE   + [] : for input:\nE   \nE           from typing import TypeVar, Optional\nE   \nE           T = TypeVar('T', 'str', 'Optional[int]', bytes)\nE           \nE   expected outputs:\nE   []\nE   but got:\nE   (none):2:1 'typing.Optional' imported but unused\n=========================== short test summary info ============================\nFAILED pyflakes/test/test_type_annotations.py::TestTypeAnnotations::test_quoted_TypeVar_bound\nFAILED pyflakes/test/test_type_annotations.py::TestTypeAnnotations::test_quoted_TypeVar_constraints\n2 failed, 44 passed in 0.12s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f352202eba0>",
+    "tool_calls": 5,
+    "task_index": 1
+   },
+   "segundos_reloj": 28.6
+  }
+ ]
+}

@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_cmd",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pallets__jinja-1614",
+   "resolved": true,
+   "patch": "diff --git a/src/jinja2/async_utils.py b/src/jinja2/async_utils.py\nindex 1a4f389..cd0bb94 100644\n--- a/src/jinja2/async_utils.py\n+++ b/src/jinja2/async_utils.py\n@@ -81,4 +81,6 @@ async def auto_aiter(\n async def auto_to_list(\n     value: \"t.Union[t.AsyncIterable[V], t.Iterable[V]]\",\n ) -> t.List[\"V\"]:\n+    if hasattr(value, \"__iter__\") and not hasattr(value, \"__aiter__\"):\n+        return list(value)\n     return [x async for x in auto_aiter(value)]",
+   "tool_calls": 15,
+   "duration_s": 191.9,
+   "error": null,
+   "raw": {
+    "task_id": "pallets__jinja-1614",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 191.94675992899965,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 17,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_ab/e4b_cmd__pallets__jinja-1614/results/traces/trace_pallets__jinja-1614.json",
+    "metadata": "{}",
+    "repo": "pallets/jinja",
+    "agent_patch": "diff --git a/src/jinja2/async_utils.py b/src/jinja2/async_utils.py\nindex 1a4f389..cd0bb94 100644\n--- a/src/jinja2/async_utils.py\n+++ b/src/jinja2/async_utils.py\n@@ -81,4 +81,6 @@ async def auto_aiter(\n async def auto_to_list(\n     value: \"t.Union[t.AsyncIterable[V], t.Iterable[V]]\",\n ) -> t.List[\"V\"]:\n+    if hasattr(value, \"__iter__\") and not hasattr(value, \"__aiter__\"):\n+        return list(value)\n     return [x async for x in auto_aiter(value)]\n",
+    "test_output": "STDOUT:\n..........................................................               [100%]\n58 passed in 0.48s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f0dd686c980>",
+    "tool_calls": 15,
+    "task_index": 1
+   },
+   "segundos_reloj": 192.2
+  }
+ ]
+}

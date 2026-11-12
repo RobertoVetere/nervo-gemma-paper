@@ -1,0 +1,40 @@
+{
+ "variant": "variants/community_base",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "python-babel__babel-1196",
+   "resolved": false,
+   "patch": "diff --git a/babel/messages/extract.py b/babel/messages/extract.py\nindex dcf62f2..f55fc27 100644\n--- a/babel/messages/extract.py\n+++ b/babel/messages/extract.py\n@@ -536,6 +536,7 @@ def extract_python(\n                 continue\n             if funcname:\n                 call_stack += 1\n+                message_lineno = lineno\n         elif in_def and tok == OP and value == ':':\n             # End of a class definition without parens\n             in_def = False",
+   "tool_calls": 24,
+   "duration_s": 173.9,
+   "error": null,
+   "raw": {
+    "task_id": "python-babel__babel-1196",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 173.86418370299998,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 26,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/r2/community_base__python-babel__babel-1196/results/traces/trace_python-babel__babel-1196.json",
+    "metadata": "{}",
+    "repo": "python-babel/babel",
+    "agent_patch": "diff --git a/babel/messages/extract.py b/babel/messages/extract.py\nindex dcf62f2..f55fc27 100644\n--- a/babel/messages/extract.py\n+++ b/babel/messages/extract.py\n@@ -536,6 +536,7 @@ def extract_python(\n                 continue\n             if funcname:\n                 call_stack += 1\n+                message_lineno = lineno\n         elif in_def and tok == OP and value == ':':\n             # End of a class definition without parens\n             in_def = False\n",
+    "test_output": "STDOUT:\n....F............F........................                               [100%]\n=================================== FAILURES ===================================\n___ ExtractPythonTestCase.test_comments_with_calls_that_spawn_multiple_lines ___\n\nself = <tests.messages.test_extract.ExtractPythonTestCase testMethod=test_comments_with_calls_that_spawn_multiple_lines>\n\n        def test_comments_with_calls_that_spawn_multiple_lines(self):\n            buf = BytesIO(b\"\"\"\\\n    # NOTE: This Comment SHOULD Be Extracted\n    add_notice(req, ngettext(\"Catalog deleted.\",\n                             \"Catalogs deleted.\", len(selected)))\n    \n    # NOTE: This Comment SHOULD Be Extracted\n    add_notice(req, _(\"Locale deleted.\"))\n    \n    \n    # NOTE: This Comment SHOULD Be Extracted\n    add_notice(req, ngettext(\"Foo deleted.\", \"Foos deleted.\", len(selected)))\n    \n    # NOTE: This Comment SHOULD Be Extracted\n    # NOTE: And This One Too\n    add_notice(req, ngettext(\"Bar deleted.\",\n                             \"Bars deleted.\", len(selected)))\n    \"\"\")\n            messages = list(extract.extract_python(buf, ('ngettext', '_'), ['NOTE:'],\n    \n                                                   {'strip_comment_tags': False}))\n>           assert messages[0] == (2, 'ngettext', ('Catalog deleted.', 'Catalogs deleted.', None), ['NOTE: This Comment SHOULD Be Extracted'])\nE           AssertionError: assert (3, 'ngettext...e Extracted']) == (2, 'ngettext...e Extracted'])\nE             \nE             At index 0 diff: 3 != 2\nE             Use -v to get more diff\n\ntests/messages/test_extract.py:106: AssertionError\n___________________ ExtractPythonTestCase.test_nested_calls ____________________\n\nself = <tests.messages.test_extract.ExtractPythonTestCase testMethod=test_nested_calls>\n\n        def test_nested_calls(self):\n            buf = BytesIO(b\"\"\"\\\n    msg1 = _(i18n_arg.replace(r'\\\"', '\"'))\n    msg2 = ungettext(i18n_arg.replace(r'\\\"', '\"'), multi_arg.replace(r'\\\"', '\"'), 2)\n    msg3 = ungettext(\"Babel\", multi_arg.replace(r'\\\"', '\"'), 2)\n    msg4 = ungettext(i18n_arg.replace(r'\\\"', '\"'), \"Babels\", 2)\n    msg5 = ungettext('bunny', 'bunnies', random.randint(1, 2))\n    msg6 = ungettext(arg0, 'bunnies', random.randint(1, 2))\n    msg7 = _(hello.there)\n    msg8 = gettext('Rabbit')\n    msg9 = dgettext('wiki', model.addPage())\n    msg10 = dngettext(getDomain(), 'Page', 'Pages', 3)\n    msg11 = ngettext(\n        \"bunny\",\n        \"bunnies\",\n        len(bunnies)\n    )\n    \"\"\")\n            messages = list(extract.extract_python(buf,\n                                                   extract.DEFAULT_KEYWORDS.keys(),\n                                                   [], {}))\n>           assert messages == [\n                (1, '_', None, []),\n                (2, 'ungettext', (None, None, None), []),\n                (3, 'ungettext', ('Babel', None, None), []),\n                (4, 'ungettext', (None, 'Babels', None), []),\n                (5, 'ungettext', ('bunny', 'bunnies', None), []),\n                (6, 'ungettext', (None, 'bunnies', None), []),\n                (7, '_', None, []),\n                (8, 'gettext', 'Rabbit', []),\n                (9, 'dgettext', ('wiki', None), []),\n                (10, 'dngettext', (None, 'Page', 'Pages', None), []),\n                (12, 'ngettext', ('bunny', 'bunnies', None), []),\n            ]\nE           AssertionError: assert [(1, '_', Non...ne), []), ...] == [(1, '_', Non...ne), []), ...]\nE             \nE             At index 10 diff: (14, 'ngettext', ('bunny', 'bunnies', None), []) != (12, 'ngettext', ('bunny', 'bunnies', None), [])\nE             Use -v to get more diff\n\ntests/messages/test_extract.py:46: AssertionError\n=========================== short test summary info ============================\nFAILED tests/messages/test_extract.py::ExtractPythonTestCase::test_comments_with_calls_that_spawn_multiple_lines\nFAILED tests/messages/test_extract.py::ExtractPythonTestCase::test_nested_calls\n2 failed, 40 passed in 0.18s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7fc33548c980>",
+    "tool_calls": 24,
+    "task_index": 1
+   },
+   "segundos_reloj": 173.9
+  }
+ ]
+}

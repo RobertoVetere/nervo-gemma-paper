@@ -1,0 +1,53 @@
+name: Collect Modal results
+# Downloads from the nervo-datos volume the results of runs launched without waiting, and saves them to results/.
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Result prefix (label-runid); empty = list only"
+        default: ""
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install modal==1.6.3
+      - name: List and download
+        run: |
+          modal volume ls nervo-datos results/ || true
+          [ -n "${{ inputs.name }}" ] || exit 0
+          mkdir -p downloaded
+          for f in $(modal volume ls nervo-datos results/ 2>/dev/null | grep -o "${{ inputs.name }}[^ ]*\.tar\.gz" | sort -u); do
+            modal volume get nervo-datos "results/$f" downloaded/ --force
+          done
+          ls -la downloaded
+      - name: Save to results/
+        if: inputs.name != ''
+        run: |
+          mkdir -p results
+          for t in downloaded/*.tar.gz; do
+            [ -f "$t" ] || continue
+            n=$(basename "$t" .tar.gz); d="x_$n"; mkdir -p "$d"; tar xzf "$t" -C "$d"
+            f=$(find "$d" -name nervo_results.json | head -1)
+            [ -n "$f" ] && cp "$f" "results/$n-modal.json" && python3 - "$f" <<'E'
+          import json, sys
+          r = json.load(open(sys.argv[1]))
+          print('stage:', r.get('stage'), '| error:', r.get('error'))
+          for t in r.get('tasks', []):
+              print(('OK ' if t.get('resolved') else 'NO '), t.get('variant'), t['id'], 'calls', t.get('tool_calls'), 't', t.get('duration_s'), t.get('error') or '')
+          E
+          done
+          git config user.name "nervo-bot"; git config user.email "nervo-bot@users.noreply.github.com"
+          git add results && git commit -m "Modal results: ${{ inputs.name }}" && git pull --rebase -q && git push -q || true
+      - uses: actions/upload-artifact@v4
+        if: inputs.name != ''
+        with:
+          name: modal-output
+          path: x_*

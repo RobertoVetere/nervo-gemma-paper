@@ -1,0 +1,125 @@
+{
+  "label": "g31-ejemplo-3",
+  "stage": "done",
+  "tasks": [
+    {
+      "variant": "g31_example",
+      "id": "joke2k__faker-2203",
+      "repo": "joke2k/faker",
+      "resolved": false,
+      "patch_chars": 1228,
+      "tool_calls": 10,
+      "duration_s": 73.3,
+      "exit_code": 1,
+      "error": null,
+      "patch": "diff --git a/faker/proxy.py b/faker/proxy.py\nindex fc72a15..2ef1607 100644\n--- a/faker/proxy.py\n+++ b/faker/proxy.py\n@@ -334,13 +334,25 @@ class UniqueProxy:\n             retval = self._sentinel\n \n             for i in range(_UNIQUE_ATTEMPTS):\n-                if retval not in generated:\n-                    break\n+                try:\n+                    if retval not in generated:\n+                        break\n+                except TypeError:\n+                    # If retval is unhashable (e.g. dict), we can't use a set.\n+                    # Convert the set to a list for this key.\n+                    if isinstance(generated, set):\n+                        self._seen[key] = list(generated)\n+                        generated = self._seen[key]\n+                    if retval not in generated:\n+                        break\n                 retval = function(*args, **kwargs)\n             else:\n                 raise UniquenessException(f\"Got duplicated values after {_UNIQUE_ATTEMPTS:,} iterations.\")\n \n-            generated.add(retval)\n+            if isinstance(generated, set):\n+                generated.add(retval)\n+            else:\n+                generated.append(retval)\n \n             return retval",
+      "raw": {
+        "task_id": "joke2k__faker-2203",
+        "resolved": false,
+        "status": "SUCCESS",
+        "duration_seconds": 73.2529145699998,
+        "cost_usd": 0.0,
+        "total_tokens": 0,
+        "total_llm_calls": 12,
+        "error_message": null,
+        "trace_path": "/kaggle/working/results/g31_example/traces/trace_joke2k__faker-2203.json",
+        "metadata": "{}",
+        "repo": "joke2k/faker",
+        "agent_patch": "diff --git a/faker/proxy.py b/faker/proxy.py\nindex fc72a15..2ef1607 100644\n--- a/faker/proxy.py\n+++ b/faker/proxy.py\n@@ -334,13 +334,25 @@ class UniqueProxy:\n             retval = self._sentinel\n \n             for i in range(_UNIQUE_ATTEMPTS):\n-                if retval not in generated:\n-                    break\n+                try:\n+                    if retval not in generated:\n+                        break\n+                except TypeError:\n+                    # If retval is unhashable (e.g. dict), we can't use a set.\n+                    # Convert the set to a list for this key.\n+                    if isinstance(generated, set):\n+                        self._seen[key] = list(generated)\n+                        generated = self._seen[key]\n+                    if retval not in generated:\n+                        break\n                 retval = function(*args, **kwargs)\n             else:\n                 raise UniquenessException(f\"Got duplicated values after {_UNIQUE_ATTEMPTS:,} iterations.\")\n \n-            generated.add(retval)\n+            if isinstance(generated, set):\n+                generated.add(retval)\n+            else:\n+                generated.append(retval)\n \n             return retval\n \n",
+        "test_output": "STDOUT:\n.....F                                                                   [100%]\n=================================== FAILURES ===================================\n__________ TestUniquenessClass.test_complex_return_types_is_supported __________\n\nself = <tests.test_unique.TestUniquenessClass object at 0x7c6fa86abf50>\n\n    def test_complex_return_types_is_supported(self):\n        \"\"\"The unique decorator supports complex return types\n        like the ones used in the profile provider.\"\"\"\n    \n        fake = Faker()\n    \n        for i in range(10):\n            fake.unique.pydict()\n    \n        for i in range(10):\n            fake.unique.pylist()\n    \n        for i in range(10):\n>           fake.unique.pyset()\n\ntests/test_unique.py:77: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nargs = (), kwargs = {}, key = ('pyset', (), ())\ngenerated = {<object object at 0x7c6fab9038e0>}\nretval = {'nreese@example.com', 'https://www.benson-ruiz.com/search/blogterms.htm', -6697949.85234827, 'kWSNQantzoNRmMZrRXZD', 'ibgFuqcmXNVInSFkEhXs', 9735, ...}\ni = 1\n\n    @functools.wraps(function)\n    def wrapper(*args, **kwargs):\n        key = (name, args, tuple(sorted(kwargs.items())))\n    \n        generated = self._seen.setdefault(key, {self._sentinel})\n    \n        # With use of a sentinel value rather than None, we leave\n        # None open as a valid return value.\n        retval = self._sentinel\n    \n        for i in range(_UNIQUE_ATTEMPTS):\n            try:\n                if retval not in generated:\n                    break\n            except TypeError:\n                # If retval is unhashable (e.g. dict), we can't use a set.\n                # Convert the set to a list for this key.\n                if isinstance(generated, set):\n                    self._seen[key] = list(generated)\n                    generated = self._seen[key]\n                if retval not in generated:\n                    break\n            retval = function(*args, **kwargs)\n        else:\n            raise UniquenessException(f\"Got duplicated values after {_UNIQUE_ATTEMPTS:,} iterations.\")\n    \n        if isinstance(generated, set):\n>           generated.add(retval)\nE           TypeError: unhashable type: 'set'\n\nfaker/proxy.py:353: TypeError\n- generated xml file: /tmp/swegemma_sandbox_a4ce99c1-e74_ftlbhll4/tmp/_swegemma_junit_aef2a7613a2e.xml -\n=========================== short test summary info ============================\nFAILED tests/test_unique.py::TestUniquenessClass::test_complex_return_types_is_supported\n1 failed, 5 passed in 0.41s\n\nSTDERR:\n",
+        "test_exit_code": 1,
+        "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7a76ec75f020>",
+        "tool_calls": 10,
+        "task_index": 1
+      }
+    },
+    {
+      "variant": "g31_example",
+      "id": "pallets__jinja-2022",
+      "repo": "pallets/jinja",
+      "resolved": false,
+      "patch_chars": 886,
+      "tool_calls": 5,
+      "duration_s": 259.6,
+      "exit_code": 1,
+      "error": null,
+      "patch": "diff --git a/src/jinja2/compiler.py b/src/jinja2/compiler.py\nindex 91720c5..4de6e88 100644\n--- a/src/jinja2/compiler.py\n+++ b/src/jinja2/compiler.py\n@@ -793,7 +793,7 @@ class CodeGenerator(NodeVisitor):\n             or not vars\n         ):\n             return\n-        public_names = [x for x in vars if x[:1] != \"_\"]\n+        public_names = sorted([x for x in vars if x[:1] != \"_\"])\n         if len(vars) == 1:\n             name = next(iter(vars))\n             ref = frame.symbols.ref(name)\n@@ -811,7 +811,7 @@ class CodeGenerator(NodeVisitor):\n                 self.writeline(\"_block_vars.update({\")\n             else:\n                 self.writeline(\"context.vars.update({\")\n-            for idx, name in enumerate(vars):\n+            for idx, name in sorted(vars.items()):\n                 if idx:\n                     self.write(\", \")\n                 ref = frame.symbols.ref(name)",
+      "raw": {
+        "task_id": "pallets__jinja-2022",
+        "resolved": false,
+        "status": "SUCCESS",
+        "duration_seconds": 259.64068317400006,
+        "cost_usd": 0.0,
+        "total_tokens": 0,
+        "total_llm_calls": 7,
+        "error_message": null,
+        "trace_path": "/kaggle/working/results/g31_example/traces/trace_pallets__jinja-2022.json",
+        "metadata": "{}",
+        "repo": "pallets/jinja",
+        "agent_patch": "diff --git a/src/jinja2/compiler.py b/src/jinja2/compiler.py\nindex 91720c5..4de6e88 100644\n--- a/src/jinja2/compiler.py\n+++ b/src/jinja2/compiler.py\n@@ -793,7 +793,7 @@ class CodeGenerator(NodeVisitor):\n             or not vars\n         ):\n             return\n-        public_names = [x for x in vars if x[:1] != \"_\"]\n+        public_names = sorted([x for x in vars if x[:1] != \"_\"])\n         if len(vars) == 1:\n             name = next(iter(vars))\n             ref = frame.symbols.ref(name)\n@@ -811,7 +811,7 @@ class CodeGenerator(NodeVisitor):\n                 self.writeline(\"_block_vars.update({\")\n             else:\n                 self.writeline(\"context.vars.update({\")\n-            for idx, name in enumerate(vars):\n+            for idx, name in sorted(vars.items()):\n                 if idx:\n                     self.write(\", \")\n                 ref = frame.symbols.ref(name)\n",
+        "test_output": "generate\n    return generate(  # type: ignore\nsrc/jinja2/compiler.py:117: in generate\n    generator.visit(node)\nsrc/jinja2/visitor.py:40: in visit\n    return f(node, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsrc/jinja2/compiler.py:892: in visit_Template\n    self.blockvisit(node.body, frame)\nsrc/jinja2/compiler.py:449: in blockvisit\n    self.visit(node, frame)\nsrc/jinja2/visitor.py:40: in visit\n    return f(node, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsrc/jinja2/compiler.py:1279: in visit_For\n    self.blockvisit(node.body, loop_frame)\nsrc/jinja2/compiler.py:449: in blockvisit\n    self.visit(node, frame)\nsrc/jinja2/visitor.py:40: in visit\n    return f(node, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsrc/jinja2/compiler.py:1583: in visit_Assign\n    self.pop_assign_tracking(frame)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <jinja2.compiler.CodeGenerator object at 0x7fb65932c140>\nframe = <jinja2.compiler.Frame object at 0x7fb6582e8a70>\n\n    def pop_assign_tracking(self, frame: Frame) -> None:\n        \"\"\"Pops the topmost level for assignment tracking and updates the\n        context variables if necessary.\n        \"\"\"\n        vars = self._assign_stack.pop()\n        if (\n            not frame.block_frame\n            and not frame.loop_frame\n            and not frame.toplevel\n            or not vars\n        ):\n            return\n        public_names = sorted([x for x in vars if x[:1] != \"_\"])\n        if len(vars) == 1:\n            name = next(iter(vars))\n            ref = frame.symbols.ref(name)\n            if frame.loop_frame:\n                self.writeline(f\"_loop_vars[{name!r}] = {ref}\")\n                return\n            if frame.block_frame:\n                self.writeline(f\"_block_vars[{name!r}] = {ref}\")\n                return\n            self.writeline(f\"context.vars[{name!r}] = {ref}\")\n        else:\n            if frame.loop_frame:\n                self.writeline(\"_loop_vars.update({\")\n            elif frame.block_frame:\n                self.writeline(\"_block_vars.update({\")\n            else:\n                self.writeline(\"context.vars.update({\")\n>           for idx, name in sorted(vars.items()):\n                                    ^^^^^^^^^^\nE           AttributeError: 'set' object has no attribute 'items'\n\nsrc/jinja2/compiler.py:814: AttributeError\n_________________ test_block_set_vars_unpacking_deterministic __________________\n\ntmp_path = PosixPath('/tmp/swegemma_sandbox_4be72fb3-710_8x8wrjmh/tmp/pytest-of-root/pytest-0/test_block_set_vars_unpacking_0')\n\n    def test_block_set_vars_unpacking_deterministic(tmp_path):\n        src = \"\\n\".join(f\"  {{% set a{i}, b{i}, c{i} = tuple_var{i} %}}\" for i in range(10))\n        src = f\"{{% block test %}}\\n{src}\\n{{% endblock test %}}\"\n        env = Environment(loader=DictLoader({\"foo\": src}))\n>       env.compile_templates(tmp_path, zip=None)\n\ntests/test_compile.py:78: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/jinja2/environment.py:879: in compile_templates\n    code = self.compile(source, name, filename, True, True)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsrc/jinja2/environment.py:761: in compile\n    source = self._generate(source, name, filename, defer_init=defer_init)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsrc/jinja2/environment.py:691: in _generate\n    return generate(  # type: ignore\nsrc/jinja2/compiler.py:117: in generate\n    generator.visit(node)\nsrc/jinja2/visitor.py:40: in visit\n    return f(node, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsrc/jinja2/compiler.py:942: in visit_Template\n    self.blockvisit(block.body, block_frame)\nsrc/jinja2/compiler.py:449: in blockvisit\n    self.visit(node, frame)\nsrc/jinja2/visitor.py:40: in visit\n    return f(node, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nsrc/jinja2/compiler.py:1583: in visit_Assign\n    self.pop_assign_tracking(frame)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <jinja2.compiler.CodeGenerator object at 0x7fb656e72ea0>\nframe = <jinja2.compiler.Frame object at 0x7fb6570e3b30>\n\n    def pop_assign_tracking(self, frame: Frame) -> None:\n        \"\"\"Pops the topmost level for assignment tracking and updates the\n        context variables if necessary.\n        \"\"\"\n        vars = self._assign_stack.pop()\n        if (\n            not frame.block_frame\n            and not frame.loop_frame\n            and not frame.toplevel\n            or not vars\n        ):\n            return\n        public_names = sorted([x for x in vars if x[:1] != \"_\"])\n        if len(vars) == 1:\n            name = next(iter(vars))\n            ref = frame.symbols.ref(name)\n            if frame.loop_frame:\n                self.writeline(f\"_loop_vars[{name!r}] = {ref}\")\n                return\n            if frame.block_frame:\n                self.writeline(f\"_block_vars[{name!r}] = {ref}\")\n                return\n            self.writeline(f\"context.vars[{name!r}] = {ref}\")\n        else:\n            if frame.loop_frame:\n                self.writeline(\"_loop_vars.update({\")\n            elif frame.block_frame:\n                self.writeline(\"_block_vars.update({\")\n            else:\n                self.writeline(\"context.vars.update({\")\n>           for idx, name in sorted(vars.items()):\n                                    ^^^^^^^^^^\nE           AttributeError: 'set' object has no attribute 'items'\n\nsrc/jinja2/compiler.py:814: AttributeError\n- generated xml file: /tmp/swegemma_sandbox_4be72fb3-710_8x8wrjmh/tmp/_swegemma_junit_189515290173.xml -\n=========================== short test summary info ============================\nFAILED tests/test_compile.py::test_top_level_set_vars_unpacking_deterministic\nFAILED tests/test_compile.py::test_loop_set_vars_unpacking_deterministic - At...\nFAILED tests/test_compile.py::test_block_set_vars_unpacking_deterministic - A...\n3 failed, 2 passed in 0.42s\n\nSTDERR:\n",
+        "test_exit_code": 1,
+        "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7a780dc4ef00>",
+        "tool_calls": 5,
+        "task_index": 2
+      }
+    },
+    {
+      "variant": "g31_example",
+      "id": "python-semver__python-semver-254",
+      "repo": "python-semver/python-semver",
+      "resolved": true,
+      "patch_chars": 447,
+      "tool_calls": 6,
+      "duration_s": 25.5,
+      "exit_code": 0,
+      "error": null,
+      "patch": "diff --git a/semver.py b/semver.py\nindex c2697dd..e80cde9 100644\n--- a/semver.py\n+++ b/semver.py\n@@ -495,7 +495,7 @@ build='build.10')\n             return version.replace(prerelease=None, build=None)\n \n         if part in (\"major\", \"minor\", \"patch\"):\n-            return str(getattr(version, \"bump_\" + part)())\n+            return getattr(version, \"bump_\" + part)()\n \n         if not version.prerelease:\n             version = version.bump_patch()",
+      "raw": {
+        "task_id": "python-semver__python-semver-254",
+        "resolved": true,
+        "status": "SUCCESS",
+        "duration_seconds": 25.523924913999963,
+        "cost_usd": 0.0,
+        "total_tokens": 0,
+        "total_llm_calls": 8,
+        "error_message": null,
+        "trace_path": "/kaggle/working/results/g31_example/traces/trace_python-semver__python-semver-254.json",
+        "metadata": "{}",
+        "repo": "python-semver/python-semver",
+        "agent_patch": "diff --git a/semver.py b/semver.py\nindex c2697dd..e80cde9 100644\n--- a/semver.py\n+++ b/semver.py\n@@ -495,7 +495,7 @@ build='build.10')\n             return version.replace(prerelease=None, build=None)\n \n         if part in (\"major\", \"minor\", \"patch\"):\n-            return str(getattr(version, \"bump_\" + part)())\n+            return getattr(version, \"bump_\" + part)()\n \n         if not version.prerelease:\n             version = version.bump_patch()\n",
+        "test_output": "STDOUT:\n........................................................................ [ 28%]\n........................................................................ [ 56%]\n........................................................................ [ 84%]\n........................................                                 [100%]\n- generated xml file: /tmp/swegemma_sandbox_977086f4-86f_9ajchifs/tmp/_swegemma_junit_9e7b9edff591.xml -\n256 passed in 0.41s\n\nSTDERR:\n",
+        "test_exit_code": 0,
+        "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7a76ec4f79e0>",
+        "tool_calls": 6,
+        "task_index": 3
+      }
+    }
+  ],
+  "error": null,
+  "variantes": [
+    "g31_example"
+  ],
+  "vllm_start_seconds": 410.8,
+  "n_public_tasks": 165,
+  "sample": [
+    "joke2k__faker-2203",
+    "pallets__jinja-2022",
+    "python-semver__python-semver-254"
+  ],
+  "presupuestos": {
+    "g31_example": {
+      "timeout_seconds": 300,
+      "max_tool_calls": 28,
+      "max_time_minutes": 8,
+      "max_turns": 80
+    }
+  },
+  "summary": {
+    "g31_example": {
+      "resolved": 1,
+      "total": 3,
+      "con_parche": 3
+    }
+  }
+}

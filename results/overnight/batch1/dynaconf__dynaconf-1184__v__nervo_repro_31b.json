@@ -1,0 +1,40 @@
+{
+ "variant": "variants/nervo_repro_31b",
+ "modelo": "gemma-4-31b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 25.0,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "dynaconf__dynaconf-1184",
+   "resolved": false,
+   "patch": "diff --git a/dynaconf/utils/inspect.py b/dynaconf/utils/inspect.py\nindex eee06f0..24b0495 100644\n--- a/dynaconf/utils/inspect.py\n+++ b/dynaconf/utils/inspect.py\n@@ -326,9 +326,9 @@ def _get_data_by_key(\n         # transform `a.b.c` in successive calls to `data['a']['b']['c']`\n         path = path.split(\".\")\n         root_key, nested_keys = path[0], path[1:]\n-        result = data[root_key]\n+        result = data._safe_get(root_key)\n         for key in nested_keys:\n-            result = result[key]\n+            result = result._safe_get(key) if hasattr(result, \"_safe_get\") else result[key]\n         return result\n \n     try:",
+   "tool_calls": 9,
+   "duration_s": 1504.6,
+   "error": "Agent exceeded session timeout (25.0 min)",
+   "raw": {
+    "task_id": "dynaconf__dynaconf-1184",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 1504.645812915,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 11,
+    "error_message": "Agent exceeded session timeout (25.0 min)",
+    "trace_path": "/tmp/noche_trabajo/nervo_repro_31b/results/traces/trace_dynaconf__dynaconf-1184.json",
+    "metadata": "{}",
+    "repo": "dynaconf/dynaconf",
+    "agent_patch": "diff --git a/dynaconf/utils/inspect.py b/dynaconf/utils/inspect.py\nindex eee06f0..24b0495 100644\n--- a/dynaconf/utils/inspect.py\n+++ b/dynaconf/utils/inspect.py\n@@ -326,9 +326,9 @@ def _get_data_by_key(\n         # transform `a.b.c` in successive calls to `data['a']['b']['c']`\n         path = path.split(\".\")\n         root_key, nested_keys = path[0], path[1:]\n-        result = data[root_key]\n+        result = data._safe_get(root_key)\n         for key in nested_keys:\n-            result = result[key]\n+            result = result._safe_get(key) if hasattr(result, \"_safe_get\") else result[key]\n         return result\n \n     try:\n",
+    "test_output": "STDOUT:\n.............F..........                                                 [100%]\n=================================== FAILURES ===================================\n________________ tests_get_history_with_variable_interpolation _________________\n\n    def tests_get_history_with_variable_interpolation():\n        \"\"\"Variable interpolation is not evaluated.\n        https://github.com/dynaconf/dynaconf/issues/1180\n    \n        The original issue was about an exception being raised when there was\n        variable interpolation involved. But in the end, the get_history shouldnt\n        evaluate the interpolations:\n    \n        - History should accurately inform the order and content of what the user loaded.\n        - For a key with a interpolation value, the accurate representation is not the evaluated\n          value, but the original template string.\n        - The evaluated depends on other keys, so for\n          history inspecting it is more reliable to show what variables were used so the user\n          can verify if everything happened as expected.\n        \"\"\"\n        data = {\n            \"a\": {\n                \"b\": \"foo\",\n                \"c\": \"bar\",\n                \"d\": \"@format {this.a.b} {this.a.c}\",\n            }\n        }\n    \n        settings = Dynaconf(**data)\n    \n        assert settings.a.d == \"foo bar\"\n        history = get_history(settings, \"a.d\")\n        # shows the not-evaluated (raw) value\n>       assert history[0][\"value\"] == \"@format {this.a.b} {this.a.c}\"\nE       AssertionError: assert '{this.a.b} {this.a.c}' == '@format {thi...b} {this.a.c}'\nE         \nE         - @format {this.a.b} {this.a.c}\nE         ? --------\nE         + {this.a.b} {this.a.c}\n\n/tmp/swegemma_sandbox_2552d10c-65d_5xgnqm8l/workspace/tests/test_inspect.py:590: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_inspect.py::tests_get_history_with_variable_interpolation\n1 failed, 23 passed in 0.40s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7fa69dfb63c0>",
+    "tool_calls": 9,
+    "task_index": 1
+   },
+   "segundos_reloj": 1504.7
+  }
+ ]
+}

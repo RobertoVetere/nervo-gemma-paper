@@ -1,0 +1,17 @@
+# E4B without reasoning (thinking_budget 0). Same prompt, tools and budget as community_base.
+# Reason: in 114 tasks with the official harness, E4B with thinking 0 solved 16 and with 4096 solved 10
+# (dataset dmitriigluzdov/gemma-4-task-soundness-and-local-results, CC BY 4.0).
+name: swe_agent
+model: gemma-4-e4b-it-qat-w4a16-ct
+instruction: !include prompts/system.md
+tools:
+  - run_command
+  - read_file
+  - edit_file
+  - write_file
+  - get_status
+  - submit_patch
+  - get_code_neighbors
+  - search_similar_code
+  - get_code_subgraph
+generate_content_config: !include configs/sampling.yaml

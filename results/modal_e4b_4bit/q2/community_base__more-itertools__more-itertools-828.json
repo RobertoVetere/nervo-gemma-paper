@@ -1,0 +1,40 @@
+{
+ "variant": "variants/community_base",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "more-itertools__more-itertools-828",
+   "resolved": false,
+   "patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex abbdd5f..23fb390 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -77,6 +77,7 @@ __all__ = [\n     'triplewise',\n     'unique_everseen',\n     'unique_justseen',\n+    'powerset_of_sets',\n ]\n \n _marker = object()\n@@ -142,8 +143,12 @@ def tail(n, iterable):\n     # check if it is Iterable.\n     if isinstance(iterable, Sized):\n         yield from islice(iterable, max(0, len(iterable) - n), None)\n-    else:\n-        yield from iter(deque(iterable, maxlen=n))\n+def powerset_of_sets(iterable):\n+    \"\"\"Return sets of a powerset calling hash() only once per element.\"\"\"\n+    # powerset_of_sets([1,2,3]) --> set() {1} {2} {3} {1,2} {1,3} {2,3} {1,2,3}\n+    sets = list(map(set, zip(iterable)))\n+    for r in range(len(sets) + 1):\n+        yield from starmap(set().union, combinations(sets, r))\n \n \n def consume(iterator, n=None):",
+   "tool_calls": 6,
+   "duration_s": 81.9,
+   "error": null,
+   "raw": {
+    "task_id": "more-itertools__more-itertools-828",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 81.92525111499981,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 8,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q2/community_base__more-itertools__more-itertools-828/results/traces/trace_more-itertools__more-itertools-828.json",
+    "metadata": "{}",
+    "repo": "more-itertools/more-itertools",
+    "agent_patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex abbdd5f..23fb390 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -77,6 +77,7 @@ __all__ = [\n     'triplewise',\n     'unique_everseen',\n     'unique_justseen',\n+    'powerset_of_sets',\n ]\n \n _marker = object()\n@@ -142,8 +143,12 @@ def tail(n, iterable):\n     # check if it is Iterable.\n     if isinstance(iterable, Sized):\n         yield from islice(iterable, max(0, len(iterable) - n), None)\n-    else:\n-        yield from iter(deque(iterable, maxlen=n))\n+def powerset_of_sets(iterable):\n+    \"\"\"Return sets of a powerset calling hash() only once per element.\"\"\"\n+    # powerset_of_sets([1,2,3]) --> set() {1} {2} {3} {1,2} {1,3} {2,3} {1,2,3}\n+    sets = list(map(set, zip(iterable)))\n+    for r in range(len(sets) + 1):\n+        yield from starmap(set().union, combinations(sets, r))\n \n \n def consume(iterator, n=None):\n",
+    "test_output": "STDOUT:\n............................................................................................ [ 14%]\n......................................................... [ 23%]\n........................................................................ [ 34%]\n................................................................................ [ 47%]\n.................................. [ 52%]\n............................................................................................................................ [ 72%]\n........................................................FFF....... [ 82%]\n.....F...................................... [ 89%]\n....................................................s........... [100%]\n=================================== FAILURES ===================================\n________________________ TailTests.test_iterator_equal _________________________\n\nself = <tests.test_recipes.TailTests testMethod=test_iterator_equal>\n\n    def test_iterator_equal(self):\n        \"\"\"Length of iterator is equal to the requested tail\"\"\"\n>       self.assertEqual(list(mi.tail(7, iter('ABCDEFG'))), list('ABCDEFG'))\nE       AssertionError: Lists differ: [] != ['A', 'B', 'C', 'D', 'E', 'F', 'G']\nE       \nE       Second list contains 7 additional elements.\nE       First extra element 0:\nE       'A'\nE       \nE       - []\nE       + ['A', 'B', 'C', 'D', 'E', 'F', 'G']\n\ntests/test_recipes.py:71: AssertionError\n_______________________ TailTests.test_iterator_greater ________________________\n\nself = <tests.test_recipes.TailTests testMethod=test_iterator_greater>\n\n    def test_iterator_greater(self):\n        \"\"\"Length of iterator is greater than requested tail\"\"\"\n>       self.assertEqual(list(mi.tail(3, iter('ABCDEFG'))), list('EFG'))\nE       AssertionError: Lists differ: [] != ['E', 'F', 'G']\nE       \nE       Second list contains 3 additional elements.\nE       First extra element 0:\nE       'E'\nE       \nE       - []\nE       + ['E', 'F', 'G']\n\ntests/test_recipes.py:67: AssertionError\n_________________________ TailTests.test_iterator_less _________________________\n\nself = <tests.test_recipes.TailTests testMethod=test_iterator_less>\n\n    def test_iterator_less(self):\n        \"\"\"Length of iterator is less than requested tail\"\"\"\n>       self.assertEqual(list(mi.tail(8, iter('ABCDEFG'))), list('ABCDEFG'))\nE       AssertionError: Lists differ: [] != ['A', 'B', 'C', 'D', 'E', 'F', 'G']\nE       \nE       Second list contains 7 additional elements.\nE       First extra element 0:\nE       'A'\nE       \nE       - []\nE       + ['A', 'B', 'C', 'D', 'E', 'F', 'G']\n\ntests/test_recipes.py:75: AssertionError\n____________________________ AllEqualTests.test_key ____________________________\n\nself = <tests.test_recipes.AllEqualTests testMethod=test_key>\n\n    def test_key(self):\n>       self.assertTrue(mi.all_equal('4٤໔４৪', key=int))\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: all_equal() got an unexpected keyword argument 'key'\n\ntests/test_recipes.py:158: TypeError\n=========================== short test summary info ============================\nFAILED tests/test_recipes.py::TailTests::test_iterator_equal - AssertionError...\nFAILED tests/test_recipes.py::TailTests::test_iterator_greater - AssertionErr...\nFAILED tests/test_recipes.py::TailTests::test_iterator_less - AssertionError:...\nFAILED tests/test_recipes.py::AllEqualTests::test_key - TypeError: all_equal(...\n4 failed, 628 passed, 1 skipped, 2324 subtests passed in 1.93s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f876877c980>",
+    "tool_calls": 6,
+    "task_index": 1
+   },
+   "segundos_reloj": 82.0
+  }
+ ]
+}

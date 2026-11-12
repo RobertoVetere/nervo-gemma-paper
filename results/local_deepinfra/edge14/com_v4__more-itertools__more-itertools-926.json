@@ -1,0 +1,40 @@
+{
+ "variant": "variants/com_v4",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "more-itertools__more-itertools-926",
+   "resolved": true,
+   "patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex 6153414..f66546c 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -45,6 +45,7 @@ __all__ = [\n     'is_prime',\n     'iter_except',\n     'iter_index',\n+    'loops',\n     'matmul',\n     'ncycles',\n     'nth',\n@@ -148,6 +149,24 @@ def tail(n, iterable):\n         yield from iter(deque(iterable, maxlen=n))\n \n \n+def loops(n):\n+    \"\"\"Loop n times. Like range(n) but without creating integers.\n+\n+    >>> all(list(loops(n)) == [None] * n for n in range(-10, 10))\n+    True\n+\n+    >>> for _ in loops(5):\n+    ...     print('hello world')\n+    ... \n+    hello world\n+    hello world\n+    hello world\n+    hello world\n+    hello world\n+    \"\"\"\n+    return repeat(None, n)\n+\n+\n def consume(iterator, n=None):\n     \"\"\"Advance *iterable* by *n* steps. If *n* is ``None``, consume it\n     entirely.\ndiff --git a/more_itertools/recipes.pyi b/more_itertools/recipes.pyi\nindex f07ea46..43da01f 100644\n--- a/more_itertools/recipes.pyi\n+++ b/more_itertools/recipes.pyi\n@@ -24,6 +24,7 @@ def tabulate(\n     function: Callable[[int], _T], start: int = ...\n ) -> Iterator[_T]: ...\n def tail(n: int, iterable: Iterable[_T]) -> Iterator[_T]: ...\n+def loops(n: int) -> Iterator[None]: ...\n def consume(iterator: Iterable[_T], n: int | None = ...) -> None: ...\n @overload\n def nth(iterable: Iterable[_T], n: int) -> _T | None: ...",
+   "tool_calls": 21,
+   "duration_s": 111.7,
+   "error": null,
+   "raw": {
+    "task_id": "more-itertools__more-itertools-926",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 111.65363930399963,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 23,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/l40/com_v4__more-itertools__more-itertools-926/results/traces/trace_more-itertools__more-itertools-926.json",
+    "metadata": "{}",
+    "repo": "more-itertools/more-itertools",
+    "agent_patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex 6153414..f66546c 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -45,6 +45,7 @@ __all__ = [\n     'is_prime',\n     'iter_except',\n     'iter_index',\n+    'loops',\n     'matmul',\n     'ncycles',\n     'nth',\n@@ -148,6 +149,24 @@ def tail(n, iterable):\n         yield from iter(deque(iterable, maxlen=n))\n \n \n+def loops(n):\n+    \"\"\"Loop n times. Like range(n) but without creating integers.\n+\n+    >>> all(list(loops(n)) == [None] * n for n in range(-10, 10))\n+    True\n+\n+    >>> for _ in loops(5):\n+    ...     print('hello world')\n+    ... \n+    hello world\n+    hello world\n+    hello world\n+    hello world\n+    hello world\n+    \"\"\"\n+    return repeat(None, n)\n+\n+\n def consume(iterator, n=None):\n     \"\"\"Advance *iterable* by *n* steps. If *n* is ``None``, consume it\n     entirely.\ndiff --git a/more_itertools/recipes.pyi b/more_itertools/recipes.pyi\nindex f07ea46..43da01f 100644\n--- a/more_itertools/recipes.pyi\n+++ b/more_itertools/recipes.pyi\n@@ -24,6 +24,7 @@ def tabulate(\n     function: Callable[[int], _T], start: int = ...\n ) -> Iterator[_T]: ...\n def tail(n: int, iterable: Iterable[_T]) -> Iterator[_T]: ...\n+def loops(n: int) -> Iterator[None]: ...\n def consume(iterator: Iterable[_T], n: int | None = ...) -> None: ...\n @overload\n def nth(iterable: Iterable[_T], n: int) -> _T | None: ...\n",
+    "test_output": "STDOUT:\n............................................... [ 34%]\n........................................................................s............. [ 98%]\n..                                                     [100%]\n134 passed, 1 skipped, 9821 subtests passed in 5.81s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7ff2ab1027b0>",
+    "tool_calls": 21,
+    "task_index": 1
+   },
+   "segundos_reloj": 111.7
+  }
+ ]
+}

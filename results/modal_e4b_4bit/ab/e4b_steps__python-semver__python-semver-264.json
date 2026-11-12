@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_steps",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "python-semver__python-semver-264",
+   "resolved": false,
+   "patch": "",
+   "tool_calls": 1,
+   "duration_s": 207.0,
+   "error": null,
+   "raw": {
+    "task_id": "python-semver__python-semver-264",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 206.99525219899988,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 13,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_ab/e4b_steps__python-semver__python-semver-264/results/traces/trace_python-semver__python-semver-264.json",
+    "metadata": "{}",
+    "repo": "python-semver/python-semver",
+    "agent_patch": "",
+    "test_output": "STDOUT:\n........................................................................ [ 26%]\n........................................................................ [ 52%]\n........................................................................ [ 78%]\n...................................FF.......................             [100%]\n=================================== FAILURES ===================================\n_______ test_should_raise_deprecation_warnings[max_ver-args12-kwargs12] ________\n\nfunc = <function max_ver at 0x7fd106482d40>, args = ('1.2.3', '1.2.4')\nkwargs = {}\n\n    @pytest.mark.parametrize(\n        \"func, args, kwargs\",\n        [\n            (bump_build, (\"1.2.3\",), {}),\n            (bump_major, (\"1.2.3\",), {}),\n            (bump_minor, (\"1.2.3\",), {}),\n            (bump_patch, (\"1.2.3\",), {}),\n            (bump_prerelease, (\"1.2.3\",), {}),\n            (compare, (\"1.2.1\", \"1.2.2\"), {}),\n            (format_version, (3, 4, 5), {}),\n            (finalize_version, (\"1.2.3-rc.5\",), {}),\n            (match, (\"1.0.0\", \">=1.0.0\"), {}),\n            (parse, (\"1.2.3\",), {}),\n            (parse_version_info, (\"1.2.3\",), {}),\n            (replace, (\"1.2.3\",), dict(major=2, patch=10)),\n            (max_ver, (\"1.2.3\", \"1.2.4\"), {}),\n            (min_ver, (\"1.2.3\", \"1.2.4\"), {}),\n        ],\n    )\n    def test_should_raise_deprecation_warnings(func, args, kwargs):\n        with pytest.warns(\n            DeprecationWarning, match=r\"Function 'semver.[_a-zA-Z]+' is deprecated.\"\n        ) as record:\n            func(*args, **kwargs)\n            if not record:\n>               pytest.fail(\"Expected a DeprecationWarning for {}\".format(func.__name__))\nE               Failed: Expected a DeprecationWarning for max_ver\n\ntest_semver.py:1049: Failed\n_______ test_should_raise_deprecation_warnings[min_ver-args13-kwargs13] ________\n\nfunc = <function min_ver at 0x7fd106482de0>, args = ('1.2.3', '1.2.4')\nkwargs = {}\n\n    @pytest.mark.parametrize(\n        \"func, args, kwargs\",\n        [\n            (bump_build, (\"1.2.3\",), {}),\n            (bump_major, (\"1.2.3\",), {}),\n            (bump_minor, (\"1.2.3\",), {}),\n            (bump_patch, (\"1.2.3\",), {}),\n            (bump_prerelease, (\"1.2.3\",), {}),\n            (compare, (\"1.2.1\", \"1.2.2\"), {}),\n            (format_version, (3, 4, 5), {}),\n            (finalize_version, (\"1.2.3-rc.5\",), {}),\n            (match, (\"1.0.0\", \">=1.0.0\"), {}),\n            (parse, (\"1.2.3\",), {}),\n            (parse_version_info, (\"1.2.3\",), {}),\n            (replace, (\"1.2.3\",), dict(major=2, patch=10)),\n            (max_ver, (\"1.2.3\", \"1.2.4\"), {}),\n            (min_ver, (\"1.2.3\", \"1.2.4\"), {}),\n        ],\n    )\n    def test_should_raise_deprecation_warnings(func, args, kwargs):\n        with pytest.warns(\n            DeprecationWarning, match=r\"Function 'semver.[_a-zA-Z]+' is deprecated.\"\n        ) as record:\n            func(*args, **kwargs)\n            if not record:\n>               pytest.fail(\"Expected a DeprecationWarning for {}\".format(func.__name__))\nE               Failed: Expected a DeprecationWarning for min_ver\n\ntest_semver.py:1049: Failed\n=========================== short test summary info ============================\nFAILED test_semver.py::test_should_raise_deprecation_warnings[max_ver-args12-kwargs12]\nFAILED test_semver.py::test_should_raise_deprecation_warnings[min_ver-args13-kwargs13]\n2 failed, 274 passed in 0.31s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f29a82ac980>",
+    "tool_calls": 1,
+    "task_index": 1
+   },
+   "segundos_reloj": 207.0
+  }
+ ]
+}

@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_t0",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "slackapi__python-slack-sdk-1022",
+   "resolved": false,
+   "patch": "diff --git a/slack_sdk/models/views/__init__.py b/slack_sdk/models/views/__init__.py\nindex f524fa5..89b0808 100644\n--- a/slack_sdk/models/views/__init__.py\n+++ b/slack_sdk/models/views/__init__.py\n@@ -72,7 +72,17 @@ class View(JsonObject):\n         self.close = TextObject.parse(close, default_type=PlainTextObject.type)\n         self.blocks = Block.parse_all(blocks)\n         self.private_metadata = private_metadata\n-        self.state = state\n+        if isinstance(state, dict):\n+            self.state = ViewState(**state)\n+        elif state is not None and not isinstance(state, ViewState):\n+            # Handle cases where state might be an unexpected type but not dict/None\n+            # For robustness, we might want to raise an error or keep it as is,\n+        self.private_metadata = private_metadata\n+        if isinstance(state, dict):\n+            self.state = ViewState(**state)\n+        else:\n+            self.state = state\n+        self.hash = hash\n         self.hash = hash\n         self.clear_on_close = clear_on_close\n         self.notify_on_close = notify_on_close",
+   "tool_calls": 23,
+   "duration_s": 272.0,
+   "error": null,
+   "raw": {
+    "task_id": "slackapi__python-slack-sdk-1022",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 271.99802837100015,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 30,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q2/e4b_t0__slackapi__python-slack-sdk-1022/results/traces/trace_slackapi__python-slack-sdk-1022.json",
+    "metadata": "{}",
+    "repo": "slackapi/python-slack-sdk",
+    "agent_patch": "diff --git a/slack_sdk/models/views/__init__.py b/slack_sdk/models/views/__init__.py\nindex f524fa5..89b0808 100644\n--- a/slack_sdk/models/views/__init__.py\n+++ b/slack_sdk/models/views/__init__.py\n@@ -72,7 +72,17 @@ class View(JsonObject):\n         self.close = TextObject.parse(close, default_type=PlainTextObject.type)\n         self.blocks = Block.parse_all(blocks)\n         self.private_metadata = private_metadata\n-        self.state = state\n+        if isinstance(state, dict):\n+            self.state = ViewState(**state)\n+        elif state is not None and not isinstance(state, ViewState):\n+            # Handle cases where state might be an unexpected type but not dict/None\n+            # For robustness, we might want to raise an error or keep it as is,\n+        self.private_metadata = private_metadata\n+        if isinstance(state, dict):\n+            self.state = ViewState(**state)\n+        else:\n+            self.state = state\n+        self.hash = hash\n         self.hash = hash\n         self.clear_on_close = clear_on_close\n         self.notify_on_close = notify_on_close\n",
+    "test_output": "STDOUT:\n\n==================================== ERRORS ====================================\n___________ ERROR collecting tests/slack_sdk/models/test_elements.py ___________\n/usr/local/lib/python3.13/site-packages/_pytest/python.py:508: in importtestmodule\n    mod = import_path(\n/usr/local/lib/python3.13/site-packages/_pytest/pathlib.py:596: in import_path\n    importlib.import_module(module_name)\n/usr/local/lib/python3.13/importlib/__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1404: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1369: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1340: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:935: in _load_unlocked\n    ???\n/usr/local/lib/python3.13/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntests/slack_sdk/models/test_elements.py:3: in <module>\n    from slack_sdk.errors import SlackObjectFormationError\nslack_sdk/__init__.py:44: in <module>\n    from .web import WebClient  # noqa\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^\nslack_sdk/web/__init__.py:3: in <module>\n    from .client import WebClient  # noqa\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nslack_sdk/web/client.py:7: in <module>\n    from slack_sdk.models.views import View\nE     File \"/tmp/swegemma_sandbox_336a7cd9-9b8_3ut4gfbd/workspace/slack_sdk/models/views/__init__.py\", line 80\nE       self.private_metadata = private_metadata\nE       ^^^^\nE   IndentationError: expected an indented block after 'elif' statement on line 77\n____________ ERROR collecting tests/slack_sdk/models/test_views.py _____________\n/usr/local/lib/python3.13/site-packages/_pytest/python.py:508: in importtestmodule\n    mod = import_path(\n/usr/local/lib/python3.13/site-packages/_pytest/pathlib.py:596: in import_path\n    importlib.import_module(module_name)\n/usr/local/lib/python3.13/importlib/__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1404: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1369: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1340: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:935: in _load_unlocked\n    ???\n/usr/local/lib/python3.13/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntests/slack_sdk/models/test_views.py:6: in <module>\n    from slack_sdk.models.blocks import (\nslack_sdk/models/blocks/__init__.py:9: in <module>\n    from .basic_components import ButtonStyles  # noqa\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nslack_sdk/__init__.py:44: in <module>\n    from .web import WebClient  # noqa\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^\nslack_sdk/web/__init__.py:3: in <module>\n    from .client import WebClient  # noqa\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nslack_sdk/web/client.py:7: in <module>\n    from slack_sdk.models.views import View\nE     File \"/tmp/swegemma_sandbox_336a7cd9-9b8_3ut4gfbd/workspace/slack_sdk/models/views/__init__.py\", line 80\nE       self.private_metadata = private_metadata\nE       ^^^^\nE   IndentationError: expected an indented block after 'elif' statement on line 77\n=========================== short test summary info ============================\nERROR tests/slack_sdk/models/test_elements.py\nERROR tests/slack_sdk/models/test_views.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 0.24s\n\nSTDERR:\n",
+    "test_exit_code": 2,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7fe34a388980>",
+    "tool_calls": 23,
+    "task_index": 1
+   },
+   "segundos_reloj": 272.2
+  }
+ ]
+}

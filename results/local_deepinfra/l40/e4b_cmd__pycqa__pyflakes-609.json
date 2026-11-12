@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_cmd",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pycqa__pyflakes-609",
+   "resolved": false,
+   "patch": "",
+   "tool_calls": 24,
+   "duration_s": 48.6,
+   "error": null,
+   "raw": {
+    "task_id": "pycqa__pyflakes-609",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 48.62248821899993,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 26,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/l40/e4b_cmd__pycqa__pyflakes-609/results/traces/trace_pycqa__pyflakes-609.json",
+    "metadata": "{}",
+    "repo": "pycqa/pyflakes",
+    "agent_patch": "",
+    "test_output": "STDOUT:\n...........F..............................F......                        [100%]\n=================================== FAILURES ===================================\n_________________ TestTypeAnnotations.test_namedtypes_classes __________________\n\nself = <pyflakes.test.test_type_annotations.TestTypeAnnotations testMethod=test_namedtypes_classes>\n\n    @skipIf(version_info < (3, 6), 'new in Python 3.6')\n    def test_namedtypes_classes(self):\n>       self.flakes(\"\"\"\n            from typing import TypedDict, NamedTuple\n            class X(TypedDict):\n                y: TypedDict(\"z\", {\"zz\":int})\n    \n            class Y(NamedTuple):\n                y: NamedTuple(\"v\", [(\"vv\", int)])\n        \"\"\")\n\npyflakes/test/test_type_annotations.py:731: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \npyflakes/test/harness.py:30: in flakes\n    self.assertEqual(outputs, expectedOutputs, '''\\\nE   AssertionError: Lists differ: [<class 'pyflakes.messages.UndefinedName'>[125 chars]me'>] != []\nE   \nE   First list contains 4 additional elements.\nE   First extra element 0:\nE   <class 'pyflakes.messages.UndefinedName'>\nE   \nE   + []\nE   - [<class 'pyflakes.messages.UndefinedName'>,\nE   -  <class 'pyflakes.messages.UndefinedName'>,\nE   -  <class 'pyflakes.messages.UndefinedName'>,\nE   -  <class 'pyflakes.messages.UndefinedName'>] : for input:\nE   \nE               from typing import TypedDict, NamedTuple\nE               class X(TypedDict):\nE                   y: TypedDict(\"z\", {\"zz\":int})\nE   \nE               class Y(NamedTuple):\nE                   y: NamedTuple(\"v\", [(\"vv\", int)])\nE           \nE   expected outputs:\nE   []\nE   but got:\nE   (none):4:18 undefined name 'z'\nE   (none):4:24 undefined name 'zz'\nE   (none):7:19 undefined name 'v'\nE   (none):7:26 undefined name 'vv'\n___________ TestTypeAnnotations.test_typednames_correct_forward_ref ____________\n\nself = <pyflakes.test.test_type_annotations.TestTypeAnnotations testMethod=test_typednames_correct_forward_ref>\n\n    def test_typednames_correct_forward_ref(self):\n>       self.flakes(\"\"\"\n            from typing import TypedDict, List, NamedTuple\n    \n            List[TypedDict(\"x\", {})]\n            List[TypedDict(\"x\", x=int)]\n            List[NamedTuple(\"a\", a=int)]\n            List[NamedTuple(\"a\", [(\"a\", int)])]\n        \"\"\")\n\npyflakes/test/test_type_annotations.py:700: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \npyflakes/test/harness.py:30: in flakes\n    self.assertEqual(outputs, expectedOutputs, '''\\\nE   AssertionError: Lists differ: [<class 'pyflakes.messages.UndefinedName'>[168 chars]me'>] != []\nE   \nE   First list contains 5 additional elements.\nE   First extra element 0:\nE   <class 'pyflakes.messages.UndefinedName'>\nE   \nE   + []\nE   - [<class 'pyflakes.messages.UndefinedName'>,\nE   -  <class 'pyflakes.messages.UndefinedName'>,\nE   -  <class 'pyflakes.messages.UndefinedName'>,\nE   -  <class 'pyflakes.messages.UndefinedName'>,\nE   -  <class 'pyflakes.messages.UndefinedName'>] : for input:\nE   \nE               from typing import TypedDict, List, NamedTuple\nE   \nE               List[TypedDict(\"x\", {})]\nE               List[TypedDict(\"x\", x=int)]\nE               List[NamedTuple(\"a\", a=int)]\nE               List[NamedTuple(\"a\", [(\"a\", int)])]\nE           \nE   expected outputs:\nE   []\nE   but got:\nE   (none):4:16 undefined name 'x'\nE   (none):5:16 undefined name 'x'\nE   (none):6:17 undefined name 'a'\nE   (none):7:17 undefined name 'a'\nE   (none):7:24 undefined name 'a'\n=========================== short test summary info ============================\nFAILED pyflakes/test/test_type_annotations.py::TestTypeAnnotations::test_namedtypes_classes\nFAILED pyflakes/test/test_type_annotations.py::TestTypeAnnotations::test_typednames_correct_forward_ref\n2 failed, 47 passed in 0.16s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f8a5f6267b0>",
+    "tool_calls": 24,
+    "task_index": 1
+   },
+   "segundos_reloj": 48.7
+  }
+ ]
+}

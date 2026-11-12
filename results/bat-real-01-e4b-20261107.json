@@ -1,0 +1,391 @@
+{
+ "label": "bat-real-01-e4b",
+ "stage": "done",
+ "tasks": [
+  {
+   "variant": "community_base",
+   "id": "rich_3454",
+   "repo": "Textualize/rich",
+   "resolved": true,
+   "patch_chars": 654,
+   "tool_calls": 10,
+   "duration_s": 67.9,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/rich/highlighter.py b/rich/highlighter.py\nindex 27714b25..e4c462e2 100644\n--- a/rich/highlighter.py\n+++ b/rich/highlighter.py\n@@ -98,7 +98,7 @@ class ReprHighlighter(RegexHighlighter):\n             r\"(?P<number>(?<!\\w)\\-?[0-9]+\\.?[0-9]*(e[-+]?\\d+?)?\\b|0x[0-9a-fA-F]*)\",\n             r\"(?P<path>\\B(/[-\\w._+]+)*\\/)(?P<filename>[-\\w._+]*)?\",\n             r\"(?<![\\\\\\w])(?P<str>b?'''.*?(?<!\\\\)'''|b?'.*?(?<!\\\\)'|b?\\\"\\\"\\\".*?(?<!\\\\)\\\"\\\"\\\"|b?\\\".*?(?<!\\\\)\\\")\",\n-            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!`(),.?/;:&=%#~]*)\",\n+            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!`(),.?/;:&=%#~@]*)\",\n         ),\n     ]"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "rich_3454",
+   "repo": "Textualize/rich",
+   "resolved": true,
+   "patch_chars": 1684,
+   "tool_calls": 10,
+   "duration_s": 73.3,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/check.py b/check.py\nnew file mode 100644\nindex 00000000..b37d2709\n--- /dev/null\n+++ b/check.py\n@@ -0,0 +1,29 @@\n+import re\n+import sys\n+from rich.highlighter import ReprHighlighter\n+from rich.text import Text, Span\n+\n+def check():\n+    # Test case for URL with '@'\n+    url_with_at = \"http://user@example.com/path\"\n+    \n+    # The regex is: r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!@`(),.?/;:&=%#~]*)\"\n+    url_regex = r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!@`(),.?/;:&=%#~]*)\"\n+    \n+    matches = list(re.finditer(url_regex, url_with_at))\n+    \n+    if len(matches) != 1:\n+        print(\"CHECK_FAIL: Expected exactly one match for URL with '@', but found\", len(matches))\n+        return\n+    \n+    match = matches[0]\n+    matched_string = match.group(0)\n+    \n+    if matched_string != url_with_at:\n+        print(f\"CHECK_FAIL: Matched string mismatch. Expected '{url_with_at}', got '{matched_string}'\")\n+        return\n+\n+    print(\"CHECK_PASS\")\n+\n+if __name__ == \"__main__\":\n+    check()\ndiff --git a/rich/highlighter.py b/rich/highlighter.py\nindex 27714b25..7f55b667 100644\n--- a/rich/highlighter.py\n+++ b/rich/highlighter.py\n@@ -98,7 +98,7 @@ class ReprHighlighter(RegexHighlighter):\n             r\"(?P<number>(?<!\\w)\\-?[0-9]+\\.?[0-9]*(e[-+]?\\d+?)?\\b|0x[0-9a-fA-F]*)\",\n             r\"(?P<path>\\B(/[-\\w._+]+)*\\/)(?P<filename>[-\\w._+]*)?\",\n             r\"(?<![\\\\\\w])(?P<str>b?'''.*?(?<!\\\\)'''|b?'.*?(?<!\\\\)'|b?\\\"\\\"\\\".*?(?<!\\\\)\\\"\\\"\\\"|b?\\\".*?(?<!\\\\)\\\")\",\n-            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!`(),.?/;:&=%#~]*)\",\n+            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!@`(),.?/;:&=%#~]*)\",\n         ),\n     ]"
+  },
+  {
+   "variant": "community_base",
+   "id": "requests_7315",
+   "repo": "psf/requests",
+   "resolved": true,
+   "patch_chars": 521,
+   "tool_calls": 20,
+   "duration_s": 157.2,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/src/requests/adapters.py b/src/requests/adapters.py\nindex 98f74465..27919468 100644\n--- a/src/requests/adapters.py\n+++ b/src/requests/adapters.py\n@@ -545,8 +545,6 @@ class HTTPAdapter(BaseAdapter):\n             using_socks_proxy = proxy_scheme.startswith(\"socks\")\n \n         url = request.path_url\n-        if url.startswith(\"//\"):  # Don't confuse urllib3\n-            url = f\"/{url.lstrip('/')}\"\n \n         if is_proxied_http_request and not using_socks_proxy:\n             url = urldefragauth(request.url)"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "requests_7315",
+   "repo": "psf/requests",
+   "resolved": true,
+   "patch_chars": 521,
+   "tool_calls": 8,
+   "duration_s": 76.7,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/src/requests/adapters.py b/src/requests/adapters.py\nindex 98f74465..27919468 100644\n--- a/src/requests/adapters.py\n+++ b/src/requests/adapters.py\n@@ -545,8 +545,6 @@ class HTTPAdapter(BaseAdapter):\n             using_socks_proxy = proxy_scheme.startswith(\"socks\")\n \n         url = request.path_url\n-        if url.startswith(\"//\"):  # Don't confuse urllib3\n-            url = f\"/{url.lstrip('/')}\"\n \n         if is_proxied_http_request and not using_socks_proxy:\n             url = urldefragauth(request.url)"
+  },
+  {
+   "variant": "community_base",
+   "id": "rich_2725",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 0,
+   "tool_calls": 28,
+   "duration_s": 126.2,
+   "exit_code": -1,
+   "error": "Agent exceeded tool call budget (28 calls)",
+   "patch": ""
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "rich_2725",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 3656,
+   "tool_calls": 6,
+   "duration_s": 93.7,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/check.py b/check.py\nnew file mode 100644\nindex 00000000..8554c1aa\n--- /dev/null\n+++ b/check.py\n@@ -0,0 +1,52 @@\n+from rich.box import Box\n+\n+def test_box_rendering_order():\n+    # Setup custom box characters as described in the issue\n+    box_chars = {\n+        'top_left': 'T1', 'top': 'T2', 'top_divider': 'T3', 'top_right': 'T4',\n+        'head_left': '1', 'head_vertical': '2', 'head_right': '3',\n+        'head_row_left': 'H1', 'head_row_horizontal': 'H2', 'head_row_cross': 'H3', 'head_row_right': 'H4',\n+        'mid_left': '4', 'mid_vertical': '5', 'mid_right': '6',\n+        'foot_left': '7', 'foot_vertical': '8', 'foot_right': '9',\n+        'row_left': 'R1', 'row_horizontal': 'R2', 'row_cross': 'R3', 'row_right': 'R4',\n+        'bottom_left': 'B1', 'bottom': 'B2', 'bottom_divider': 'B3', 'bottom_right': 'B4',\n+    }\n+\n+    # Create a Box instance using the custom characters\n+    box = Box(\n+        box=\"\\n\".join([\n+            box_chars['top_left'] + box_chars['top'] + box_chars['top_divider'] + box_chars['top_right'],\n+            box_chars['head_left'] + ' ' + box_chars['head_vertical'] + ' ' + box_chars['head_right'],\n+            box_chars['head_row_left'] + box_chars['head_row_horizontal'] + box_chars['head_row_cross'] + box_chars['head_row_right'],\n+            box_chars['mid_left'] + ' ' + box_chars['mid_vertical'] + ' ' + box_chars['mid_right'],\n+            box_chars['row_left'] + box_chars['row_horizontal'] + box_chars['row_cross'] + box_chars['row_right'],\n+            box_chars['foot_row_left'] + box_chars['foot_row_horizontal'] + box_chars['foot_row_cross'] + box_chars['foot_row_right'],\n+            box_chars['foot_left'] + ' ' + box_chars['foot_vertical'] + ' ' + box_chars['foot_right'],\n+            box_chars['bottom_left'] + box_chars['bottom'] + box_chars['bottom_divider'] + box_chars['bottom_right']\n+        ])\n+    )\n+\n+    # Mock widths for columns\n+    widths = [10, 20]\n+\n+    # Test mid level\n+    mid_row = box.get_row(widths, level=\"mid\")\n+    # Expected: uses mid_left ('4'), mid_vertical ('5'), mid_right ('6')\n+    expected_mid = f\"{box_chars['4']} {box_chars['5']} {box_chars['6']}\"\n+    assert mid_row == expected_mid, f\"Mid row failed. Got: {mid_row}\"\n+\n+    # Test foot level\n+    foot_row = box.get_row(widths, level=\"foot\")\n+    # Expected: uses foot_left ('7'), foot_vertical ('8'), foot_right ('9')\n+    expected_foot = f\"{box_chars['7']} {box_chars['8']} {box_chars['9']}\"\n+    assert foot_row == expected_foot, f\"Foot row failed. Got: {foot_row}\"\n+\n+    print(\"CHECK_PASS\")\n+\n+if __name__ == \"__main__\":\n+    try:\n+        test_box_rendering_order()\n+    except AssertionError as e:\n+        print(f\"CHECK_FAIL: {e}\")\n+    except Exception as e:\n+        print(f\"CHECK_FAIL: Unexpected error: {e}\")\n\\ No newline at end of file\ndiff --git a/rich/box.py b/rich/box.py\nindex aa4ada32..78bde78b 100644\n--- a/rich/box.py\n+++ b/rich/box.py\n@@ -143,15 +143,15 @@ class Box:\n             cross = self.row_cross\n             right = self.row_right\n         elif level == \"mid\":\n+            left = self.foot_left\n+            horizontal = \" \"\n+            cross = self.foot_vertical\n+            right = self.foot_right\n+        elif level == \"foot\":\n             left = self.mid_left\n             horizontal = \" \"\n             cross = self.mid_vertical\n             right = self.mid_right\n-        elif level == \"foot\":\n-            left = self.foot_row_left\n-            horizontal = self.foot_row_horizontal\n-            cross = self.foot_row_cross\n-            right = self.foot_row_right\n         else:\n             raise ValueError(\"level must be 'head', 'row' or 'foot'\")"
+  },
+  {
+   "variant": "community_base",
+   "id": "rich_3105",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 354,
+   "tool_calls": 23,
+   "duration_s": 138.6,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/rich/_cell_widths.py b/rich/_cell_widths.py\nindex 36286df3..8b0b485a 100644\n--- a/rich/_cell_widths.py\n+++ b/rich/_cell_widths.py\n@@ -116,7 +116,7 @@ CELL_WIDTHS = [\n     (4229, 4230, 0),\n     (4237, 4237, 0),\n     (4253, 4253, 0),\n-    (4352, 4447, 2),\n+    (4352, 4447, 0),\n     (4957, 4959, 0),\n     (5906, 5908, 0),\n     (5938, 5940, 0),"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "rich_3105",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 415,
+   "tool_calls": 14,
+   "duration_s": 92.6,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/rich/text.py b/rich/text.py\nindex 7091e429..96900a99 100644\n--- a/rich/text.py\n+++ b/rich/text.py\n@@ -143,7 +143,7 @@ class Text(JupyterMixin):\n     def __init__(\n         self,\n         text: str = \"\",\n-        style: Union[str, Style] = \"\",\n+        style: Union[str, Style] = None,\n         *,\n         justify: Optional[\"JustifyMethod\"] = None,\n         overflow: Optional[\"OverflowMethod\"] = None,"
+  },
+  {
+   "variant": "community_base",
+   "id": "rich_3480",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 417,
+   "tool_calls": 27,
+   "duration_s": 413.9,
+   "exit_code": 124,
+   "error": null,
+   "patch": "diff --git a/rich/console.py b/rich/console.py\nindex 9e697327..d7ad918d 100644\n--- a/rich/console.py\n+++ b/rich/console.py\n@@ -1728,7 +1728,8 @@ class Console:\n                 ):\n                     buffer_extend(line)\n             else:\n-                self._buffer.extend(new_segments)\n+                if new_segments:\n+                    self._buffer.extend(new_segments)\n \n     def print_json(\n         self,"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "rich_3480",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 1396,
+   "tool_calls": 5,
+   "duration_s": 353.9,
+   "exit_code": 124,
+   "error": null,
+   "patch": "diff --git a/rich/repr.py b/rich/repr.py\nindex 95331006..248416a9 100644\n--- a/rich/repr.py\n+++ b/rich/repr.py\n@@ -43,23 +43,22 @@ def auto(\n         def auto_repr(self: T) -> str:\n             \"\"\"Create repr string from __rich_repr__\"\"\"\n             repr_str: List[str] = []\n-            append = repr_str.append\n \n             angular: bool = getattr(self.__rich_repr__, \"angular\", False)  # type: ignore[attr-defined]\n             for arg in self.__rich_repr__():  # type: ignore[attr-defined]\n                 if isinstance(arg, tuple):\n                     if len(arg) == 1:\n-                        append(repr(arg[0]))\n+                        repr_str.append(repr(arg[0]))\n                     else:\n                         key, value, *default = arg\n                         if key is None:\n-                            append(repr(value))\n+                            repr_str.append(repr(value))\n                         else:\n                             if default and default[0] == value:\n                                 continue\n-                            append(f\"{key}={value!r}\")\n+                            repr_str.append(f\"{key}={value!r}\")\n                 else:\n-                    append(repr(arg))\n+                    repr_str.append(repr(arg))\n             if angular:\n                 return f\"<{self.__class__.__name__} {' '.join(repr_str)}>\"\n             else:"
+  },
+  {
+   "variant": "community_base",
+   "id": "rich_3772",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 643,
+   "tool_calls": 13,
+   "duration_s": 394.9,
+   "exit_code": 124,
+   "error": null,
+   "patch": "diff --git a/rich/console.py b/rich/console.py\nindex 5929fb1c..540be44f 100644\n--- a/rich/console.py\n+++ b/rich/console.py\n@@ -1331,10 +1331,14 @@ class Console:\n             )\n         _Segment = Segment\n         _options = _options.reset_height()\n+        visited = set()\n         for render_output in iter_render:\n             if isinstance(render_output, _Segment):\n                 yield render_output\n             else:\n+                if id(render_output) in visited:\n+                    continue\n+                visited.add(id(render_output))\n                 yield from self.render(render_output, _options)\n \n     def render_lines("
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "rich_3772",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 461,
+   "tool_calls": 11,
+   "duration_s": 389.1,
+   "exit_code": 124,
+   "error": null,
+   "patch": "diff --git a/rich/traceback.py b/rich/traceback.py\nindex b2cc6304..8e2c5f08 100644\n--- a/rich/traceback.py\n+++ b/rich/traceback.py\n@@ -331,7 +331,7 @@ class Traceback:\n                 path = suppress_entity\n             path = os.path.normpath(os.path.abspath(path))\n             self.suppress.append(path)\n-        self.max_frames = max(4, max_frames) if max_frames > 0 else 0\n+        self.max_frames = max_frames\n \n     @classmethod\n     def from_exception("
+  },
+  {
+   "variant": "community_base",
+   "id": "rich_3938",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 1187,
+   "tool_calls": 28,
+   "duration_s": 256.3,
+   "exit_code": 1,
+   "error": "Agent exceeded tool call budget (28 calls)",
+   "patch": "diff --git a/rich/text.py b/rich/text.py\nindex 60109dd9..de24eca5 100644\n--- a/rich/text.py\n+++ b/rich/text.py\n@@ -1236,7 +1236,25 @@ class Text(JupyterMixin):\n                     continue\n                 new_lines = Lines([line])\n             else:\n-                offsets = divide_line(str(line), width, fold=wrap_overflow == \"fold\")\n+                lines = []\n+            current_line_spans: List[Span] = []\n+            current_line_length = 0\n+            \n+            for span in line._spans:\n+                span_len = len(span)\n+                if current_line_length + span_len <= width:\n+                    current_line_spans.append(span)\n+                    current_line_length += span_len\n+                else:\n+                    lines.append(Text(spans=current_line_spans))\n+                    current_line_spans = [span]\n+                    current_line_length = span_len\n+            \n+            if current_line_spans:\n+                lines.append(Text(spans=current_line_spans))\n+            \n+            return lines\n+\n                 new_lines = line.divide(offsets)\n                 for line in new_lines:\n                     line.rstrip_end(width)"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "rich_3938",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 2157,
+   "tool_calls": 9,
+   "duration_s": 68.6,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/check.py b/check.py\nnew file mode 100644\nindex 00000000..cfcb6a35\n--- /dev/null\n+++ b/check.py\n@@ -0,0 +1,40 @@\n+import sys\n+from rich.console import Console\n+from rich.panel import Panel\n+from rich.styled import Styled\n+\n+def check():\n+    # Test case simulating soft wrap with background style\n+    # We use a long string that forces wrapping in a narrow console.\n+    long_text = \"This is a very long string that should wrap across multiple lines and retain its background style.\"\n+    \n+    # Define a style with a background color (e.g., 'on blue')\n+    style = \"on blue\"\n+    \n+    # Initialize console with narrow width to force wrapping\n+    console = Console(width=30)\n+    \n+    # Wrap the text using Styled\n+    styled_text = Styled(long_text, style)\n+    \n+    # Render the styled text\n+    try:\n+        segments = console.render(styled_text)\n+    except Exception as e:\n+        print(f\"CHECK_FAIL: Console rendering failed: {e}\", file=sys.stderr)\n+        return\n+\n+    # Check if segments were created. If rendering completes without error, we assume the fix works.\n+    if not segments:\n+        print(\"CHECK_FAIL: No segments were produced.\")\n+        return\n+\n+    # If rendering completes successfully, we pass the check.\n+    print(\"CHECK_PASS\")\n+\n+if __name__ == \"__main__\":\n+    try:\n+        check()\n+    except Exception as e:\n+        print(f\"CHECK_FAIL: An exception occurred during check: {e}\", file=sys.stderr)\n+        sys.exit(1)\ndiff --git a/rich/styled.py b/rich/styled.py\nindex 27243beb..45ccb82a 100644\n--- a/rich/styled.py\n+++ b/rich/styled.py\n@@ -1,3 +1,4 @@\n+import copy\n from typing import TYPE_CHECKING\n \n from .measure import Measurement\n@@ -24,8 +25,9 @@ class Styled:\n         self, console: \"Console\", options: \"ConsoleOptions\"\n     ) -> \"RenderResult\":\n         style = console.get_style(self.style)\n+        style_copy = copy.copy(style)\n         rendered_segments = console.render(self.renderable, options)\n-        segments = Segment.apply_style(rendered_segments, style)\n+        segments = Segment.apply_style(rendered_segments, style_copy)\n         return segments\n \n     def __rich_measure__("
+  },
+  {
+   "variant": "community_base",
+   "id": "fastapi_11194",
+   "repo": "fastapi/fastapi",
+   "resolved": false,
+   "patch_chars": 711,
+   "tool_calls": 20,
+   "duration_s": 171.9,
+   "exit_code": 2,
+   "error": null,
+   "patch": "diff --git a/fastapi/dependencies/utils.py b/fastapi/dependencies/utils.py\nindex dc663f54..b04a8671 100644\n--- a/fastapi/dependencies/utils.py\n+++ b/fastapi/dependencies/utils.py\n@@ -671,8 +671,12 @@ async def solve_dependencies(\n         (\n             body_values,\n             body_errors,\n+        sorted_body_fields = sorted(\n+            dependant.body_params,\n+            key=lambda f: 0 if isinstance(f.field_info, params.File) else 1\n+        )\n         ) = await request_body_to_args(  # body_params checked above\n-            body_fields=dependant.body_params,\n+            body_fields=sorted_body_fields,\n             received_body=body,\n             embed_body_fields=embed_body_fields,\n         )"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "fastapi_11194",
+   "repo": "fastapi/fastapi",
+   "resolved": false,
+   "patch_chars": 759,
+   "tool_calls": 11,
+   "duration_s": 132.0,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/fastapi/params.py b/fastapi/params.py\nindex 8f5601dd..a86e826e 100644\n--- a/fastapi/params.py\n+++ b/fastapi/params.py\n@@ -122,12 +122,14 @@ class Param(FieldInfo):\n                     \"serialization_alias\": serialization_alias,\n                     \"strict\": strict,\n                     \"json_schema_extra\": current_json_schema_extra,\n+                    \"body_type\": body_type,\n                 }\n             )\n             kwargs[\"pattern\"] = pattern or regex\n         else:\n             kwargs[\"regex\"] = pattern or regex\n             kwargs.update(**current_json_schema_extra)\n+            kwargs[\"body_type\"] = body_type\n         use_kwargs = {k: v for k, v in kwargs.items() if v is not _Unset}\n \n         super().__init__(**use_kwargs)"
+  },
+  {
+   "variant": "community_base",
+   "id": "fastapi_14306",
+   "repo": "fastapi/fastapi",
+   "resolved": false,
+   "patch_chars": 4714,
+   "tool_calls": 25,
+   "duration_s": 228.2,
+   "exit_code": 2,
+   "error": null,
+   "patch": "diff --git a/fastapi/exceptions.py b/fastapi/exceptions.py\nindex 0620428b..f1852989 100644\n--- a/fastapi/exceptions.py\n+++ b/fastapi/exceptions.py\n@@ -155,21 +155,57 @@ class DependencyScopeError(FastAPIError):\n \n \n class ValidationException(Exception):\n-    def __init__(self, errors: Sequence[Any]) -> None:\n+    def __init__(self, errors: Sequence[Any], context: Optional[Dict[str, Any]] = None) -> None:\n         self._errors = errors\n+        self.context = context or {}\n \n     def errors(self) -> Sequence[Any]:\n         return self._errors\n \n \n-class RequestValidationError(ValidationException):\n-    def __init__(self, errors: Sequence[Any], *, body: Any = None) -> None:\n-        super().__init__(errors)\n-        self.body = body\n+    def __str__(self) -> str:\n+        message = f\\\"{len(self._errors)} validation errors:\\\\n\\\"\\n        for err in self._errors:\\n            message += f\\\"  {err}\\\\n\\\"\\n        \n+        context = getattr(self, 'context', {})\n+        \n+        if context:\n+            filepath = context.get('filepath', 'unknown')\n+            line_number = context.get('line_number', 0)\n+            function_name = context.get('function_name', 'unknown')\n+            http_method = context.get('http_method', 'UNKNOWN')\n+            route = context.get('route', 'unknown')\n+\n+            traceback_lines = [\n+                f\\\"  File \\\\\\\"{filepath}\\\\\\\",\n+                f\\\"  {line_number}, in {function_name}\\\",\n+                f\\\"    {http_method} {route}\\\"\n+            ]\n+            \n+            message += '\\\\n'.join(traceback_lines) + '\\\\n'\n+        \n+        return message\n \n \n class WebSocketRequestValidationError(ValidationException):\n-    pass\n+    def __str__(self) -> str:\n+        message = f\\\"{len(self._errors)} validation errors:\\\\n\\\"\\n        for err in self._errors:\\n            message += f\\\"  {err}\\\\n\\\"\\n        \n+        context = getattr(self, 'context', {})\n+        \n+        if context:\n+            filepath = context.get('filepath', 'unknown')\n+            line_number = context.get('line_number', 0)\n+            function_name = context.get('function_name', 'unknown')\n+            http_method = context.get('http_method', 'UNKNOWN')\n+            route = context.get('route', 'unknown')\n+\n+            traceback_lines = [\n+                f\\\"  File \\\\\\\"{filepath}\\\\\\\",\n+                f\\\"  {line_number}, in {function_name}\\\",\n+                f\\\"    {http_method} {route}\\\"\n+            ]\n+            \n+            message += '\\\\n'.join(traceback_lines) + '\\\\n'\n+        \n+        return message\n \n \n class ResponseValidationError(ValidationException):\n@@ -181,4 +217,22 @@ class ResponseValidationError(ValidationException):\n         message = f\"{len(self._errors)} validation errors:\\n\"\n         for err in self._errors:\n             message += f\"  {err}\\n\"\n+        \n+        context = getattr(self, 'context', {})\n+        \n+        if context:\n+            filepath = context.get('filepath', 'unknown')\n+            line_number = context.get('line_number', 0)\n+            function_name = context.get('function_name', 'unknown')\n+            http_method = context.get('http_method', 'UNKNOWN')\n+            route = context.get('route', 'unknown')\n+\n+            traceback_lines = [\n+                f\"  File \\\"{filepath}\\\",\n+                f\"  {line_number}, in {function_name}\",\n+                f\"    {http_method} {route}\"\n+            ]\n+            \n+            message += '\\n'.join(traceback_lines) + '\\n'\n+        \n         return message\ndiff --git a/fastapi/routing.py b/fastapi/routing.py\nindex c10175b1..4a2bda5b 100644\n--- a/fastapi/routing.py\n+++ b/fastapi/routing.py\n@@ -102,7 +102,17 @@ def request_response(\n                 scope[\"fastapi_inner_astack\"] = request_stack\n                 async with AsyncExitStack() as function_stack:\n                     scope[\"fastapi_function_astack\"] = function_stack\n-                    response = await f(request)\n+            # Capture request context\n+            "
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "fastapi_14306",
+   "repo": "fastapi/fastapi",
+   "resolved": false,
+   "patch_chars": 852,
+   "tool_calls": 10,
+   "duration_s": 84.4,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/fastapi/exception_handlers.py b/fastapi/exception_handlers.py\nindex 475dd7bd..d702c1b1 100644\n--- a/fastapi/exception_handlers.py\n+++ b/fastapi/exception_handlers.py\n@@ -1,4 +1,5 @@\n from fastapi.encoders import jsonable_encoder\n+from fastapi import logger\n from fastapi.exceptions import RequestValidationError, WebSocketRequestValidationError\n from fastapi.utils import is_body_allowed_for_status_code\n from fastapi.websockets import WebSocket\n@@ -29,6 +30,7 @@ async def request_validation_exception_handler(\n async def websocket_request_validation_exception_handler(\n     websocket: WebSocket, exc: WebSocketRequestValidationError\n ) -> None:\n+    logger.error(f\"WebSocket validation error occurred. Error details: {exc}\")\n     await websocket.close(\n         code=WS_1008_POLICY_VIOLATION, reason=jsonable_encoder(exc.errors())\n     )"
+  },
+  {
+   "variant": "community_base",
+   "id": "fastapi_14479",
+   "repo": "fastapi/fastapi",
+   "resolved": false,
+   "patch_chars": 1010,
+   "tool_calls": 10,
+   "duration_s": 73.9,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/fastapi/dependencies/utils.py b/fastapi/dependencies/utils.py\nindex 39d0bd89..cfff885d 100644\n--- a/fastapi/dependencies/utils.py\n+++ b/fastapi/dependencies/utils.py\n@@ -544,15 +544,7 @@ def analyze_param(\n                 \"Path params must be of one of the supported types\"\n             )\n         elif isinstance(field_info, (params.Query, temp_pydantic_v1_params.Query)):\n-            assert (\n-                is_scalar_field(field)\n-                or is_scalar_sequence_field(field)\n-                or (\n-                    _is_model_class(field.type_)\n-                    # For Pydantic v1\n-                    and getattr(field, \"shape\", 1) == 1\n-                )\n-            )\n+            assert is_scalar_field(field) or is_scalar_sequence_field(field) or (_is_model_class(field.type_) and getattr(field, \"shape\", 1) == 1), f\"Query param '{param_name}' must be of one of the supported types\"\n \n     return ParamDetails(type_annotation=type_annotation, depends=depends, field=field)"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "fastapi_14479",
+   "repo": "fastapi/fastapi",
+   "resolved": false,
+   "patch_chars": 3209,
+   "tool_calls": 13,
+   "duration_s": 105.5,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/check.py b/check.py\nnew file mode 100644\nindex 00000000..71272f59\n--- /dev/null\n+++ b/check.py\n@@ -0,0 +1,50 @@\n+import asyncio\n+import sys\n+from typing import Annotated, Any\n+from fastapi import FastAPI, Query\n+from pydantic import BeforeValidator, WithJsonSchema\n+\n+# The problematic type definition from the issue\n+FilterableStr = Annotated[\n+    str | dict,\n+    BeforeValidator(lambda x: x),\n+    WithJsonSchema({\"type\": \"string\"}, mode=\"serialization\"),\n+]\n+\n+async def main():\n+    app = FastAPI()\n+\n+    @app.get(\"/hello\")\n+    async def get_hello(data: FilterableStr | None = Query(default=None)) -> Any:\n+        return data\n+\n+    # We need to trigger startup validation, which usually happens when the app is run or when routes are added.\n+    # We will try to access the router to force dependency analysis.\n+    try:\n+        # Accessing the router should trigger dependency analysis\n+        await app.router.get(\"/hello\")\n+        print(\"CHECK_PASS: Dependency analysis completed without assertion failure.\")\n+    except AssertionError as e:\n+        error_message = str(e)\n+        print(f\"AssertionError caught: {error_message}\")\n+        if \"Query parameter type is incorrect\" in error_message:\n+            print(\"CHECK_PASS: Correct error message provided for invalid query parameter type.\")\n+        else:\n+            print(\"CHECK_FAIL: Assertion failed, but error message was not the expected descriptive message.\")\n+    except Exception as e:\n+        print(f\"Unexpected error: {type(e).__name__}: {e}\")\n+        print(\"CHECK_FAIL: Unexpected crash.\")\n+\n+if __name__ == \"__main__\":\n+    # Running asyncio.run might be tricky in a constrained environment, but we try it.\n+    try:\n+        asyncio.run(main())\n+    except RuntimeError as e:\n+        # Handle cases where asyncio.run fails (e.g., already running event loop)\n+        print(f\"Asyncio runtime error: {e}. Trying alternative execution.\")\n+        try:\n+            loop = asyncio.get_event_loop()\n+            loop.run_until_complete(main())\n+        except Exception as e_alt:\n+            print(f\"Alternative execution failed: {e_alt}\")\n+            sys.exit(1)\ndiff --git a/fastapi/dependencies/utils.py b/fastapi/dependencies/utils.py\nindex 39d0bd89..5fe06fc5 100644\n--- a/fastapi/dependencies/utils.py\n+++ b/fastapi/dependencies/utils.py\n@@ -544,15 +544,14 @@ def analyze_param(\n                 \"Path params must be of one of the supported types\"\n             )\n         elif isinstance(field_info, (params.Query, temp_pydantic_v1_params.Query)):\n-            assert (\n+            if not (\n                 is_scalar_field(field)\n                 or is_scalar_sequence_field(field)\n-                or (\n-                    _is_model_class(field.type_)\n-                    # For Pydantic v1\n-                    and getattr(field, \"shape\", 1) == 1\n+                or (_is_model_class(field.type_) and getattr(field, \"shape\", 1) == 1)\n+            ):\n+                raise AssertionError(\n+                    f\"Query parameter type is incorrect. Found type: {field.type_!r}\"\n                 )\n-            )\n \n     return ParamDetails(type_annotation=type_annotation, depends=depends, field=field)"
+  },
+  {
+   "variant": "community_base",
+   "id": "fastapi_14851",
+   "repo": "fastapi/fastapi",
+   "resolved": false,
+   "patch_chars": 1020,
+   "tool_calls": 16,
+   "duration_s": 101.8,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/fastapi/applications.py b/fastapi/applications.py\nindex 340cabfc..1ca042a5 100644\n--- a/fastapi/applications.py\n+++ b/fastapi/applications.py\n@@ -4576,7 +4576,20 @@ class FastAPI(Starlette):\n         Read more about it in the\n         [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/#alternative-events-deprecated).\n         \"\"\"\n-        return self.router.on_event(event_type)\n+        \"\"\"\n+        Add an event handler for the application.\n+\n+        `on_event` is deprecated, use `lifespan` event handlers instead.\n+\n+        Read more about it in the\n+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/#alternative-events-deprecated).\n+        \"\"\"\n+        if event_type == \"startup\":\n+            self.lifespan.startup.append(handler)\n+        elif event_type == \"shutdown\":\n+            self.lifespan.shutdown.append(handler)\n+        else:\n+            return self.router.on_event(event_type)\n \n     def middleware(\n         self,"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "fastapi_14851",
+   "repo": "fastapi/fastapi",
+   "resolved": true,
+   "patch_chars": 1316,
+   "tool_calls": 18,
+   "duration_s": 113.1,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/check.py b/check.py\nnew file mode 100644\nindex 00000000..fe7bc080\n--- /dev/null\n+++ b/check.py\n@@ -0,0 +1,22 @@\n+from fastapi import FastAPI\n+from typing import Callable, Any\n+\n+def test_on_event_implementation():\n+    # Create a minimal FastAPI instance\n+    app = FastAPI()\n+    \n+    # Mock handler\n+    def mock_handler(event_type: str):\n+        print(f\"Handler called for {event_type}\")\n+\n+    # Test the method under test\n+    try:\n+        # We expect this call to execute without raising an exception,\n+        # and internally call the new implementation (self.handle_event)\n+        app.on_event(\"startup\")(mock_handler)\n+        print(\"CHECK_PASS\")\n+    except Exception as e:\n+        print(f\"CHECK_FAIL: {e}\")\n+\n+if __name__ == \"__main__\":\n+    test_on_event_implementation()\ndiff --git a/fastapi/applications.py b/fastapi/applications.py\nindex 340cabfc..59affb84 100644\n--- a/fastapi/applications.py\n+++ b/fastapi/applications.py\n@@ -4576,7 +4576,7 @@ class FastAPI(Starlette):\n         Read more about it in the\n         [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/#alternative-events-deprecated).\n         \"\"\"\n-        return self.router.on_event(event_type)\n+        return self.router.on_event(str(event_type))\n \n     def middleware(\n         self,"
+  },
+  {
+   "variant": "community_base",
+   "id": "fastapi_15661",
+   "repo": "fastapi/fastapi",
+   "resolved": false,
+   "patch_chars": 774,
+   "tool_calls": 4,
+   "duration_s": 49.2,
+   "exit_code": 2,
+   "error": null,
+   "patch": "diff --git a/scripts/add_latest_release_date.py b/scripts/add_latest_release_date.py\nindex f20b727e7..28fb1a088 100644\n--- a/scripts/add_latest_release_date.py\n+++ b/scripts/add_latest_release_date.py\n@@ -21,8 +21,11 @@ def main() -> None:\n         date_part = match.group(2)\n \n         if date_part:\n-            print(f\"Latest release {version} already has a date: {date_part}\")\n-            sys.exit(0)\n+            content = date_part.strip('()').strip()\n+            if content:\n+                print(f\"Latest release {version} already has a date: {content}\")\n+                sys.exit(0)\n+            # If date_part exists but is empty/whitespace, we proceed to add the date.\n \n         today = date.today().isoformat()\n         lines[i] = f\"## {version} ({today})\\n\""
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "fastapi_15661",
+   "repo": "fastapi/fastapi",
+   "resolved": false,
+   "patch_chars": 960,
+   "tool_calls": 10,
+   "duration_s": 71.5,
+   "exit_code": 2,
+   "error": null,
+   "patch": "diff --git a/scripts/add_latest_release_date.py b/scripts/add_latest_release_date.py\nindex f20b727e7..fb6562ad2 100644\n--- a/scripts/add_latest_release_date.py\n+++ b/scripts/add_latest_release_date.py\n@@ -5,8 +5,7 @@ import sys\n from datetime import date\n \n RELEASE_NOTES_FILE = \"docs/en/docs/release-notes.md\"\n-RELEASE_HEADER_PATTERN = re.compile(r\"^## (\\d+\\.\\d+\\.\\d+)\\s*(\\(.*\\))?\\s*$\")\n-\n+RELEASE_HEADER_PATTERN = re.compile(r\"^\\s*## (\\d+\\.\\d+\\.\\d+)\\s*(\\(.*?\\))?$\")\n \n def main() -> None:\n     with open(RELEASE_NOTES_FILE) as f:\n@@ -25,7 +24,7 @@ def main() -> None:\n             sys.exit(0)\n \n         today = date.today().isoformat()\n-        lines[i] = f\"## {version} ({today})\\n\"\n+        lines[i] = f\"## {version} ({today})\\\\n\"\n         print(f\"Added date: {version} ({today})\")\n \n         with open(RELEASE_NOTES_FILE, \"w\") as f:\n@@ -37,4 +36,4 @@ def main() -> None:\n \n \n if __name__ == \"__main__\":\n-    main()\n+    main()\n\\ No newline at end of file"
+  },
+  {
+   "variant": "community_base",
+   "id": "requests_6644",
+   "repo": "psf/requests",
+   "resolved": true,
+   "patch_chars": 351,
+   "tool_calls": 9,
+   "duration_s": 42.2,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/src/requests/models.py b/src/requests/models.py\nindex 44556394..d5dd8e16 100644\n--- a/src/requests/models.py\n+++ b/src/requests/models.py\n@@ -93,6 +93,8 @@ class RequestEncodingMixin:\n         path = p.path\n         if not path:\n             path = \"/\"\n+        else:\n+            path = \"/\" + path.lstrip(\"/\")\n \n         url.append(path)"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "requests_6644",
+   "repo": "psf/requests",
+   "resolved": false,
+   "patch_chars": 639,
+   "tool_calls": 12,
+   "duration_s": 113.3,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/src/requests/utils.py b/src/requests/utils.py\nindex c3b123ea..044b784c 100644\n--- a/src/requests/utils.py\n+++ b/src/requests/utils.py\n@@ -129,6 +129,17 @@ def dict_to_sequence(d):\n \n     return d\n \n+def normalize_path(path):\n+    \"\"\"Normalizes a path by ensuring it has at most one leading slash.\"\"\"\n+    return '/' + re.sub(r'^+++?(/)+', '', path)\n+\n+def requote_uri(url):\n+    \"\"\"\n+    Re-quotes a URI, ensuring that the path component is normalized.\n+    \"\"\"\n+    parsed = urlparse(url)\n+    path = normalize_path(parsed.path)\n+    return urlunparse(parsed._replace(path=path))\n \n def super_len(o):\n     total_length = None"
+  },
+  {
+   "variant": "community_base",
+   "id": "httpx_3672",
+   "repo": "encode/httpx",
+   "resolved": false,
+   "patch_chars": 2010,
+   "tool_calls": 12,
+   "duration_s": 86.6,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/src/httpx/_parsers.py b/src/httpx/_parsers.py\nindex 830fccd..a04dc5a 100644\n--- a/src/httpx/_parsers.py\n+++ b/src/httpx/_parsers.py\n@@ -370,26 +370,7 @@ class HTTPParser:\n                 msg = 'Not enough data received for declared Content-Length'\n                 raise ProtocolError(msg)\n \n-        if body == b'':\n-            # Handle body close\n-            self.recv_state = State.DONE\n-        return body\n-\n-    def complete(self):\n-        is_fully_complete = self.send_state == State.DONE and self.recv_state == State.DONE\n-        is_keepalive = self.send_keep_alive and self.recv_keep_alive\n-\n-        if not (is_fully_complete and is_keepalive):\n-            self.close()\n-            return\n-\n-        if self.mode == Mode.CLIENT:\n-            self.send_state = State.SEND_METHOD_LINE\n-            self.recv_state = State.WAIT\n-        else:\n-            self.recv_state = State.RECV_METHOD_LINE\n-            self.send_state = State.WAIT\n-\n+    def reset(self) -> None:\n         self.send_content_length = 0\n         self.recv_content_length = 0\n         self.send_seen_length = 0\n@@ -398,6 +379,25 @@ class HTTPParser:\n         self.recv_keep_alive = True\n         self.processing_1xx = False\n \n+    def complete(self):\n+        try:\n+            self.reset()\n+            is_fully_complete = self.send_state == State.DONE and self.recv_state == State.DONE\n+            is_keepalive = self.send_keep_alive and self.recv_keep_alive\n+\n+            if not (is_fully_complete and is_keepalive):\n+                self.close()\n+                return\n+\n+            if self.mode == Mode.CLIENT:\n+                self.send_state = State.SEND_METHOD_LINE\n+                self.recv_state = State.WAIT\n+            else:\n+                self.recv_state = State.RECV_METHOD_LINE\n+                self.send_state = State.WAIT\n+        except KeyboardException:\n+            pass\n+\n     def close(self):\n         if self.send_state != State.CLOSED:\n             self.send_state = State.CLOSED"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "httpx_3672",
+   "repo": "encode/httpx",
+   "resolved": false,
+   "patch_chars": 18487,
+   "tool_calls": 12,
+   "duration_s": 114.5,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/src/httpx/_parsers.py b/src/httpx/_parsers.py\nindex 830fccd..11920ea 100644\n--- a/src/httpx/_parsers.py\n+++ b/src/httpx/_parsers.py\n@@ -1,515 +1 @@\n-import enum\n-\n-from ._streams import Stream\n-\n-__all__ = ['HTTPParser', 'Mode', 'ProtocolError']\n-\n-\n-# TODO...\n-\n-# * Upgrade\n-# * CONNECT\n-\n-# * Support 'Expect: 100 Continue'\n-# * Add 'Error' state transitions\n-# * Add tests to trickle data\n-# * Add type annotations\n-\n-# * Optional... HTTP/1.0 support\n-# * Read trailing headers on Transfer-Encoding: chunked. Not just '\\r\\n'.\n-# * When writing Transfer-Encoding: chunked, split large writes into buffer size.\n-# * When reading Transfer-Encoding: chunked, handle incomplete reads from large chunk sizes.\n-# * .read() doesn't document if will always return maximum available.\n-\n-# * validate method, target, protocol in request line\n-# * validate protocol, status_code, reason_phrase in response line\n-# * validate name, value on headers\n-\n-\n-class State(enum.Enum):\n-    WAIT = 0\n-    SEND_METHOD_LINE = 1\n-    SEND_STATUS_LINE = 2\n-    SEND_HEADERS = 3\n-    SEND_BODY = 4\n-    RECV_METHOD_LINE = 5\n-    RECV_STATUS_LINE = 6\n-    RECV_HEADERS = 7\n-    RECV_BODY = 8\n-    DONE = 9\n-    CLOSED = 10\n-\n-\n-class Mode(enum.Enum):\n-    CLIENT = 0\n-    SERVER = 1\n-\n-\n-# The usual transitions will be...\n-\n-# IDLE, IDLE\n-# SEND_HEADERS, IDLE\n-# SEND_BODY, IDLE\n-# DONE, IDLE\n-# DONE, SEND_HEADERS\n-# DONE, SEND_BODY\n-# DONE, DONE\n-\n-# Then either back to IDLE, IDLE\n-# or move to CLOSED, CLOSED\n-\n-# 1. It is also valid for the server to start\n-#    sending the response without waiting for the\n-#    complete request.\n-# 2. 1xx status codes are interim states, and\n-#    transition from SEND_HEADERS back to IDLE\n-# 3. ...\n-\n-class ProtocolError(Exception):\n-    pass\n-\n-\n-class HTTPParser:\n-    \"\"\"\n-    Usage...\n-\n-    client = HTTPParser(writer, reader)\n-    client.send_method_line()\n-    client.send_headers()\n-    client.send_body()\n-    client.recv_status_line()\n-    client.recv_headers()\n-    client.recv_body()\n-    client.complete()\n-    client.close()\n-    \"\"\"\n-    def __init__(self, stream: Stream, mode: str) -> None:\n-        self.stream = stream\n-        self.parser = ReadAheadParser(stream)\n-        self.mode = {'CLIENT': Mode.CLIENT, 'SERVER': Mode.SERVER}[mode]\n-\n-        # Track state...\n-        if self.mode == Mode.CLIENT:\n-            self.send_state: State = State.SEND_METHOD_LINE\n-            self.recv_state: State = State.WAIT\n-        else:\n-            self.recv_state = State.RECV_METHOD_LINE\n-            self.send_state = State.WAIT\n-\n-        # Track message framing...\n-        self.send_content_length: int | None = 0\n-        self.recv_content_length: int | None = 0\n-        self.send_seen_length = 0\n-        self.recv_seen_length = 0\n-\n-        # Track connection keep alive...\n-        self.send_keep_alive = True\n-        self.recv_keep_alive = True\n-\n-        # Special states...\n-        self.processing_1xx = False\n-\n-    def send_method_line(self, method: bytes, target: bytes, protocol: bytes) -> None:\n-        \"\"\"\n-        Send the initial request line:\n-\n-        >>> p.send_method_line(b'GET', b'/', b'HTTP/1.1')\n-\n-        Sending state will switch to SEND_HEADERS state.\n-        \"\"\"\n-        if self.send_state != State.SEND_METHOD_LINE:\n-            msg = f\"Called 'send_method_line' in invalid state {self.send_state}\"\n-            raise ProtocolError(msg)\n-\n-        # Send initial request line, eg. \"GET / HTTP/1.1\"\n-        if protocol != b'HTTP/1.1':\n-            raise ProtocolError(\"Sent unsupported protocol version\")\n-        data = b\" \".join([method, target, protocol]) + b\"\\r\\n\"\n-        self.stream.write(data)\n-\n-        self.send_state = State.SEND_HEADERS\n-        self.recv_state = State.RECV_STATUS_LINE\n-\n-    def send_status_line(self, protocol: bytes, status_code: int, reason: bytes) -> None:\n-        \"\"\"\n-        Send the initial response line:\n-\n-        >>> p.send_method_line(b'HTTP/1.1', 200, b'OK')\n-\n-"
+  }
+ ],
+ "error": null,
+ "variantes": [
+  "community_base",
+  "nervo_repro"
+ ],
+ "vllm_start_seconds": 330.3,
+ "n_public_tasks": 129,
+ "sample": [
+  "rich_3454",
+  "requests_7315",
+  "rich_2725",
+  "rich_3105",
+  "rich_3480",
+  "rich_3772",
+  "rich_3938",
+  "fastapi_11194",
+  "fastapi_14306",
+  "fastapi_14479",
+  "fastapi_14851",
+  "fastapi_15661",
+  "requests_6644",
+  "httpx_3672"
+ ],
+ "presupuestos": {
+  "community_base": {
+   "timeout_seconds": 300,
+   "max_tool_calls": 28,
+   "max_time_minutes": 8,
+   "max_turns": 80
+  },
+  "nervo_repro": {
+   "timeout_seconds": 300,
+   "max_tool_calls": 28,
+   "max_time_minutes": 8,
+   "max_turns": 80
+  }
+ },
+ "summary": {
+  "community_base": {
+   "resolved": 3,
+   "total": 14,
+   "con_parche": 13
+  },
+  "nervo_repro": {
+   "resolved": 3,
+   "total": 14,
+   "con_parche": 14
+  }
+ }
+}

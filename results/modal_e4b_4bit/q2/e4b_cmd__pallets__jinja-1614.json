@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_cmd",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pallets__jinja-1614",
+   "resolved": true,
+   "patch": "diff --git a/src/jinja2/environment.py b/src/jinja2/environment.py\nindex 9dd455a..3b9fbf9 100644\n--- a/src/jinja2/environment.py\n+++ b/src/jinja2/environment.py\n@@ -800,6 +800,9 @@ class Environment:\n \n         body = [nodes.Assign(nodes.Name(\"result\", \"store\"), expr, lineno=1)]\n         template = self.from_string(nodes.Template(body, lineno=1))\n+        # If async is enabled, ensure synchronous results are not wrapped as coroutines\n+        if self.enable_async and not hasattr(template, '__await__'):\n+            return TemplateExpression(template, undefined_to_none)\n         return TemplateExpression(template, undefined_to_none)\n \n     def compile_templates(",
+   "tool_calls": 13,
+   "duration_s": 144.8,
+   "error": null,
+   "raw": {
+    "task_id": "pallets__jinja-1614",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 144.8215700740002,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 15,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q2/e4b_cmd__pallets__jinja-1614/results/traces/trace_pallets__jinja-1614.json",
+    "metadata": "{}",
+    "repo": "pallets/jinja",
+    "agent_patch": "diff --git a/src/jinja2/environment.py b/src/jinja2/environment.py\nindex 9dd455a..3b9fbf9 100644\n--- a/src/jinja2/environment.py\n+++ b/src/jinja2/environment.py\n@@ -800,6 +800,9 @@ class Environment:\n \n         body = [nodes.Assign(nodes.Name(\"result\", \"store\"), expr, lineno=1)]\n         template = self.from_string(nodes.Template(body, lineno=1))\n+        # If async is enabled, ensure synchronous results are not wrapped as coroutines\n+        if self.enable_async and not hasattr(template, '__await__'):\n+            return TemplateExpression(template, undefined_to_none)\n         return TemplateExpression(template, undefined_to_none)\n \n     def compile_templates(\n",
+    "test_output": "STDOUT:\n..........................................................               [100%]\n58 passed in 0.22s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f1aa9d24980>",
+    "tool_calls": 13,
+    "task_index": 1
+   },
+   "segundos_reloj": 145.0
+  }
+ ]
+}

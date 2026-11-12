@@ -25,10 +25,10 @@ BANCO = "__BANCO__" == "1"
 
 
 def preparar_banco():
-    """Banco de repos nuevos: copia tasks.jsonl y snapshots/ a /kaggle/working/banco (descomprime si Kaggle los dejó en zip)."""
+    """Validation bench: copy tasks.jsonl and snapshots/ to /kaggle/working/banco (unzips if Kaggle left them zipped)."""
     import shutil, zipfile
     srcs = [Path(p).parent for p in glob.glob('/kaggle/input/**/tasks.jsonl', recursive=True) if 'banco' in p]
-    assert srcs, 'no encuentro el dataset nervo-banco-nuevo en /kaggle/input'
+    assert srcs, 'dataset nervo-banco-nuevo (validation bench) not found in /kaggle/input'
     src, dst = srcs[0], Path('/kaggle/working/banco')
     (dst / 'snapshots').mkdir(parents=True, exist_ok=True)
     shutil.copy(src / 'tasks.jsonl', dst / 'tasks.jsonl')
@@ -39,7 +39,7 @@ def preparar_banco():
                     (dst / 'snapshots' / Path(m).name).write_bytes(zf.read(m))
     for t in src.rglob('*.tgz'):
         shutil.copy(t, dst / 'snapshots' / t.name)
-    print('banco:', src, '->', dst, len(list((dst / 'snapshots').glob('*.tgz'))), 'snapshots')
+    print('bench:', src, '->', dst, len(list((dst / 'snapshots').glob('*.tgz'))), 'snapshots')
     return dst
 RUN_LABEL = "__RUN_LABEL__"
 ORACLE = "__ORACLE__" == "1"
@@ -62,7 +62,7 @@ os.environ.update({
 os.environ.setdefault('OPENAI_API_KEY', 'EMPTY')
 os.environ.setdefault('LOCAL_API_KEY', 'EMPTY')
 
-# NERVO_API_BASE: modo local para probar ESTE kernel sin GPU contra local/shim_vllm.py
+# NERVO_API_BASE: local mode to test THIS kernel without a GPU against local/shim_vllm.py
 API_BASE = os.environ.get('NERVO_API_BASE', '')
 WORKING_DIR = Path(os.environ.get('NERVO_WORKDIR', '/kaggle/working'))
 WORKING_DIR.mkdir(parents=True, exist_ok=True)
@@ -119,7 +119,7 @@ def install_wheelhouse() -> None:
 
 
 def load_bundle() -> dict:
-    """{nombre_variante: {ruta: contenido}}. Acepta también el formato antiguo (una sola variante)."""
+    """{variant_name: {path: content}}. Also accepts the old format (a single variant)."""
     data = json.loads(base64.b64decode(SUBMISSION_PAYLOAD_B64).decode('utf-8'))
     if data and all(isinstance(v, str) for v in data.values()):
         data = {'submission': data}
@@ -175,7 +175,7 @@ def run_sync(fn, *args, **kwargs):
 
 
 def dump_obj(o, limit=6000):
-    """Serializa el resultado del Evaluator entero (para ver la salida de pytest)."""
+    """Serialize the whole Evaluator result (to see the pytest output)."""
     try:
         d = o.model_dump() if hasattr(o, 'model_dump') else dict(vars(o))
     except Exception:
@@ -188,8 +188,8 @@ def dump_obj(o, limit=6000):
 
 
 def oracle_verify(task, evaluator, patch=None):
-    """Puntúa el parche OFICIAL de la tarea con la verificación del harness.
-    Si no sale resuelto, la evaluación local está rota, no el agente."""
+    """Score the task's OFFICIAL patch with the harness verification.
+    If it does not come out resolved, the local evaluation is broken, not the agent."""
     import inspect
     from swegemma.evaluate import verify_task
     from swegemma.deduplication import resolve_task_snapshot_paths
@@ -208,10 +208,10 @@ def oracle_verify(task, evaluator, patch=None):
 
 
 def patch_sandbox_src_layout() -> None:
-    """En Docker el repo se instala editable; en el sandbox subprocess de Kaggle falla
-    (sin ensurepip) y los repos con layout src/ (requests, httpx) importan la versión
-    del sistema. Un .pth en el venv del sandbox pone /workspace/src primero, como el
-    editable install de la evaluación oficial."""
+    """In Docker the repository is installed editable; in Kaggle's subprocess sandbox that fails
+    (no ensurepip) and repositories with a src/ layout (requests, httpx) import the system
+    version. A .pth file in the sandbox venv puts /workspace/src first, like the editable
+    install of the official evaluation."""
     from swegemma.sandbox import subprocess as sbx
     patched = []
     for name in dir(sbx):
@@ -228,7 +228,7 @@ def patch_sandbox_src_layout() -> None:
                 for sp in Path(paths['venv']).glob('lib/python*/site-packages'):
                     (sp / 'zz_nervo_src.pth').write_text(line)
             except Exception as e:
-                log(f'patch_sandbox: no pude escribir el .pth: {type(e).__name__}: {e}')
+                log(f'patch_sandbox: could not write the .pth: {type(e).__name__}: {e}')
 
         orig_start = cls.start
 
@@ -246,10 +246,10 @@ def patch_sandbox_src_layout() -> None:
                 return sid
             cls.start_async = start_async
         patched.append(name)
-    log(f'patch_sandbox_src_layout aplicado a {patched}')
+    log(f'patch_sandbox_src_layout applied to {patched}')
 
 def diagnose() -> None:
-    """Sin GPU: vuelca cómo prepara el sandbox el entorno Python y cómo se verifica."""
+    """No GPU: dump how the sandbox prepares the Python environment and how verification runs."""
     import inspect
     out = {}
     out['python'] = sys.executable
@@ -274,10 +274,10 @@ def diagnose() -> None:
         out['evaluate_task_src'] = f'ERR {e}'
     state['diag'] = out
     save_state()
-    log('DIAG listo')
+    log('DIAG done')
 
 def lab_call(base, model_id, probe):
-    """Una llamada one-shot cruda al servidor vLLM (API OpenAI). Devuelve la respuesta tal cual."""
+    """One raw single call to the vLLM server (OpenAI API). Returns the response as is."""
     import urllib.request
     body = {'model': model_id, 'messages': probe['messages'],
             'temperature': probe.get('temperature', 0.2), 'top_p': 0.95,
@@ -306,7 +306,7 @@ def run_lab(base='http://127.0.0.1:8000'):
     probes = json.loads(base64.b64decode(LAB_PROBES_B64).decode('utf-8')) if _tiene(LAB_PROBES_B64) else []
     with urllib.request.urlopen(f'{base}/v1/models', timeout=60) as r:
         model_id = json.loads(r.read())['data'][0]['id']
-    log(f'LAB: modelo servido = {model_id}, {len(probes)} sondas')
+    log(f'LAB: served model = {model_id}, {len(probes)} probes')
     state['lab'] = {'model_id': model_id, 'results': []}
     for probe in probes:
         for rep in range(probe.get('repeat', 1)):
@@ -324,8 +324,8 @@ CAPTURA = {}
 
 
 def capturar_llamadas_harness(evaluator, task):
-    """Ejecuta UNA tarea con el harness oficial y captura los parámetros exactos con los que
-    ADK llama al modelo (LiteLLMClient.acompletion). Así el laboratorio llama igual que la competición."""
+    """Run ONE task with the official harness and capture the exact parameters ADK uses to call
+    the model (LiteLLMClient.acompletion), so the lab calls the model exactly as the competition does."""
     import copy
     import google.adk.models.lite_llm as ll
     orig = ll.LiteLLMClient.acompletion
@@ -347,12 +347,12 @@ def capturar_llamadas_harness(evaluator, task):
         CAPTURA['patch_chars'] = len(getattr(r, 'agent_patch', '') or '')
     finally:
         ll.LiteLLMClient.acompletion = orig
-    log(f"CAPTURA kwargs={ {k: v for k, v in CAPTURA.get('kwargs', {}).items() if k not in ('api_key',)} } resolved={CAPTURA.get('resolved')}")
+    log(f"CAPTURE kwargs={ {k: v for k, v in CAPTURA.get('kwargs', {}).items() if k not in ('api_key',)} } resolved={CAPTURA.get('resolved')}")
     return CAPTURA
 
 
 def hacer_modelo_replay(motor):
-    """Modelo del laboratorio que llama con litellm y los MISMOS kwargs que usó el harness."""
+    """Lab model that calls through litellm with the SAME kwargs the harness used."""
     import litellm
 
     class ModeloReplay(motor.Modelo):
@@ -384,14 +384,14 @@ def hacer_modelo_replay(motor):
 
 
 def args_intactos(resp):
-    """Autoprueba: ¿llegan los argumentos de edit_file con sus claves y el regex completo?"""
+    """Self-test: do the edit_file arguments arrive with their keys and the full regex?"""
     c = next((c for c in resp.get('tool_calls', []) if c['name'] == 'edit_file'), None)
     if not c or not isinstance(c['args'], dict):
         return False
     return set(c['args']) == {'filepath', 'old_string', 'new_string'} and ';:&' in c['args'].get('old_string', '')
 
 def run_bateria(evaluator, tasks, base='http://127.0.0.1:8000'):
-    """Batería de enfoques (lab/motor.py) sobre repos reales + puntuación con los tests ocultos."""
+    """Battery of approaches (lab/motor.py, not included in this repository) on real repositories + scoring with hidden tests."""
     import urllib.request
     cfg = json.loads(base64.b64decode(BATERIA_B64).decode('utf-8'))
     motor_path = WORKING_DIR / 'lab_motor.py'
@@ -404,19 +404,19 @@ def run_bateria(evaluator, tasks, base='http://127.0.0.1:8000'):
     by_id = {t.instance_id: t for t in tasks}
     state['bateria'] = {'config': cfg, 'resultados': []}
 
-    # 1) capturar cómo llama el harness oficial al modelo (una tarea real)
+    # 1) capture how the official harness calls the model (one real task)
     state['stage'] = 'bateria_captura'; save_state()
     try:
         capturar_llamadas_harness(evaluator, by_id[cfg.get('tarea_captura', cfg['tareas'][0])])
     except Exception as e:
         CAPTURA['error'] = f'{type(e).__name__}: {e}'
         CAPTURA['trace'] = traceback.format_exc()[-2000:]
-        log(f'CAPTURA falló: {CAPTURA["error"]}')
+        log(f'CAPTURE failed: {CAPTURA["error"]}')
     state['bateria']['captura'] = {k: (v if k != 'kwargs' else {kk: vv for kk, vv in v.items() if kk != 'api_key'})
                                    for k, v in CAPTURA.items()}
     save_state()
 
-    # 2) autoprueba: misma sonda con llamada cruda y con la de harness; se usa la que llega intacta
+    # 2) self-test: the same probe with a raw call and with the harness call; use the one that arrives intact
     sonda = cfg.get('sonda_autoprueba')
     modelos = {'cruda': motor.Modelo(base, model_id)}
     if CAPTURA.get('kwargs'):
@@ -433,7 +433,7 @@ def run_bateria(evaluator, tasks, base='http://127.0.0.1:8000'):
               ('harness' if 'harness' in modelos else 'cruda'))
     auto['elegido'] = elegido
     state['bateria']['autoprueba'] = auto
-    log(f'AUTOPRUEBA {auto}')
+    log(f'SELFTEST {auto}')
     save_state()
     modelo = modelos[elegido]
 
@@ -443,7 +443,7 @@ def run_bateria(evaluator, tasks, base='http://127.0.0.1:8000'):
         sp, bsp, pp = resolve_task_snapshot_paths(evaluator.config.snapshots_dir, t.instance_id, t.repo)
         tareas.append({'id': tid, 'problem_statement': t.problem_statement, 'snapshot': sp if Path(sp).exists() else None,
                        'base': bsp, 'parche': pp})
-        log(f'BATERIA tarea {tid}: snapshot={sp} existe={Path(sp).exists()} base={bsp} parche={pp}')
+        log(f'BATTERY task {tid}: snapshot={sp} exists={Path(sp).exists()} base={bsp} patch={pp}')
 
     def guardar(res):
         state['bateria']['resultados'] = res
@@ -466,7 +466,7 @@ def run_bateria(evaluator, tasks, base='http://127.0.0.1:8000'):
         except Exception as e:
             fila['resolved'] = None
             fila['verify_error'] = f'{type(e).__name__}: {e}'
-        log(f"VERIFICADO {fila['estrategia']:18} {fila['tarea']:16} resolved={fila.get('resolved')}")
+        log(f"VERIFIED {fila['estrategia']:18} {fila['tarea']:16} resolved={fila.get('resolved')}")
         guardar(res)
     resumen = {}
     for fila in res:
@@ -475,7 +475,7 @@ def run_bateria(evaluator, tasks, base='http://127.0.0.1:8000'):
         r['con_parche'] += bool(fila.get('patch', '').strip())
         r['resueltas'] += bool(fila.get('resolved'))
     state['bateria']['resumen'] = resumen
-    log(f'BATERIA resumen: {resumen}')
+    log(f'BATTERY summary: {resumen}')
     save_state()
 
 def make_eval_config(agent_dir, data_dir, models, limits, gen_constraints, adapters, results_dir):
@@ -486,7 +486,7 @@ def make_eval_config(agent_dir, data_dir, models, limits, gen_constraints, adapt
     ev_file = agent_dir / 'eval_config.yaml'
     ev = yaml.safe_load(ev_file.read_text()) if ev_file.is_file() else {}
     ev = (ev or {}).get('evaluation', ev or {})
-    if os.environ.get('NERVO_MINUTOS'):  # SOLO modo local: la API externa es más lenta que vLLM
+    if os.environ.get('NERVO_MINUTOS'):  # local mode ONLY: the external API is slower than vLLM
         ev['max_time_minutes'] = float(os.environ['NERVO_MINUTOS'])
     turns = ev.get('max_turns', ev.get('max_llm_calls'))
     return EvalConfig(
@@ -509,7 +509,7 @@ def make_eval_config(agent_dir, data_dir, models, limits, gen_constraints, adapt
 
 def main() -> None:
     quiet_loggers()
-    if not API_BASE and not os.environ.get('NERVO_SKIP_WHEELHOUSE'):  # Modal: el entorno ya viene instalado
+    if not API_BASE and not os.environ.get('NERVO_SKIP_WHEELHOUSE'):  # Modal: the environment is already installed
         state['stage'] = 'wheelhouse'; save_state()
         install_wheelhouse()
         quiet_loggers()
@@ -564,7 +564,7 @@ def main() -> None:
         install_litellm_reasoning_patch()
         models = ModelRegistry()
         models.register(model_name, LiteLlm(model=f'openai/{model_name}', api_base=API_BASE, api_key='EMPTY'))
-        log(f'modo local: modelo {model_name} en {API_BASE}')
+        log(f'local mode: model {model_name} at {API_BASE}')
     elif need_model:
         import torch
         from adk_submission import VllmConfig, VllmServer
@@ -637,8 +637,8 @@ def main() -> None:
             save_state()
 
     state['stage'] = 'evaluate'; save_state()
-    # Intercaladas por tarea (tarea 1: A, B; tarea 2: A, B...) para que, si el kernel se corta,
-    # todas las variantes tengan las mismas tareas hechas.
+    # Interleaved by task (task 1: A, B; task 2: A, B...) so that, if the kernel is cut off,
+    # every variant has the same tasks done.
     for i, task in enumerate(sample if need_model else [], start=1):
         for name, evaluator in evaluators.items():
             rec = {'variant': name, 'id': task.instance_id, 'repo': task.repo}

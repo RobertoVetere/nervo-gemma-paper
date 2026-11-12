@@ -1,0 +1,40 @@
+{
+ "variant": "variants/community_base",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pallets__jinja-1614",
+   "resolved": true,
+   "patch": "diff --git a/src/jinja2/async_utils.py b/src/jinja2/async_utils.py\nindex 1a4f389..0d8439f 100644\n--- a/src/jinja2/async_utils.py\n+++ b/src/jinja2/async_utils.py\n@@ -58,7 +58,7 @@ _common_primitives = {int, float, bool, str, list, dict, tuple, type(None)}\n \n async def auto_await(value: t.Union[t.Awaitable[\"V\"], \"V\"]) -> \"V\":\n     # Avoid a costly call to isawaitable\n-    if type(value) in _common_primitives:\n+    if isinstance(value, (list, dict, tuple, str, int, float, bool)) or value is type(None):\n         return t.cast(\"V\", value)\n \n     if inspect.isawaitable(value):",
+   "tool_calls": 7,
+   "duration_s": 399.2,
+   "error": null,
+   "raw": {
+    "task_id": "pallets__jinja-1614",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 399.235747156,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 9,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q1/community_base__pallets__jinja-1614/results/traces/trace_pallets__jinja-1614.json",
+    "metadata": "{}",
+    "repo": "pallets/jinja",
+    "agent_patch": "diff --git a/src/jinja2/async_utils.py b/src/jinja2/async_utils.py\nindex 1a4f389..0d8439f 100644\n--- a/src/jinja2/async_utils.py\n+++ b/src/jinja2/async_utils.py\n@@ -58,7 +58,7 @@ _common_primitives = {int, float, bool, str, list, dict, tuple, type(None)}\n \n async def auto_await(value: t.Union[t.Awaitable[\"V\"], \"V\"]) -> \"V\":\n     # Avoid a costly call to isawaitable\n-    if type(value) in _common_primitives:\n+    if isinstance(value, (list, dict, tuple, str, int, float, bool)) or value is type(None):\n         return t.cast(\"V\", value)\n \n     if inspect.isawaitable(value):\n",
+    "test_output": "STDOUT:\n..........................................................               [100%]\n58 passed in 0.21s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f094d280980>",
+    "tool_calls": 7,
+    "task_index": 1
+   },
+   "segundos_reloj": 399.4
+  }
+ ]
+}

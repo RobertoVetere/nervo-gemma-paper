@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_cmd",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "python-semver__python-semver-239",
+   "resolved": true,
+   "patch": "diff --git a/semver.py b/semver.py\nindex de72f06..6e3501b 100644\n--- a/semver.py\n+++ b/semver.py\n@@ -579,10 +579,14 @@ def _compare_by_keys(d1, d2):\n     return rccmp\n \n \n+@deprecated(replace=\"VersionInfo.compare\", version=\"2.10.0\")\n def compare(ver1, ver2):\n     \"\"\"\n     Compare two versions strings.\n \n+    .. deprecated:: 2.10.0\n+       Use :func:`semver.VersionInfo.compare` instead.\n+\n     :param ver1: version string 1\n     :param ver2: version string 2\n     :return: The return value is negative if ver1 < ver2,\n@@ -603,10 +607,14 @@ def compare(ver1, ver2):\n     return _compare_by_keys(v1, v2)\n \n \n+@deprecated(replace=\"VersionInfo.match\", version=\"2.10.0\")\n def match(version, match_expr):\n     \"\"\"\n     Compare two versions strings through a comparison.\n \n+    .. deprecated:: 2.10.0\n+       Use :func:`semver.VersionInfo.match` instead.\n+\n     :param str version: a version string\n     :param str match_expr: operator and version; valid operators are\n           <   smaller than\n@@ -652,10 +660,14 @@ def match(version, match_expr):\n     return cmp_res in possibilities\n \n \n+@deprecated(replace=\"VersionInfo.max_ver\", version=\"2.10.0\")\n def max_ver(ver1, ver2):\n     \"\"\"\n     Returns the greater version of two versions strings.\n \n+    .. deprecated:: 2.10.0\n+       Use :func:`semver.VersionInfo.max_ver` instead.\n+\n     :param ver1: version string 1\n     :param ver2: version string 2\n     :return: the greater version of the two\n@@ -671,10 +683,14 @@ def max_ver(ver1, ver2):\n         return ver2\n \n \n+@deprecated(replace=\"VersionInfo.min_ver\", version=\"2.10.0\")\n def min_ver(ver1, ver2):\n     \"\"\"\n     Returns the smaller version of two versions strings.\n \n+    .. deprecated:: 2.10.0\n+       Use :func:`semver.VersionInfo.min_ver` instead.\n+\n     :param ver1: version string 1\n     :param ver2: version string 2\n     :return: the smaller version of the two",
+   "tool_calls": 19,
+   "duration_s": 103.5,
+   "error": null,
+   "raw": {
+    "task_id": "python-semver__python-semver-239",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 103.50121112400029,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 21,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/l40/e4b_cmd__python-semver__python-semver-239/results/traces/trace_python-semver__python-semver-239.json",
+    "metadata": "{}",
+    "repo": "python-semver/python-semver",
+    "agent_patch": "diff --git a/semver.py b/semver.py\nindex de72f06..6e3501b 100644\n--- a/semver.py\n+++ b/semver.py\n@@ -579,10 +579,14 @@ def _compare_by_keys(d1, d2):\n     return rccmp\n \n \n+@deprecated(replace=\"VersionInfo.compare\", version=\"2.10.0\")\n def compare(ver1, ver2):\n     \"\"\"\n     Compare two versions strings.\n \n+    .. deprecated:: 2.10.0\n+       Use :func:`semver.VersionInfo.compare` instead.\n+\n     :param ver1: version string 1\n     :param ver2: version string 2\n     :return: The return value is negative if ver1 < ver2,\n@@ -603,10 +607,14 @@ def compare(ver1, ver2):\n     return _compare_by_keys(v1, v2)\n \n \n+@deprecated(replace=\"VersionInfo.match\", version=\"2.10.0\")\n def match(version, match_expr):\n     \"\"\"\n     Compare two versions strings through a comparison.\n \n+    .. deprecated:: 2.10.0\n+       Use :func:`semver.VersionInfo.match` instead.\n+\n     :param str version: a version string\n     :param str match_expr: operator and version; valid operators are\n           <   smaller than\n@@ -652,10 +660,14 @@ def match(version, match_expr):\n     return cmp_res in possibilities\n \n \n+@deprecated(replace=\"VersionInfo.max_ver\", version=\"2.10.0\")\n def max_ver(ver1, ver2):\n     \"\"\"\n     Returns the greater version of two versions strings.\n \n+    .. deprecated:: 2.10.0\n+       Use :func:`semver.VersionInfo.max_ver` instead.\n+\n     :param ver1: version string 1\n     :param ver2: version string 2\n     :return: the greater version of the two\n@@ -671,10 +683,14 @@ def max_ver(ver1, ver2):\n         return ver2\n \n \n+@deprecated(replace=\"VersionInfo.min_ver\", version=\"2.10.0\")\n def min_ver(ver1, ver2):\n     \"\"\"\n     Returns the smaller version of two versions strings.\n \n+    .. deprecated:: 2.10.0\n+       Use :func:`semver.VersionInfo.min_ver` instead.\n+\n     :param ver1: version string 1\n     :param ver2: version string 2\n     :return: the smaller version of the two\n",
+    "test_output": "STDOUT:\n........................................................................ [ 37%]\n........................................................................ [ 75%]\n...............................................                          [100%]\n191 passed in 0.31s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f1d6d4067b0>",
+    "tool_calls": 19,
+    "task_index": 1
+   },
+   "segundos_reloj": 103.5
+  }
+ ]
+}

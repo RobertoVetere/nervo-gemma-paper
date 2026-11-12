@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_t0",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "matthewwithanm__python-markdownify-230",
+   "resolved": false,
+   "patch": "diff --git a/markdownify/__init__.py b/markdownify/__init__.py\nindex 72c5214..a138d6b 100644\n--- a/markdownify/__init__.py\n+++ b/markdownify/__init__.py\n@@ -108,6 +108,8 @@ def abstract_inline_conversion(markup_fn):\n         prefix, suffix, text = chomp(text)\n         if not text:\n             return ''\n+        if markup_prefix == '<code >':\n+            return text\n         return '%s%s%s%s%s' % (prefix, markup_prefix, text, markup_suffix, suffix)\n     return implementation",
+   "tool_calls": 20,
+   "duration_s": 183.1,
+   "error": null,
+   "raw": {
+    "task_id": "matthewwithanm__python-markdownify-230",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 183.05437209299998,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 22,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q1/e4b_t0__matthewwithanm__python-markdownify-230/results/traces/trace_matthewwithanm__python-markdownify-230.json",
+    "metadata": "{}",
+    "repo": "matthewwithanm/python-markdownify",
+    "agent_patch": "diff --git a/markdownify/__init__.py b/markdownify/__init__.py\nindex 72c5214..a138d6b 100644\n--- a/markdownify/__init__.py\n+++ b/markdownify/__init__.py\n@@ -108,6 +108,8 @@ def abstract_inline_conversion(markup_fn):\n         prefix, suffix, text = chomp(text)\n         if not text:\n             return ''\n+        if markup_prefix == '<code >':\n+            return text\n         return '%s%s%s%s%s' % (prefix, markup_prefix, text, markup_suffix, suffix)\n     return implementation\n \n",
+    "test_output": "STDOUT:\n.............F....................................                       [100%]\n=================================== FAILURES ===================================\n__________________________________ test_code ___________________________________\n\n    def test_code():\n        inline_tests('code', '`')\n        assert md('<code>*this_should_not_escape*</code>') == '`*this_should_not_escape*`'\n        assert md('<kbd>*this_should_not_escape*</kbd>') == '`*this_should_not_escape*`'\n        assert md('<samp>*this_should_not_escape*</samp>') == '`*this_should_not_escape*`'\n        assert md('<code><span>*this_should_not_escape*</span></code>') == '`*this_should_not_escape*`'\n        assert md('<code>this  should\\t\\tnormalize</code>') == '`this should normalize`'\n        assert md('<code><span>this  should\\t\\tnormalize</span></code>') == '`this should normalize`'\n        assert md('<code>foo<b>bar</b>baz</code>') == '`foobarbaz`'\n        assert md('<kbd>foo<i>bar</i>baz</kbd>') == '`foobarbaz`'\n        assert md('<samp>foo<del> bar </del>baz</samp>') == '`foo bar baz`'\n        assert md('<samp>foo <del>bar</del> baz</samp>') == '`foo bar baz`'\n        assert md('<code>foo<em> bar </em>baz</code>') == '`foo bar baz`'\n        assert md('<code>foo<code> bar </code>baz</code>') == '`foo bar baz`'\n        assert md('<code>foo<strong> bar </strong>baz</code>') == '`foo bar baz`'\n        assert md('<code>foo<s> bar </s>baz</code>') == '`foo bar baz`'\n        assert md('<code>foo<sup>bar</sup>baz</code>', sup_symbol='^') == '`foobarbaz`'\n        assert md('<code>foo<sub>bar</sub>baz</code>', sub_symbol='^') == '`foobarbaz`'\n>       assert md('foo<code>`bar`</code>baz') == 'foo`` `bar` ``baz'\nE       AssertionError: assert 'foo``bar``baz' == 'foo`` `bar` ``baz'\nE         \nE         - foo`` `bar` ``baz\nE         ?      --   --\nE         + foo``bar``baz\n\ntests/test_conversions.py:104: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_conversions.py::test_code - AssertionError: assert 'foo``ba...\n1 failed, 49 passed in 0.22s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7fdd33e84d70>",
+    "tool_calls": 20,
+    "task_index": 1
+   },
+   "segundos_reloj": 183.1
+  }
+ ]
+}

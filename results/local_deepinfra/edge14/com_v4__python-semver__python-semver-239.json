@@ -1,0 +1,40 @@
+{
+ "variant": "variants/com_v4",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "python-semver__python-semver-239",
+   "resolved": false,
+   "patch": "",
+   "tool_calls": 28,
+   "duration_s": 128.0,
+   "error": null,
+   "raw": {
+    "task_id": "python-semver__python-semver-239",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 128.02488994199985,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 33,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/l40/com_v4__python-semver__python-semver-239/results/traces/trace_python-semver__python-semver-239.json",
+    "metadata": "{}",
+    "repo": "python-semver/python-semver",
+    "agent_patch": "",
+    "test_output": "STDOUT:\n........................................................................ [ 37%]\n........................................................................ [ 75%]\n.......................................F..F....                          [100%]\n=================================== FAILURES ===================================\n________ test_should_raise_deprecation_warnings[compare-args5-kwargs5] _________\n\nfunc = <function compare at 0x7f124c7ea700>, args = ('1.2.1', '1.2.2')\nkwargs = {}\n\n    @pytest.mark.parametrize(\n        \"func, args, kwargs\",\n        [\n            (bump_build, (\"1.2.3\",), {}),\n            (bump_major, (\"1.2.3\",), {}),\n            (bump_minor, (\"1.2.3\",), {}),\n            (bump_patch, (\"1.2.3\",), {}),\n            (bump_prerelease, (\"1.2.3\",), {}),\n            (compare, (\"1.2.1\", \"1.2.2\"), {}),\n            (format_version, (3, 4, 5), {}),\n            (finalize_version, (\"1.2.3-rc.5\",), {}),\n            (match, (\"1.0.0\", \">=1.0.0\"), {}),\n            (parse, (\"1.2.3\",), {}),\n            (parse_version_info, (\"1.2.3\",), {}),\n            (replace, (\"1.2.3\",), dict(major=2, patch=10)),\n        ],\n    )\n    def test_should_raise_deprecation_warnings(func, args, kwargs):\n        with pytest.warns(\n            DeprecationWarning, match=r\"Function 'semver.[_a-zA-Z]+' is deprecated.\"\n        ) as record:\n            func(*args, **kwargs)\n            if not record:\n>               pytest.fail(\"Expected a DeprecationWarning for {}\".format(func.__name__))\nE               Failed: Expected a DeprecationWarning for compare\n\ntest_semver.py:873: Failed\n_________ test_should_raise_deprecation_warnings[match-args8-kwargs8] __________\n\nfunc = <function match at 0x7f124c7ea7a0>, args = ('1.0.0', '>=1.0.0')\nkwargs = {}\n\n    @pytest.mark.parametrize(\n        \"func, args, kwargs\",\n        [\n            (bump_build, (\"1.2.3\",), {}),\n            (bump_major, (\"1.2.3\",), {}),\n            (bump_minor, (\"1.2.3\",), {}),\n            (bump_patch, (\"1.2.3\",), {}),\n            (bump_prerelease, (\"1.2.3\",), {}),\n            (compare, (\"1.2.1\", \"1.2.2\"), {}),\n            (format_version, (3, 4, 5), {}),\n            (finalize_version, (\"1.2.3-rc.5\",), {}),\n            (match, (\"1.0.0\", \">=1.0.0\"), {}),\n            (parse, (\"1.2.3\",), {}),\n            (parse_version_info, (\"1.2.3\",), {}),\n            (replace, (\"1.2.3\",), dict(major=2, patch=10)),\n        ],\n    )\n    def test_should_raise_deprecation_warnings(func, args, kwargs):\n        with pytest.warns(\n            DeprecationWarning, match=r\"Function 'semver.[_a-zA-Z]+' is deprecated.\"\n        ) as record:\n            func(*args, **kwargs)\n            if not record:\n>               pytest.fail(\"Expected a DeprecationWarning for {}\".format(func.__name__))\nE               Failed: Expected a DeprecationWarning for match\n\ntest_semver.py:873: Failed\n=========================== short test summary info ============================\nFAILED test_semver.py::test_should_raise_deprecation_warnings[compare-args5-kwargs5]\nFAILED test_semver.py::test_should_raise_deprecation_warnings[match-args8-kwargs8]\n2 failed, 189 passed in 0.19s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f9b056fa7b0>",
+    "tool_calls": 28,
+    "task_index": 1
+   },
+   "segundos_reloj": 128.1
+  }
+ ]
+}

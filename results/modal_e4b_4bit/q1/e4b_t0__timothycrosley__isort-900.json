@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_t0",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "timothycrosley__isort-900",
+   "resolved": true,
+   "patch": "diff --git a/isort/settings.py b/isort/settings.py\nindex 525c131..34f658a 100644\n--- a/isort/settings.py\n+++ b/isort/settings.py\n@@ -122,7 +122,7 @@ default = {'force_to_top': [],\n                                       'test', 'textwrap', 'this', 'thread', 'threading', 'time', 'timeit', 'tkinter',\n                                       'token', 'tokenize', 'trace', 'traceback', 'tracemalloc', 'ttk', 'tty', 'turtle',\n                                       'turtledemo', 'types', 'typing', 'unicodedata', 'unittest', 'urllib', 'urllib2',\n-                                      'urlparse', 'user', 'usercustomize', 'uu', 'uuid', 'venv', 'videoreader',\n+                                      'urlparse', 'usercustomize', 'uu', 'uuid', 'venv', 'videoreader',\n                                       'warnings', 'wave', 'weakref', 'webbrowser', 'whichdb', 'winreg', 'winsound',\n                                       'wsgiref', 'xdrlib', 'xml', 'xmlrpc', 'xmlrpclib', 'zipapp', 'zipfile',\n                                       'zipimport', 'zlib'],",
+   "tool_calls": 11,
+   "duration_s": 95.5,
+   "error": null,
+   "raw": {
+    "task_id": "timothycrosley__isort-900",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 95.54665141600003,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 14,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q1/e4b_t0__timothycrosley__isort-900/results/traces/trace_timothycrosley__isort-900.json",
+    "metadata": "{}",
+    "repo": "timothycrosley/isort",
+    "agent_patch": "diff --git a/isort/settings.py b/isort/settings.py\nindex 525c131..34f658a 100644\n--- a/isort/settings.py\n+++ b/isort/settings.py\n@@ -122,7 +122,7 @@ default = {'force_to_top': [],\n                                       'test', 'textwrap', 'this', 'thread', 'threading', 'time', 'timeit', 'tkinter',\n                                       'token', 'tokenize', 'trace', 'traceback', 'tracemalloc', 'ttk', 'tty', 'turtle',\n                                       'turtledemo', 'types', 'typing', 'unicodedata', 'unittest', 'urllib', 'urllib2',\n-                                      'urlparse', 'user', 'usercustomize', 'uu', 'uuid', 'venv', 'videoreader',\n+                                      'urlparse', 'usercustomize', 'uu', 'uuid', 'venv', 'videoreader',\n                                       'warnings', 'wave', 'weakref', 'webbrowser', 'whichdb', 'winreg', 'winsound',\n                                       'wsgiref', 'xdrlib', 'xml', 'xmlrpc', 'xmlrpclib', 'zipapp', 'zipfile',\n                                       'zipimport', 'zlib'],\n",
+    "test_output": "STDOUT:\n........................................................................ [ 47%]\n.......................................................s.s.............. [ 94%]\n........                                                                 [100%]\n150 passed, 2 skipped in 0.86s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7fdf3e928d70>",
+    "tool_calls": 11,
+    "task_index": 1
+   },
+   "segundos_reloj": 95.6
+  }
+ ]
+}

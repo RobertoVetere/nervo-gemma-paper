@@ -1,21 +1,22 @@
-"""Servidor local que se hace pasar por vLLM y reenvía a Google AI Studio (Gemma 4 31B).
+"""Local server that poses as vLLM and forwards to Google AI Studio (Gemma 4 31B), DeepInfra or a vLLM server on Modal.
 
-El harness oficial habla con vLLM en formato OpenAI (/v1/chat/completions) y añade
-campos propios de vLLM (extra_body.chat_template_kwargs, thinking_token_budget) que
-AI Studio rechaza. Este shim:
-  - quita esos campos y registra qué traían (para comprobar que el razonamiento iba activado),
-  - cambia el nombre del modelo por el de AI Studio,
-  - separa <thought>...</thought> del contenido y lo devuelve como reasoning_content,
-    igual que el reasoning_parser gemma4 de vLLM,
-  - guarda cada petición y respuesta en un .jsonl.
+The official harness talks to vLLM in OpenAI format (/v1/chat/completions) and adds vLLM-specific
+fields (extra_body.chat_template_kwargs, thinking_token_budget) that AI Studio rejects. This shim:
+  - removes those fields and records what they carried (to check that reasoning was on),
+  - replaces the model name with the AI Studio one,
+  - splits <thought>...</thought> from the content and returns it as reasoning_content,
+    like vLLM's gemma4 reasoning_parser,
+  - saves every request and response to a .jsonl file.
 
-Uso: python local/shim_vllm.py --port 8000 --log /tmp/llamadas.jsonl
-La clave se lee de ~/.aistudio_key (nunca del repo).
+Usage: python local/shim_vllm.py --port 8000 --log /tmp/calls.jsonl
+The key is read from ~/.aistudio_key (never from the repository).
 
-Con --backend deepinfra reenvía a DeepInfra (de pago, rápido, sirve E4B y 31B): el modelo se elige
-según el nombre que pide el harness (e4b -> google/gemma-4-E4B-it, 31b -> google/gemma-4-31B-it),
-se respeta chat_template_kwargs.enable_thinking y se corta al pasar --tope-usd de gasto acumulado.
-Clave en ~/.deepinfra_key.
+With --backend deepinfra it forwards to DeepInfra (paid, fast): the model is chosen from the name the harness
+asks for (e4b -> google/gemma-4-E4B-it, 31b -> google/gemma-4-31B-it), chat_template_kwargs.enable_thinking is
+honoured, and requests stop once the accumulated cost passes --cap-usd. Key in ~/.deepinfra_key.
+WARNING (Nov 2026): DeepInfra answered requests for google/gemma-4-E4B-it with google/gemma-4-31B-it-turbo.
+Check the `model` field of the responses (logged in the .jsonl).
+With --backend modal it forwards the request unchanged to a vLLM server (local/modal_vllm.py); key in ~/.modal_vllm_key.
 """
 import argparse
 import json
@@ -46,7 +47,7 @@ def adaptar_peticion_deepinfra(body):
     nombre = (body.get('model') or '').lower()
     clave = 'e4b' if 'e4b' in nombre else '31b' if '31b' in nombre else None
     if clave is None:
-        raise ValueError(f'modelo no reconocido: {body.get("model")}')
+        raise ValueError(f'unknown model: {body.get("model")}')
     body['model'] = MODELOS_DEEPINFRA[clave]
     for m in body.get('messages', []):
         if isinstance(m, dict):
@@ -55,7 +56,7 @@ def adaptar_peticion_deepinfra(body):
 
 
 def separar_pensamiento(content):
-    """Devuelve (contenido_sin_thought, pensamiento) como hace el parser gemma4 de vLLM."""
+    """Return (content_without_thought, thought), as vLLM's gemma4 parser does."""
     if not content:
         return content, None
     partes = THOUGHT_RE.findall(content)
@@ -66,15 +67,15 @@ def separar_pensamiento(content):
 
 
 def adaptar_peticion(body):
-    """Convierte una petición del harness (formato vLLM) en una válida para AI Studio."""
+    """Turn a harness request (vLLM format) into a valid AI Studio request."""
     quitados = {k: body.pop(k) for k in CAMPOS_VLLM if k in body}
     body['model'] = MODELO_GOOGLE
-    # thinking_budget 0 en el harness -> enable_thinking False. AI Studio no admite apagarlo para
-    # Gemma, pero thinking_level "minimal" da 0 tokens de pensamiento (comprobado el 8-nov).
+    # thinking_budget 0 in the harness -> enable_thinking False. AI Studio cannot turn it off for
+    # Gemma, but thinking_level "minimal" gives 0 thinking tokens (checked on 8 Nov).
     if (quitados.get('chat_template_kwargs') or {}).get('enable_thinking') is False:
         body['extra_body'] = {'google': {'thinking_config': {'thinking_level': 'minimal'}}}
-    # Los mensajes de asistente que llevan reasoning_content (include_thoughts) no son
-    # campos válidos para Google: se quitan, como haría la plantilla de chat de Gemma.
+    # Assistant messages carrying reasoning_content (include_thoughts) are not valid
+    # fields for Google: they are removed, as Gemma's chat template would do.
     for m in body.get('messages', []):
         if isinstance(m, dict):
             m.pop('reasoning_content', None)
@@ -113,17 +114,17 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         if not self.path.rstrip('/').endswith('/chat/completions'):
-            return self._json(404, {'error': f'ruta no soportada: {self.path}'})
+            return self._json(404, {'error': f'unsupported path: {self.path}'})
         n_bytes = int(self.headers.get('Content-Length', 0))
         original = json.loads(self.rfile.read(n_bytes) or b'{}')
         if original.get('stream'):
-            # El harness no debería pedir streaming; si lo hace, que se vea enseguida.
-            return self._json(400, {'error': 'shim: stream=True no soportado'})
+            # The harness should not ask for streaming; if it does, fail loudly.
+            return self._json(400, {'error': 'shim: stream=True not supported'})
         modelo_harness = original.get('model')
         deep = self.server.backend == 'deepinfra'
         modal_ = self.server.backend == 'modal'
         try:
-            if modal_:  # vLLM real en Modal: la petición del harness pasa tal cual, como en Kaggle
+            if modal_:  # real vLLM on Modal: the harness request passes unchanged, as on Kaggle
                 body, quitados = json.loads(json.dumps(original)), []
             else:
                 body, quitados = (adaptar_peticion_deepinfra if deep else adaptar_peticion)(json.loads(json.dumps(original)))
@@ -131,7 +132,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(400, {'error': str(e)})
         with _lock:
             if deep and _contador['usd'] >= self.server.tope_usd:
-                return self._json(402, {'error': f'shim: tope de gasto alcanzado ({_contador["usd"]:.4f} USD)'})
+                return self._json(402, {'error': f'shim: spending cap reached ({_contador["usd"]:.4f} USD)'})
             _contador['n'] += 1
             n = _contador['n']
         upstream = self.server.upstream if modal_ else (DEEPINFRA if deep else UPSTREAM)
@@ -179,11 +180,11 @@ class Handler(BaseHTTPRequestHandler):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--port', type=int, default=8000)
-    ap.add_argument('--log', default='/tmp/shim_llamadas.jsonl')
+    ap.add_argument('--log', default='/tmp/shim_calls.jsonl')
     ap.add_argument('--key-file', default='')
     ap.add_argument('--backend', choices=['aistudio', 'deepinfra', 'modal'], default='aistudio')
-    ap.add_argument('--upstream', default='', help='solo modal: URL .../v1/chat/completions del servidor vLLM en Modal')
-    ap.add_argument('--tope-usd', type=float, default=3.0, help='solo deepinfra: corta al pasar este gasto')
+    ap.add_argument('--upstream', default='', help='modal only: URL .../v1/chat/completions of the vLLM server on Modal')
+    ap.add_argument('--cap-usd', '--tope-usd', dest='tope_usd', type=float, default=3.0, help='deepinfra only: stop once this spend is passed')
     a = ap.parse_args()
     srv = ThreadingHTTPServer(('127.0.0.1', a.port), Handler)
     kf = a.key_file or os.path.expanduser({'deepinfra': '~/.deepinfra_key', 'modal': '~/.modal_vllm_key'}.get(a.backend, '~/.aistudio_key'))
@@ -192,8 +193,8 @@ def main():
     srv.log_path = a.log
     srv.backend = a.backend
     srv.tope_usd = a.tope_usd
-    destino = a.upstream if a.backend == 'modal' else ('DeepInfra (e4b/31b según el harness)' if a.backend == 'deepinfra' else MODELO_GOOGLE)
-    print(f'shim escuchando en 127.0.0.1:{a.port} -> {destino}; log {a.log}; tope {a.tope_usd} USD', flush=True)
+    destino = a.upstream if a.backend == 'modal' else ('DeepInfra (e4b/31b, as the harness asks)' if a.backend == 'deepinfra' else MODELO_GOOGLE)
+    print(f'shim listening on 127.0.0.1:{a.port} -> {destino}; log {a.log}; cap {a.tope_usd} USD', flush=True)
     srv.serve_forever()
 
 

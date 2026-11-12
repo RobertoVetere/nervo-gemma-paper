@@ -1,57 +1,55 @@
-name: Servidor vLLM en Modal
-# Despliega (o retira) el modelo cuantizado oficial como API OpenAI en Modal. Se apaga solo tras 5 min sin uso.
+name: vLLM server on Modal
+# Deploys (or stops) a model as an OpenAI-compatible API on Modal (local/modal_vllm.py). Scales to zero after 5 idle minutes.
 on:
   workflow_dispatch:
     inputs:
-      modelo:
-        description: "gemma-4-e4b-it-qat-w4a16-ct | gemma-4-31b-it-qat-w4a16-ct"
+      model:
+        description: "Key of MODELOS in local/modal_vllm.py, e.g. gemma-4-e4b-it-qat-w4a16-ct, gemma-4-e4b-it (bf16), qwen3-4b-awq"
         default: "gemma-4-e4b-it-qat-w4a16-ct"
       app:
-        description: "solo logs: nombre de la app"
+        description: "logs only: app name"
         default: "nervo-vllm-e4b"
-      sufijo:
-        description: "sufijo del nombre de la app para una segunda copia del mismo modelo (p. ej. -b)"
+      suffix:
+        description: "app-name suffix for a second copy of the same model (e.g. -b)"
         default: ""
       gpus:
-        description: "Número de L4 (E4B: 1; 31B: 4)"
+        description: "Number of L4 GPUs (E4B: 1; 31B: 4)"
         default: "1"
-      accion:
-        description: "deploy | stop | logs (logs: app = nervo-vllm-e4b, nervo-vllm-31b o nervo-eval)"
+      action:
+        description: "deploy | stop | logs"
         default: "deploy"
 jobs:
-  servidor:
+  server:
     runs-on: ubuntu-latest
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
-      NERVO_VLLM_MODELO: ${{ inputs.modelo }}
+      NERVO_VLLM_MODELO: ${{ inputs.model }}
       NERVO_VLLM_GPUS: ${{ inputs.gpus }}
-      NERVO_VLLM_SUFIJO: ${{ inputs.sufijo }}
+      NERVO_VLLM_SUFIJO: ${{ inputs.suffix }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: pip install modal==1.6.3
-      - name: Comprobar el entorno (sin GPU)
-        if: inputs.accion == 'deploy'
+      - name: Check the environment (no GPU)
+        if: inputs.action == 'deploy'
         run: modal run local/modal_vllm.py::solo_comprobar
-      - name: Desplegar
-        if: inputs.accion == 'deploy'
+      - name: Deploy
+        if: inputs.action == 'deploy'
         run: modal deploy local/modal_vllm.py
-      - name: Parar
-        if: inputs.accion == 'stop'
-        run: |
-          corto=$(echo "${{ inputs.modelo }}" | grep -q e4b && echo e4b || echo 31b)
-          modal app stop -y "nervo-vllm-$corto"
+      - name: Stop
+        if: inputs.action == 'stop'
+        run: modal app stop -y "${{ inputs.app }}"
       - name: Logs
-        if: inputs.accion == 'logs'
+        if: inputs.action == 'logs'
         run: |
           modal app list --json || modal app list || true
           timeout 90 modal app logs "${{ inputs.app }}" > logs.txt 2>&1 || true
           tail -c 20000 logs.txt
       - uses: actions/upload-artifact@v4
-        if: inputs.accion == 'logs'
+        if: inputs.action == 'logs'
         with:
-          name: logs-modal
+          name: modal-logs
           path: logs.txt

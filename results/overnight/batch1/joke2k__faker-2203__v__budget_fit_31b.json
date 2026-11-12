@@ -1,0 +1,40 @@
+{
+ "variant": "variants/budget_fit_31b",
+ "modelo": "gemma-4-31b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 240,
+  "max_tool_calls": 28,
+  "max_time_minutes": 25.0,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "joke2k__faker-2203",
+   "resolved": false,
+   "patch": "diff --git a/reproduce_issue.py b/reproduce_issue.py\nnew file mode 100644\nindex 0000000..f041884\n--- /dev/null\n+++ b/reproduce_issue.py\n@@ -0,0 +1,8 @@\n+import faker\n+fake = faker.Faker()\n+try:\n+    print(fake.unique.profile())\n+except Exception as e:\n+    print(e)\n+    import traceback\n+    traceback.print_exc()",
+   "tool_calls": 15,
+   "duration_s": 1504.1,
+   "error": "Agent exceeded session timeout (25.0 min)",
+   "raw": {
+    "task_id": "joke2k__faker-2203",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 1504.114944785,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 15,
+    "error_message": "Agent exceeded session timeout (25.0 min)",
+    "trace_path": "/tmp/noche_trabajo/budget_fit_31b/results/traces/trace_joke2k__faker-2203.json",
+    "metadata": "{}",
+    "repo": "joke2k/faker",
+    "agent_patch": "diff --git a/reproduce_issue.py b/reproduce_issue.py\nnew file mode 100644\nindex 0000000..f041884\n--- /dev/null\n+++ b/reproduce_issue.py\n@@ -0,0 +1,8 @@\n+import faker\n+fake = faker.Faker()\n+try:\n+    print(fake.unique.profile())\n+except Exception as e:\n+    print(e)\n+    import traceback\n+    traceback.print_exc()\n",
+    "test_output": "STDOUT:\n.....F                                                                   [100%]\n=================================== FAILURES ===================================\n__________ TestUniquenessClass.test_complex_return_types_is_supported __________\n\nself = <tests.test_unique.TestUniquenessClass object at 0x7fe4602049e0>\n\n    def test_complex_return_types_is_supported(self):\n        \"\"\"The unique decorator supports complex return types\n        like the ones used in the profile provider.\"\"\"\n    \n        fake = Faker()\n    \n        for i in range(10):\n>           fake.unique.pydict()\n\ntests/test_unique.py:71: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nargs = (), kwargs = {}\n\n    @functools.wraps(function)\n    def wrapper(*args, **kwargs):\n        key = (name, args, tuple(sorted(kwargs.items())))\n    \n        generated = self._seen.setdefault(key, {self._sentinel})\n    \n        # With use of a sentinel value rather than None, we leave\n        # None open as a valid return value.\n        retval = self._sentinel\n    \n        for i in range(_UNIQUE_ATTEMPTS):\n>           if retval not in generated:\n               ^^^^^^^^^^^^^^^^^^^^^^^\nE           TypeError: unhashable type: 'dict'\n\nfaker/proxy.py:337: TypeError\n=========================== short test summary info ============================\nFAILED tests/test_unique.py::TestUniquenessClass::test_complex_return_types_is_supported\n1 failed, 5 passed in 0.22s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f40c9eca3c0>",
+    "tool_calls": 15,
+    "task_index": 1
+   },
+   "segundos_reloj": 1504.2
+  }
+ ]
+}

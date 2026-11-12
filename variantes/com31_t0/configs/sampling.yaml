@@ -1,9 +1,0 @@
-# com31_t0: agente público con el 31B SIN razonamiento.
-# Motivo: sondas one shot del 10-nov: el 31B razonando gastó los 8192 tokens sin responder en L1/L2, y a 33 tok/s
-# en Kaggle eso son más de 2 minutos por llamada (cortes por tiempo). Sin razonar respondió siempre.
-temperature: 0.2
-top_p: 0.95
-max_output_tokens: 8192
-thinking_config:
-  thinking_budget: 0
-  include_thoughts: false

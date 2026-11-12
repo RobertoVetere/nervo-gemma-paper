@@ -1,12 +1,13 @@
-"""Servidor vLLM en Modal con el modelo CUANTIZADO oficial, como API compatible con OpenAI.
+"""vLLM server on Modal as an OpenAI-compatible API, with the official QUANTIZED weights or the original ones.
 
-Mismo vLLM (0.19.1), mismos parsers (gemma4), mismo contexto (32768) y mismos pesos (qat-w4a16-ct) que el examen.
-Sirve para llamar al modelo de Kaggle desde fuera: sondas one shot y el harness local (local/correr_local.py vía
-local/shim_vllm.py --backend modal). Se apaga solo tras 5 min sin peticiones (no factura en reposo).
-Clave de acceso: sha256(MODAL_TOKEN_SECRET + ':vllm')[:40] (la calculan el workflow y la sesión, sin publicarla).
+Same vLLM (0.19.1), parsers (gemma4), context (32768) and weights (qat-w4a16-ct) as the competition. The model is
+chosen with NERVO_VLLM_MODELO (keys in MODELOS below: Gemma 4 E4B/E2B 4-bit and bf16, Qwen3-4B bf16/AWQ, Qwen3-1.7B).
+Used to call the competition model from outside: single-call probes and the local harness (local/run_local.py through
+local/shim_vllm.py --backend modal). It scales to zero after 5 idle minutes (no charge while idle).
+Access key: sha256(MODAL_TOKEN_SECRET + ':vllm')[:40] (computed by the workflow and the client, never published).
 
-  modal deploy local/modal_vllm.py      (lo hace el workflow "Servidor vLLM en Modal")
-URL: https://<workspace>--nervo-vllm-<modelo>.modal.run/v1
+  modal deploy local/modal_vllm.py      (done by the workflow .github/workflows/modal_vllm.yml)
+URL: https://<workspace>--nervo-vllm-<model>-servir.modal.run/v1
 """
 import hashlib
 import os
@@ -44,7 +45,7 @@ imagen = (
 )
 
 
-# Si Modal no tiene L4 libre, usa A10 (24 GB, misma clase de GPU; ~1,10 $/h): mismo modelo y mismo vLLM.
+# If Modal has no free L4, use an A10 (24 GB, same GPU class; ~1.10 USD/h): same model and same vLLM.
 @app.function(image=imagen, gpu=[f'L4:{GPUS}', f'A10:{GPUS}'], cpu=8, memory=32768, volumes={'/modelos': modelos},
               scaledown_window=300, timeout=3600, max_containers=1)
 @modal.concurrent(max_inputs=64)
@@ -70,8 +71,8 @@ def servir():
 
 @app.function(image=imagen, timeout=900)
 def comprobar() -> str:
-    """Sin GPU: importa lo que falló la primera vez (transformers exige huggingface_hub<2). La CLI de vLLM no
-    arranca sin GPU ("Failed to infer device type"), así que se importa su módulo de argumentos."""
+    """No GPU: import what failed the first time (transformers needs huggingface_hub<2). The vLLM CLI does not
+    start without a GPU ("Failed to infer device type"), so its argument module is imported instead."""
     import transformers, huggingface_hub, vllm
     from vllm.engine.arg_utils import EngineArgs  # noqa: F401
     return f'vllm {vllm.__version__} | transformers {transformers.__version__} | huggingface_hub {huggingface_hub.__version__}'

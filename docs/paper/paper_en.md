@@ -58,7 +58,7 @@ We asked each model to apply one edit with one tool call, copying an old and a n
 | Qwen3-4B, 4-bit (AWQ) | 116 / 100 | 92 / 79 | 2 / 8 |
 | Qwen3-1.7B, bf16 | 9 / 113 | 30 / 74 | 1 / 15 |
 
-![Figure 1: share of calls failing structurally per model and interface (320 calls per bar).](fig_formato.png)
+![Figure 1: share of calls failing structurally per model and interface (320 calls per bar).](fig_format.png)
 
 The single field never failed more than a multi-field interface: it failed less than the nested call in every model (block-level McNemar, p ≤ 0.008) and less than the flat call wherever that one failed often (E2B 4-bit and the Qwen models, p < 10⁻⁹). Several registered predictions failed: nested calls were not always worse than flat ones; flat and single-field calls stayed under 2% only for E4B (single fields reached 9% for Qwen3-1.7B with long context); and the extra harm of 4-bit weights under long context held only for E4B. How multi-field calls fail depends on the family: Gemma drops `skill_name` or `file_path` or absorbs them into `args`; Qwen writes the call as text that its parser cannot extract. The 4-bit weights amplified failures of the nested call for E4B only under long context (12 against 4 of 80 blocks, p = 0.04) and for E2B in both contexts (p < 0.001), but not for Qwen3-4B AWQ. Single fields kept their structure but did not always keep the requested layout: E2B wrote the edit without the search-and-replace markers in most calls, which code can detect and report.
 
@@ -116,7 +116,7 @@ SWE-bench [7] defined repository repair with hidden tests; SWE-agent [8] showed 
 
 ## 6. Limitations
 
-Agent comparisons use 40 tasks; the 31B came through an API with an unknown serving configuration; the format test copies given text rather than writing new code; only Gemma had QAT weights; some pre-registered hypotheses failed and are reported as such (`docs/HIPOTESIS_12NOV.md`).
+Agent comparisons use 40 tasks; the 31B came through an API with an unknown serving configuration; the format test copies given text rather than writing new code; only Gemma had QAT weights; some pre-registered hypotheses failed and are reported as such (`docs/HYPOTHESES_12NOV.md`).
 
 ## 7. Conclusion
 

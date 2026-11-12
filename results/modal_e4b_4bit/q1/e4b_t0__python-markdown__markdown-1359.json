@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_t0",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "python-markdown__markdown-1359",
+   "resolved": false,
+   "patch": "diff --git a/markdown/htmlparser.py b/markdown/htmlparser.py\nindex 78ac958..46a98ef 100644\n--- a/markdown/htmlparser.py\n+++ b/markdown/htmlparser.py\n@@ -147,6 +147,9 @@ class HTMLExtractor(htmlparser.HTMLParser):\n \n     def handle_starttag(self, tag, attrs):\n         # Handle tags that should always be empty and do not specify a closing tag\n+        for key, value in attrs.items():\n+            if isinstance(value, str):\n+                attrs[key] = value.replace('\\\\', '\\\\\\\\')\n         if tag in self.empty_tags:\n             self.handle_startendtag(tag, attrs)\n             return",
+   "tool_calls": 20,
+   "duration_s": 237.6,
+   "error": null,
+   "raw": {
+    "task_id": "python-markdown__markdown-1359",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 237.61185073900003,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 22,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q1/e4b_t0__python-markdown__markdown-1359/results/traces/trace_python-markdown__markdown-1359.json",
+    "metadata": "{}",
+    "repo": "python-markdown/markdown",
+    "agent_patch": "diff --git a/markdown/htmlparser.py b/markdown/htmlparser.py\nindex 78ac958..46a98ef 100644\n--- a/markdown/htmlparser.py\n+++ b/markdown/htmlparser.py\n@@ -147,6 +147,9 @@ class HTMLExtractor(htmlparser.HTMLParser):\n \n     def handle_starttag(self, tag, attrs):\n         # Handle tags that should always be empty and do not specify a closing tag\n+        for key, value in attrs.items():\n+            if isinstance(value, str):\n+                attrs[key] = value.replace('\\\\', '\\\\\\\\')\n         if tag in self.empty_tags:\n             self.handle_startendtag(tag, attrs)\n             return\n",
+    "test_output": "STDOUT:\nFF                                                                       [100%]\n=================================== FAILURES ===================================\n_________________ TestRawHtml.test_inline_html_angle_brackets __________________\n\nself = <tests.test_syntax.inline.test_raw_html.TestRawHtml testMethod=test_inline_html_angle_brackets>\n\n    def test_inline_html_angle_brackets(self):\n>       self.assertMarkdownRenders(\"<span>e<c</span>\", \"<p><span>e&lt;c</span></p>\")\n\ntests/test_syntax/inline/test_raw_html.py:27: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nmarkdown/test_tools.py:72: in assertMarkdownRenders\n    output = md.convert(source)\n             ^^^^^^^^^^^^^^^^^^\nmarkdown/core.py:251: in convert\n    self.lines = prep.run(self.lines)\n                 ^^^^^^^^^^^^^^^^^^^^\nmarkdown/preprocessors.py:80: in run\n    parser.feed(source)\n/usr/local/lib/python3.13/html/parser.py:187: in feed\n    self.goahead(0)\n/usr/local/lib/python3.13/html/parser.py:279: in goahead\n    k = self.parse_starttag(i)\n        ^^^^^^^^^^^^^^^^^^^^^^\nmarkdown/htmlparser.py:325: in parse_starttag\n    self.handle_starttag(tag, attrs)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <markdown.htmlparser.HTMLExtractor object at 0x7ffa0cfa9010>\ntag = 'span', attrs = []\n\n    def handle_starttag(self, tag, attrs):\n        # Handle tags that should always be empty and do not specify a closing tag\n>       for key, value in attrs.items():\n                          ^^^^^^^^^^^\nE       AttributeError: 'list' object has no attribute 'items'\n\nmarkdown/htmlparser.py:150: AttributeError\n___________________ TestRawHtml.test_inline_html_backslashes ___________________\n\nself = <tests.test_syntax.inline.test_raw_html.TestRawHtml testMethod=test_inline_html_backslashes>\n\n    def test_inline_html_backslashes(self):\n>       self.assertMarkdownRenders('<img src=\"..\\\\..\\\\foo.png\">', '<p><img src=\"..\\\\..\\\\foo.png\"></p>')\n\ntests/test_syntax/inline/test_raw_html.py:33: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nmarkdown/test_tools.py:72: in assertMarkdownRenders\n    output = md.convert(source)\n             ^^^^^^^^^^^^^^^^^^\nmarkdown/core.py:251: in convert\n    self.lines = prep.run(self.lines)\n                 ^^^^^^^^^^^^^^^^^^^^\nmarkdown/preprocessors.py:80: in run\n    parser.feed(source)\n/usr/local/lib/python3.13/html/parser.py:187: in feed\n    self.goahead(0)\n/usr/local/lib/python3.13/html/parser.py:279: in goahead\n    k = self.parse_starttag(i)\n        ^^^^^^^^^^^^^^^^^^^^^^\nmarkdown/htmlparser.py:325: in parse_starttag\n    self.handle_starttag(tag, attrs)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <markdown.htmlparser.HTMLExtractor object at 0x7ffa0d018050>, tag = 'img'\nattrs = [('src', '..\\\\..\\\\foo.png')]\n\n    def handle_starttag(self, tag, attrs):\n        # Handle tags that should always be empty and do not specify a closing tag\n>       for key, value in attrs.items():\n                          ^^^^^^^^^^^\nE       AttributeError: 'list' object has no attribute 'items'\n\nmarkdown/htmlparser.py:150: AttributeError\n=========================== short test summary info ============================\nFAILED tests/test_syntax/inline/test_raw_html.py::TestRawHtml::test_inline_html_angle_brackets\nFAILED tests/test_syntax/inline/test_raw_html.py::TestRawHtml::test_inline_html_backslashes\n2 failed in 0.10s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7fc49b38c980>",
+    "tool_calls": 20,
+    "task_index": 1
+   },
+   "segundos_reloj": 237.7
+  }
+ ]
+}

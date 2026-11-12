@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_cmd_t",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pycqa__pyflakes-745",
+   "resolved": false,
+   "patch": "diff --git a/pyflakes/checker.py b/pyflakes/checker.py\nindex b87bc88..3e13e7a 100644\n--- a/pyflakes/checker.py\n+++ b/pyflakes/checker.py\n@@ -957,7 +957,7 @@ class Checker:\n         if (lnode._pyflakes_depth > rnode._pyflakes_depth):\n             return self.getCommonAncestor(lnode._pyflakes_parent, rnode, stop)\n         if (lnode._pyflakes_depth < rnode._pyflakes_depth):\n-            return self.getCommonAncestor(lnode, rnode._pyflakes_parent, stop)\n+            return self.getCommonAncestor(lnode, self.getParent(rnode), stop)\n         return self.getCommonAncestor(\n             lnode._pyflakes_parent,\n             rnode._pyflakes_parent,",
+   "tool_calls": 20,
+   "duration_s": 239.9,
+   "error": null,
+   "raw": {
+    "task_id": "pycqa__pyflakes-745",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 239.929471595,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 22,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q2/e4b_cmd_t__pycqa__pyflakes-745/results/traces/trace_pycqa__pyflakes-745.json",
+    "metadata": "{}",
+    "repo": "pycqa/pyflakes",
+    "agent_patch": "diff --git a/pyflakes/checker.py b/pyflakes/checker.py\nindex b87bc88..3e13e7a 100644\n--- a/pyflakes/checker.py\n+++ b/pyflakes/checker.py\n@@ -957,7 +957,7 @@ class Checker:\n         if (lnode._pyflakes_depth > rnode._pyflakes_depth):\n             return self.getCommonAncestor(lnode._pyflakes_parent, rnode, stop)\n         if (lnode._pyflakes_depth < rnode._pyflakes_depth):\n-            return self.getCommonAncestor(lnode, rnode._pyflakes_parent, stop)\n+            return self.getCommonAncestor(lnode, self.getParent(rnode), stop)\n         return self.getCommonAncestor(\n             lnode._pyflakes_parent,\n             rnode._pyflakes_parent,\n",
+    "test_output": "STDOUT:\n.............s....s..................................................... [ 54%]\n.............s................................s.......F....              [100%]\n=================================== FAILURES ===================================\n__________ TestIncompatiblePrintOperator.test_print_augmented_assign ___________\n\nself = <pyflakes.test.test_other.TestIncompatiblePrintOperator testMethod=test_print_augmented_assign>\n\n    def test_print_augmented_assign(self):\n        # nonsense, but shouldn't crash pyflakes\n>       self.flakes('print += 1')\n\npyflakes/test/test_other.py:2057: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \npyflakes/test/harness.py:22: in flakes\n    w = checker.Checker(tree, withDoctest=self.withDoctest, **kw)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\npyflakes/checker.py:787: in __init__\n    self.handleChildren(tree)\npyflakes/checker.py:1238: in handleChildren\n    self.handleNode(node, tree)\npyflakes/checker.py:1283: in handleNode\n    handler(node)\npyflakes/checker.py:2052: in AUGASSIGN\n    self.handleNodeLoad(node.target)\npyflakes/checker.py:1096: in handleNodeLoad\n    parent = self.getParent(node)\n             ^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <pyflakes.checker.Checker object at 0x7f0a86a8fd10>\nnode = <ast.Name object at 0x7f0a86a0c910>\n\n    def getParent(self, node):\n        # Lookup the first parent which is not Tuple, List or Starred\n        while True:\n>           node = node._pyflakes_parent\n                   ^^^^^^^^^^^^^^^^^^^^^\nE           AttributeError: 'Name' object has no attribute '_pyflakes_parent'\n\npyflakes/checker.py:941: AttributeError\n=========================== short test summary info ============================\nFAILED pyflakes/test/test_other.py::TestIncompatiblePrintOperator::test_print_augmented_assign\n1 failed, 126 passed, 4 skipped in 0.31s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f5ce3570980>",
+    "tool_calls": 20,
+    "task_index": 1
+   },
+   "segundos_reloj": 240.0
+  }
+ ]
+}

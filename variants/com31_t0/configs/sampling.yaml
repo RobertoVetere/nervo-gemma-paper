@@ -1,0 +1,9 @@
+# com31_t0: public agent with the 31B WITHOUT reasoning.
+# Reason: single-call probes of 10 Nov: the 31B with reasoning used all 8192 tokens without answering at L1/L2, and at
+# 33 tok/s on Kaggle that is over 2 minutes per call (time-limit cuts). Without reasoning it always answered.
+temperature: 0.2
+top_p: 0.95
+max_output_tokens: 8192
+thinking_config:
+  thinking_budget: 0
+  include_thoughts: false

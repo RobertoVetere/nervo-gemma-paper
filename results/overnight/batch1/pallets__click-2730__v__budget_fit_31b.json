@@ -1,0 +1,40 @@
+{
+ "variant": "variants/budget_fit_31b",
+ "modelo": "gemma-4-31b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 240,
+  "max_tool_calls": 28,
+  "max_time_minutes": 25.0,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pallets__click-2730",
+   "resolved": true,
+   "patch": "diff --git a/reproduce_issue.py b/reproduce_issue.py\nnew file mode 100644\nindex 0000000..f2e7467\n--- /dev/null\n+++ b/reproduce_issue.py\n@@ -0,0 +1,34 @@\n+import click\n+from click import Command as _Command\n+\n+class ConfigAwareCommand(_Command):\n+    def __init__(self, *args, **kwargs):\n+        kwargs[\"context_settings\"] = {\n+            \"default_map\": {'long': False}\n+        }\n+        super().__init__(*args, **kwargs)\n+\n+@click.command(cls=ConfigAwareCommand)\n+@click.option(\n+    \"--long/--short\",\n+    \"-l/-s\",\n+    is_flag=True,\n+    show_default=True,\n+    help=\"show additional information like size and creation date\",\n+)\n+def hello(long):\n+    click.echo(f\"Long: {long}\")\n+\n+if __name__ == \"__main__\":\n+    from click.testing import CliRunner\n+    runner = CliRunner()\n+    # When default_map has {'long': False}, it should be [default: short]\n+    result = runner.invoke(hello, [\"--help\"])\n+    print(result.output)\n+    \n+    if \"[default: short]\" in result.output:\n+        print(\"SUCCESS\")\n+    elif \"[default: long]\" in result.output:\n+        print(\"FAILURE\")\n+    else:\n+        print(\"NOT FOUND\")\ndiff --git a/src/click/core.py b/src/click/core.py\nindex 367beb2..3e5136f 100644\n--- a/src/click/core.py\n+++ b/src/click/core.py\n@@ -2796,11 +2796,10 @@ class Option(Parameter):\n                 default_string = \", \".join(str(d) for d in default_value)\n             elif inspect.isfunction(default_value):\n                 default_string = _(\"(dynamic)\")\n-            elif self.is_bool_flag and self.secondary_opts:\n                 # For boolean flags that have distinct True/False opts,\n                 # use the opt without prefix instead of the value.\n                 default_string = split_opt(\n-                    (self.opts if self.default else self.secondary_opts)[0]\n+                    (self.opts if default_value else self.secondary_opts)[0]\n                 )[1]\n             elif self.is_bool_flag and not self.secondary_opts and not default_value:\n                 default_string = \"\"",
+   "tool_calls": 23,
+   "duration_s": 1503.7,
+   "error": null,
+   "raw": {
+    "task_id": "pallets__click-2730",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 1503.680100165,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 23,
+    "error_message": null,
+    "trace_path": "/tmp/noche_trabajo/budget_fit_31b/results/traces/trace_pallets__click-2730.json",
+    "metadata": "{}",
+    "repo": "pallets/click",
+    "agent_patch": "diff --git a/reproduce_issue.py b/reproduce_issue.py\nnew file mode 100644\nindex 0000000..f2e7467\n--- /dev/null\n+++ b/reproduce_issue.py\n@@ -0,0 +1,34 @@\n+import click\n+from click import Command as _Command\n+\n+class ConfigAwareCommand(_Command):\n+    def __init__(self, *args, **kwargs):\n+        kwargs[\"context_settings\"] = {\n+            \"default_map\": {'long': False}\n+        }\n+        super().__init__(*args, **kwargs)\n+\n+@click.command(cls=ConfigAwareCommand)\n+@click.option(\n+    \"--long/--short\",\n+    \"-l/-s\",\n+    is_flag=True,\n+    show_default=True,\n+    help=\"show additional information like size and creation date\",\n+)\n+def hello(long):\n+    click.echo(f\"Long: {long}\")\n+\n+if __name__ == \"__main__\":\n+    from click.testing import CliRunner\n+    runner = CliRunner()\n+    # When default_map has {'long': False}, it should be [default: short]\n+    result = runner.invoke(hello, [\"--help\"])\n+    print(result.output)\n+    \n+    if \"[default: short]\" in result.output:\n+        print(\"SUCCESS\")\n+    elif \"[default: long]\" in result.output:\n+        print(\"FAILURE\")\n+    else:\n+        print(\"NOT FOUND\")\ndiff --git a/src/click/core.py b/src/click/core.py\nindex 367beb2..3e5136f 100644\n--- a/src/click/core.py\n+++ b/src/click/core.py\n@@ -2796,11 +2796,10 @@ class Option(Parameter):\n                 default_string = \", \".join(str(d) for d in default_value)\n             elif inspect.isfunction(default_value):\n                 default_string = _(\"(dynamic)\")\n-            elif self.is_bool_flag and self.secondary_opts:\n                 # For boolean flags that have distinct True/False opts,\n                 # use the opt without prefix instead of the value.\n                 default_string = split_opt(\n-                    (self.opts if self.default else self.secondary_opts)[0]\n+                    (self.opts if default_value else self.secondary_opts)[0]\n                 )[1]\n             elif self.is_bool_flag and not self.secondary_opts and not default_value:\n                 default_string = \"\"\n",
+    "test_output": "STDOUT:\n.....                                                                    [100%]\n5 passed in 0.02s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f5feaeda3c0>",
+    "tool_calls": 23,
+    "task_index": 1
+   },
+   "segundos_reloj": 1503.7
+  }
+ ]
+}

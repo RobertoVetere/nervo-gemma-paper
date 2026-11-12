@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_rev",
+ "modelo": "gemma-4-31b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "kayak__pypika-267",
+   "resolved": false,
+   "patch": "diff --git a/pypika/queries.py b/pypika/queries.py\nindex 2b385cd..21904a2 100644\n--- a/pypika/queries.py\n+++ b/pypika/queries.py\n@@ -148,6 +148,9 @@ class Table(Selectable):\n     def __hash__(self):\n         return hash(str(self))\n \n+    def select(self, *terms):\n+        return Query.from_(self).select(*terms)\n+\n \n def make_tables(*names, **kwargs):\n     \"\"\"",
+   "tool_calls": 24,
+   "duration_s": 123.7,
+   "error": null,
+   "raw": {
+    "task_id": "kayak__pypika-267",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 123.714126577,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 26,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/di-rev/e4b_rev__kayak__pypika-267/results/traces/trace_kayak__pypika-267.json",
+    "metadata": "{}",
+    "repo": "kayak/pypika",
+    "agent_patch": "diff --git a/pypika/queries.py b/pypika/queries.py\nindex 2b385cd..21904a2 100644\n--- a/pypika/queries.py\n+++ b/pypika/queries.py\n@@ -148,6 +148,9 @@ class Table(Selectable):\n     def __hash__(self):\n         return hash(str(self))\n \n+    def select(self, *terms):\n+        return Query.from_(self).select(*terms)\n+\n \n def make_tables(*names, **kwargs):\n     \"\"\"\n",
+    "test_output": "STDOUT:\n......FF................................................................ [ 33%]\n........................................................................ [ 67%]\n..................................................................F...   [100%]\n=================================== FAILURES ===================================\n__________ InsertIntoTests.test_insert_column_using_alias_with_chain ___________\n\nself = <pypika.tests.test_inserts.InsertIntoTests testMethod=test_insert_column_using_alias_with_chain>\n\n    def test_insert_column_using_alias_with_chain(self):\n>       q = self.table_abc.insert(1, 'a', True).insert(2, 'b', False)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: 'Field' object is not callable\n\npypika/tests/test_inserts.py:118: TypeError\n_____________ InsertIntoTests.test_insert_column_using_table_alias _____________\n\nself = <pypika.tests.test_inserts.InsertIntoTests testMethod=test_insert_column_using_table_alias>\n\n    def test_insert_column_using_table_alias(self):\n>       q = self.table_abc.insert(1)\n            ^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: 'Field' object is not callable\n\npypika/tests/test_inserts.py:114: TypeError\n______________________ UpdateTests.test_update_with_limit ______________________\n\nself = <pypika.tests.test_updates.UpdateTests testMethod=test_update_with_limit>\n\n    def test_update_with_limit(self):\n        q = Query.update(self.table_abc).set(self.table_abc.lname, \"test\").limit(1)\n>       self.assertEqual('UPDATE \"abc\" SET \"lname\"=\\'test\\' LIMIT 1', str(q))\nE       AssertionError: 'UPDATE \"abc\" SET \"lname\"=\\'test\\' LIMIT 1' != 'UPDATE \"abc\" SET \"lname\"=\\'test\\''\nE       - UPDATE \"abc\" SET \"lname\"='test' LIMIT 1\nE       ?                                --------\nE       + UPDATE \"abc\" SET \"lname\"='test'\n\npypika/tests/test_updates.py:45: AssertionError\n=========================== short test summary info ============================\nFAILED pypika/tests/test_inserts.py::InsertIntoTests::test_insert_column_using_alias_with_chain\nFAILED pypika/tests/test_inserts.py::InsertIntoTests::test_insert_column_using_table_alias\nFAILED pypika/tests/test_updates.py::UpdateTests::test_update_with_limit - As...\n3 failed, 211 passed in 0.19s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f7d5830a7b0>",
+    "tool_calls": 24,
+    "task_index": 1
+   },
+   "segundos_reloj": 123.8
+  }
+ ]
+}

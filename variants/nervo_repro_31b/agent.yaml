@@ -1,0 +1,18 @@
+# Exact copy of nervo_repro with the 31B model fixed: it won 6/8 to 5/8 in bat-real-01-31b.
+# Nervo as a single agent with hard validation (reproduction step in the style of Agentless).
+# Change with respect to community_base: the prompt only. Reproduce in /tmp before editing;
+# the same script decides; submit_patch as soon as it passes (no verification loops).
+name: swe_agent
+model: gemma-4-31b-it-qat-w4a16-ct
+instruction: !include prompts/system.md
+tools:
+  - run_command
+  - read_file
+  - edit_file
+  - write_file
+  - get_status
+  - submit_patch
+  - get_code_neighbors
+  - search_similar_code
+  - get_code_subgraph
+generate_content_config: !include configs/sampling.yaml

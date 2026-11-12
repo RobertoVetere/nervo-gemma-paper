@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_cmd",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "timothycrosley__isort-900",
+   "resolved": false,
+   "patch": "diff --git a/isort/settings.py b/isort/settings.py\nindex 525c131..cc670bf 100644\n--- a/isort/settings.py\n+++ b/isort/settings.py\n@@ -176,7 +176,7 @@ def from_path(path: str) -> Dict[str, Any]:\n     computed_settings = default.copy()\n     isort_defaults = ['~/.isort.cfg']\n     if appdirs:\n-        isort_defaults = [appdirs.user_config_dir('isort.cfg')] + isort_defaults\n+        isort_defaults = [os.path.expanduser('~/.isort/isort.cfg')] + isort_defaults\n \n     _update_settings_with_config(path, '.editorconfig', ['~/.editorconfig'], ('*', '*.py', '**.py'), computed_settings)\n     _update_settings_with_config(path, 'pyproject.toml', [], ('tool.isort', ), computed_settings)",
+   "tool_calls": 13,
+   "duration_s": 152.6,
+   "error": null,
+   "raw": {
+    "task_id": "timothycrosley__isort-900",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 152.646671599,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 15,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_ab/e4b_cmd__timothycrosley__isort-900/results/traces/trace_timothycrosley__isort-900.json",
+    "metadata": "{}",
+    "repo": "timothycrosley/isort",
+    "agent_patch": "diff --git a/isort/settings.py b/isort/settings.py\nindex 525c131..cc670bf 100644\n--- a/isort/settings.py\n+++ b/isort/settings.py\n@@ -176,7 +176,7 @@ def from_path(path: str) -> Dict[str, Any]:\n     computed_settings = default.copy()\n     isort_defaults = ['~/.isort.cfg']\n     if appdirs:\n-        isort_defaults = [appdirs.user_config_dir('isort.cfg')] + isort_defaults\n+        isort_defaults = [os.path.expanduser('~/.isort/isort.cfg')] + isort_defaults\n \n     _update_settings_with_config(path, '.editorconfig', ['~/.editorconfig'], ('*', '*.py', '**.py'), computed_settings)\n     _update_settings_with_config(path, 'pyproject.toml', [], ('tool.isort', ), computed_settings)\n",
+    "test_output": "STDOUT:\n........................................................................ [ 47%]\n.......................................................s.s.............. [ 94%]\n.......F                                                                 [100%]\n=================================== FAILURES ===================================\n_______________ test_standard_library_deprecates_user_issue_778 ________________\n\n    def test_standard_library_deprecates_user_issue_778():\n        test_input = ('import os\\n'\n                      '\\n'\n                      'import user\\n')\n>       assert SortImports(file_contents=test_input).output == test_input\nE       AssertionError: assert 'import os\\nimport user\\n' == 'import os\\n\\nimport user\\n'\nE         \nE           import os\nE         - \nE           import user\n\n/tmp/swegemma_sandbox_dfc38a7d-fc0_4okms1y6/workspace/test_isort.py:2932: AssertionError\n=========================== short test summary info ============================\nFAILED test_isort.py::test_standard_library_deprecates_user_issue_778 - Asser...\n1 failed, 149 passed, 2 skipped in 1.00s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f7dd3a8cd70>",
+    "tool_calls": 13,
+    "task_index": 1
+   },
+   "segundos_reloj": 152.7
+  }
+ ]
+}

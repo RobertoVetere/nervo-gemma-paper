@@ -1,0 +1,40 @@
+{
+ "variant": "variants/g31_example",
+ "modelo": "gemma-4-31b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "dynaconf__dynaconf-811",
+   "resolved": false,
+   "patch": "",
+   "tool_calls": 27,
+   "duration_s": 133.6,
+   "error": null,
+   "raw": {
+    "task_id": "dynaconf__dynaconf-811",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 133.59939101500004,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 29,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/l40/g31_example__dynaconf__dynaconf-811/results/traces/trace_dynaconf__dynaconf-811.json",
+    "metadata": "{}",
+    "repo": "dynaconf/dynaconf",
+    "agent_patch": "",
+    "test_output": "STDOUT:\n..........F.......................                                       [100%]\n=================================== FAILURES ===================================\n________________________ test_disable_cast_on_instance _________________________\n\n    def test_disable_cast_on_instance():\n        settings = Dynaconf(auto_cast=False, environments=True)\n>       assert settings.auto_cast_for_dynaconf is False\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n/tmp/swegemma_sandbox_693a2f0b-3c3_0bpfjj6r/workspace/tests/test_utils.py:199: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n/tmp/swegemma_sandbox_693a2f0b-3c3_0bpfjj6r/workspace/dynaconf/base.py:138: in __getattr__\n    value = getattr(self._wrapped, name)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <dynaconf.base.Settings object at 0x7f4b17da6490>\nname = 'AUTO_CAST_FOR_DYNACONF'\n\n    def __getattribute__(self, name):\n        if name not in RESERVED_ATTRS and name not in UPPER_DEFAULT_SETTINGS:\n            with suppress(KeyError):\n                # self._store has Lazy values already evaluated\n                if (\n                    name.islower()\n                    and self._store.get(\"LOWERCASE_READ_FOR_DYNACONF\", empty)\n                    is False\n                ):\n                    # only matches exact casing, first levels always upper\n                    return self._store.to_dict()[name]\n                # perform lookups for upper, and casefold\n                return self._store[name]\n        # in case of RESERVED_ATTRS or KeyError above, keep default behaviour\n>       return super().__getattribute__(name)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AttributeError: 'Settings' object has no attribute 'AUTO_CAST_FOR_DYNACONF'. Did you mean: 'VAULT_PATH_FOR_DYNACONF'?\n\n/tmp/swegemma_sandbox_693a2f0b-3c3_0bpfjj6r/workspace/dynaconf/base.py:300: AttributeError\n=========================== short test summary info ============================\nFAILED tests/test_utils.py::test_disable_cast_on_instance - AttributeError: '...\n1 failed, 33 passed in 0.23s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f2f74d067b0>",
+    "tool_calls": 27,
+    "task_index": 1
+   },
+   "segundos_reloj": 133.7
+  }
+ ]
+}

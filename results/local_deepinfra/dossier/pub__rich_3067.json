@@ -1,0 +1,40 @@
+{
+ "variant": "variants/dossier_e4b",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "rich_3067",
+   "resolved": true,
+   "patch": "diff --git a/rich/highlighter.py b/rich/highlighter.py\nindex c264679..27714b2 100644\n--- a/rich/highlighter.py\n+++ b/rich/highlighter.py\n@@ -98,7 +98,7 @@ class ReprHighlighter(RegexHighlighter):\n             r\"(?P<number>(?<!\\w)\\-?[0-9]+\\.?[0-9]*(e[-+]?\\d+?)?\\b|0x[0-9a-fA-F]*)\",\n             r\"(?P<path>\\B(/[-\\w._+]+)*\\/)(?P<filename>[-\\w._+]*)?\",\n             r\"(?<![\\\\\\w])(?P<str>b?'''.*?(?<!\\\\)'''|b?'.*?(?<!\\\\)'|b?\\\"\\\"\\\".*?(?<!\\\\)\\\"\\\"\\\"|b?\\\".*?(?<!\\\\)\\\")\",\n-            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!`(),.?/;:&=%#]*)\",\n+            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!`(),.?/;:&=%#~]*)\",\n         ),\n     ]",
+   "tool_calls": 19,
+   "duration_s": 86.1,
+   "error": null,
+   "raw": {
+    "task_id": "rich_3067",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 86.10330580799996,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 21,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/dossier_pub/rich_3067/results/traces/trace_rich_3067.json",
+    "metadata": "{}",
+    "repo": "Textualize/rich",
+    "agent_patch": "diff --git a/rich/highlighter.py b/rich/highlighter.py\nindex c264679..27714b2 100644\n--- a/rich/highlighter.py\n+++ b/rich/highlighter.py\n@@ -98,7 +98,7 @@ class ReprHighlighter(RegexHighlighter):\n             r\"(?P<number>(?<!\\w)\\-?[0-9]+\\.?[0-9]*(e[-+]?\\d+?)?\\b|0x[0-9a-fA-F]*)\",\n             r\"(?P<path>\\B(/[-\\w._+]+)*\\/)(?P<filename>[-\\w._+]*)?\",\n             r\"(?<![\\\\\\w])(?P<str>b?'''.*?(?<!\\\\)'''|b?'.*?(?<!\\\\)'|b?\\\"\\\"\\\".*?(?<!\\\\)\\\"\\\"\\\"|b?\\\".*?(?<!\\\\)\\\")\",\n-            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!`(),.?/;:&=%#]*)\",\n+            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!`(),.?/;:&=%#~]*)\",\n         ),\n     ]\n \n",
+    "test_output": "STDOUT:\n........................................................................ [ 87%]\n..........                                                               [100%]\n=============================== warnings summary ===============================\n../../../usr/local/lib/python3.13/site-packages/_pytest/config/__init__.py:1464\n  /usr/local/lib/python3.13/site-packages/_pytest/config/__init__.py:1464: PytestConfigWarning: Unknown config option: timeout\n  \n    self._warn_or_fail_if_strict(f\"Unknown config option: {key}\\n\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n82 passed, 1 warning in 0.12s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f5a3f454980>",
+    "tool_calls": 19,
+    "task_index": 1
+   },
+   "segundos_reloj": 86.2
+  }
+ ]
+}

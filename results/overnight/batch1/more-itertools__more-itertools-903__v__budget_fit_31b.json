@@ -1,0 +1,40 @@
+{
+ "variant": "variants/budget_fit_31b",
+ "modelo": "gemma-4-31b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 240,
+  "max_tool_calls": 28,
+  "max_time_minutes": 25.0,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "more-itertools__more-itertools-903",
+   "resolved": true,
+   "patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex f7db03b..67f76fa 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -222,6 +222,7 @@ def all_equal(iterable, key=None):\n     for first in iterator:\n         for second in iterator:\n             return False\n+        return True\n     return True",
+   "tool_calls": 7,
+   "duration_s": 318.1,
+   "error": null,
+   "raw": {
+    "task_id": "more-itertools__more-itertools-903",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 318.08508273700045,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 9,
+    "error_message": null,
+    "trace_path": "/tmp/noche_trabajo/budget_fit_31b/results/traces/trace_more-itertools__more-itertools-903.json",
+    "metadata": "{}",
+    "repo": "more-itertools/more-itertools",
+    "agent_patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex f7db03b..67f76fa 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -222,6 +222,7 @@ def all_equal(iterable, key=None):\n     for first in iterator:\n         for second in iterator:\n             return False\n+        return True\n     return True\n \n \n",
+    "test_output": "STDOUT:\n............................................... [ 36%]\n.......................................................................s...........                                              [100%]\n129 passed, 1 skipped, 113 subtests passed in 0.42s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7fc5dc2c63c0>",
+    "tool_calls": 7,
+    "task_index": 1
+   },
+   "segundos_reloj": 318.1
+  }
+ ]
+}

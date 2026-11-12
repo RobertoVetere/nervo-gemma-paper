@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Figure 1: 2x2 over three replicas (mean line, one dot per replica).
-Usage: python3 local/fig_replicas.py out.png resultados/local_deepinfra/l40 .../l40_r2 .../l40_r3"""
+Usage: python3 local/fig_replicas.py out.png results/local_deepinfra/l40 .../l40_r2 .../l40_r3"""
 import glob, json, os, sys
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 out, dirs = sys.argv[1], sys.argv[2:]
-CELLS = {('Free-form agent (edit_file)', 0): 'e4b_t0', ('Free-form agent (edit_file)', 1): 'base_comunidad',
+CELLS = {('Free-form agent (edit_file)', 0): 'e4b_t0', ('Free-form agent (edit_file)', 1): 'community_base',
          ('fixer (scripts, one-field calls)', 0): 'e4b_cmd', ('fixer (scripts, one-field calls)', 1): 'e4b_cmd_t'}
 COL = {'Free-form agent (edit_file)': '#2a6fdb', 'fixer (scripts, one-field calls)': '#d9480f'}
 MRK = {'Free-form agent (edit_file)': 'o', 'fixer (scripts, one-field calls)': 's'}

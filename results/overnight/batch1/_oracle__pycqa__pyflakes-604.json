@@ -1,0 +1,36 @@
+{
+ "variant": "variants/community_base",
+ "modelo": "gemma-4-31b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pycqa__pyflakes-604",
+   "resolved": true,
+   "raw": {
+    "task_id": "pycqa__pyflakes-604",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 2.3995279809996646,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 0,
+    "error_message": null,
+    "trace_path": null,
+    "metadata": "{}",
+    "repo": "pycqa/pyflakes",
+    "agent_patch": "diff --git a/pyflakes/checker.py b/pyflakes/checker.py\nindex 0d65506..38f8f73 100644\n--- a/pyflakes/checker.py\n+++ b/pyflakes/checker.py\n@@ -992,7 +992,10 @@ class Checker(object):\n \n             if all_binding:\n                 all_names = set(all_binding.names)\n-                undefined = all_names.difference(scope)\n+                undefined = [\n+                    name for name in all_binding.names\n+                    if name not in scope\n+                ]\n             else:\n                 all_names = undefined = []\n \n@@ -1680,6 +1683,19 @@ class Checker(object):\n             with self._enter_annotation(AnnotationState.STRING):\n                 self.handleNode(node.args[0], node)\n \n+        elif _is_typing(node.func, 'TypeVar', self.scopeStack):\n+            # TypeVar(\"T\", \"int\", \"str\")\n+            for arg in node.args[1:]:\n+                if isinstance(arg, ast.Str):\n+                    with self._enter_annotation():\n+                        self.handleNode(arg, node)\n+\n+            # TypeVar(\"T\", bound=\"str\")\n+            for keyword in node.keywords:\n+                if keyword.arg == 'bound' and isinstance(keyword.value, ast.Str):\n+                    with self._enter_annotation():\n+                        self.handleNode(keyword.value, node)\n+\n         self.handleChildren(node)\n \n     def _handle_percent_format(self, node):\n",
+    "test_output": "STDOUT:\n..............................................                           [100%]\n46 passed in 0.17s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": null,
+    "tool_calls": 0,
+    "task_index": null
+   },
+   "segundos_reloj": 2.4
+  }
+ ]
+}

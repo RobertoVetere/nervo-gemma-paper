@@ -1,0 +1,40 @@
+{
+ "variant": "variants/g31_example",
+ "modelo": "gemma-4-31b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pallets__click-2730",
+   "resolved": true,
+   "patch": "diff --git a/src/click/core.py b/src/click/core.py\nindex 367beb2..ab7d452 100644\n--- a/src/click/core.py\n+++ b/src/click/core.py\n@@ -2800,7 +2800,7 @@ class Option(Parameter):\n                 # For boolean flags that have distinct True/False opts,\n                 # use the opt without prefix instead of the value.\n                 default_string = split_opt(\n-                    (self.opts if self.default else self.secondary_opts)[0]\n+                    (self.opts if default_value else self.secondary_opts)[0]\n                 )[1]\n             elif self.is_bool_flag and not self.secondary_opts and not default_value:\n                 default_string = \"\"",
+   "tool_calls": 6,
+   "duration_s": 48.1,
+   "error": null,
+   "raw": {
+    "task_id": "pallets__click-2730",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 48.06028842799992,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 8,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/di-31b-ej/g31_example__pallets__click-2730/results/traces/trace_pallets__click-2730.json",
+    "metadata": "{}",
+    "repo": "pallets/click",
+    "agent_patch": "diff --git a/src/click/core.py b/src/click/core.py\nindex 367beb2..ab7d452 100644\n--- a/src/click/core.py\n+++ b/src/click/core.py\n@@ -2800,7 +2800,7 @@ class Option(Parameter):\n                 # For boolean flags that have distinct True/False opts,\n                 # use the opt without prefix instead of the value.\n                 default_string = split_opt(\n-                    (self.opts if self.default else self.secondary_opts)[0]\n+                    (self.opts if default_value else self.secondary_opts)[0]\n                 )[1]\n             elif self.is_bool_flag and not self.secondary_opts and not default_value:\n                 default_string = \"\"\n",
+    "test_output": "STDOUT:\n.....                                                                    [100%]\n5 passed in 0.02s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f6c65e0a7b0>",
+    "tool_calls": 6,
+    "task_index": 1
+   },
+   "segundos_reloj": 48.1
+  }
+ ]
+}

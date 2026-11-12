@@ -38,16 +38,16 @@ def main() -> int:
             continue
         total += p.stat().st_size
         if p.suffix.lower() not in PERMITIDAS:
-            errores.append(f"extensión no permitida: {p.relative_to(SUB)}")
+            errores.append(f"extension not allowed: {p.relative_to(SUB)}")
         if p.suffix in {".yaml", ".yml"}:
             texto = p.read_text(encoding="utf-8")
-            # Las rutas son relativas al YAML que las referencia.
+            # Paths are relative to the YAML file that references them.
             for ref in re.findall(r"!include\s+(\S+)", texto) + re.findall(r"config_path:\s*(\S+)", texto):
                 destino = (p.parent / ref).resolve()
                 if not (destino.is_file() and SUB.resolve() in destino.parents):
-                    errores.append(f"{p.relative_to(SUB)}: no se encuentra {ref}")
+                    errores.append(f"{p.relative_to(SUB)}: {ref} not found")
             modelos |= set(re.findall(r"^\s*model:\s*(\S+)", texto, flags=re.M))
-    # Skills: el harness exige nombre kebab-case (a-z, 0-9, guiones) en el frontmatter (E21).
+    # Skills: the harness requires a kebab-case name (a-z, 0-9, hyphens) in the frontmatter.
     nombres_agente = set()
     for y in SUB.rglob("*.y*ml"):
         nombres_agente |= set(re.findall(r"^name:\s*(\S+)", y.read_text(encoding="utf-8"), flags=re.M))
@@ -55,16 +55,16 @@ def main() -> int:
         m = re.search(r"^name:\s*(\S+)", sk.read_text(encoding="utf-8"), flags=re.M)
         nombre = m.group(1) if m else ""
         if not re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", nombre):
-            errores.append(f"{sk.relative_to(SUB)}: nombre de skill '{nombre}' no es kebab-case (a-z, 0-9, guiones)")
+            errores.append(f"{sk.relative_to(SUB)}: skill name '{nombre}' is not kebab-case (a-z, 0-9, hyphens)")
         if nombre and sk.parent.name != nombre:
-            errores.append(f"{sk.relative_to(SUB)}: la carpeta '{sk.parent.name}' no coincide con el nombre '{nombre}'")
+            errores.append(f"{sk.relative_to(SUB)}: folder '{sk.parent.name}' does not match the name '{nombre}'")
         if nombre and nombres_agente and nombre not in nombres_agente:
-            print(f"AVISO {sk.relative_to(SUB)}: la skill '{nombre}' no se llama como ningún agente {sorted(nombres_agente)}; "
-                  "ADK le dice al modelo el nombre del agente y puede confundirlos (E21)")
+            print(f"WARNING {sk.relative_to(SUB)}: skill '{nombre}' is not named like any agent {sorted(nombres_agente)}; "
+                  "ADK tells the model the agent's name and the model may call the agent name as a skill")
     if total > MAX_BYTES:
-        errores.append(f"tamaño {total} supera 3 GiB")
+        errores.append(f"size {total} exceeds 3 GiB")
     if len(modelos) != 1:
-        errores.append(f"todos los agentes deben usar el mismo modelo, hay: {sorted(modelos)}")
+        errores.append(f"every agent must use the same model, found: {sorted(modelos)}")
     elif not modelos <= MODELOS:
         errores.append(f"modelo no permitido: {modelos}")
     if errores:
@@ -75,7 +75,7 @@ def main() -> int:
         for p in sorted(SUB.rglob("*")):
             if p.is_file():
                 z.write(p, p.relative_to(SUB).as_posix())
-    print(f"OK {SALIDA.relative_to(RAIZ)} ({total} bytes, modelo {modelos.pop()})")
+    print(f"OK {SALIDA.relative_to(RAIZ)} ({total} bytes, model {modelos.pop()})")
     return 0
 
 

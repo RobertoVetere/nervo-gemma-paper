@@ -1,0 +1,40 @@
+{
+ "variant": "variants/community_base",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pallets__jinja-1852",
+   "resolved": true,
+   "patch": "diff --git a/repro.py b/repro.py\nnew file mode 100644\nindex 0000000..1f604d9\n--- /dev/null\n+++ b/repro.py\n@@ -0,0 +1,21 @@\n+\n+from jinja2 import Environment, FileSystemLoader\n+import os\n+\n+os.makedirs(\"templates\", exist_ok=True)\n+with open(\"templates/macro_file.jinja\", \"w\") as f:\n+    f.write(\"{% macro my_macro() %}Hello World{% endmacro %}\")\n+\n+# Filename with curly braces\n+filename = \"{% if True %}a{%endif%}.jinja\"\n+with open(f\"templates/{filename}\", \"w\") as f:\n+    f.write(\"{% from \\\"macro_file.jinja\\\" import non_existent_macro %}\\n{{ non_existent_macro() }}\")\n+\n+env = Environment(loader=FileSystemLoader(\"templates\"))\n+try:\n+    template = env.get_template(filename)\n+    print(template.render())\n+except SyntaxError as e:\n+    print(f\"Caught expected SyntaxError: {e}\")\n+except Exception as e:\n+    print(f\"Caught unexpected exception: {type(e).__name__}: {e}\")\ndiff --git a/templates/macro_file.jinja b/templates/macro_file.jinja\nnew file mode 100644\nindex 0000000..bfefc86\n--- /dev/null\n+++ b/templates/macro_file.jinja\n@@ -0,0 +1 @@\n+{% macro my_macro() %}Hello World{% endmacro %}\n\\ No newline at end of file\ndiff --git a/templates/{% if True %}a{%endif%}.jinja b/templates/{% if True %}a{%endif%}.jinja\nnew file mode 100644\nindex 0000000..513d300\n--- /dev/null\n+++ b/templates/{% if True %}a{%endif%}.jinja\t\n@@ -0,0 +1,2 @@\n+{% from \"macro_file.jinja\" import non_existent_macro %}\n+{{ non_existent_macro() }}\n\\ No newline at end of file",
+   "tool_calls": 28,
+   "duration_s": 294.3,
+   "error": null,
+   "raw": {
+    "task_id": "pallets__jinja-1852",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 294.250812771,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 80,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/r3/community_base__pallets__jinja-1852/results/traces/trace_pallets__jinja-1852.json",
+    "metadata": "{}",
+    "repo": "pallets/jinja",
+    "agent_patch": "diff --git a/repro.py b/repro.py\nnew file mode 100644\nindex 0000000..1f604d9\n--- /dev/null\n+++ b/repro.py\n@@ -0,0 +1,21 @@\n+\n+from jinja2 import Environment, FileSystemLoader\n+import os\n+\n+os.makedirs(\"templates\", exist_ok=True)\n+with open(\"templates/macro_file.jinja\", \"w\") as f:\n+    f.write(\"{% macro my_macro() %}Hello World{% endmacro %}\")\n+\n+# Filename with curly braces\n+filename = \"{% if True %}a{%endif%}.jinja\"\n+with open(f\"templates/{filename}\", \"w\") as f:\n+    f.write(\"{% from \\\"macro_file.jinja\\\" import non_existent_macro %}\\n{{ non_existent_macro() }}\")\n+\n+env = Environment(loader=FileSystemLoader(\"templates\"))\n+try:\n+    template = env.get_template(filename)\n+    print(template.render())\n+except SyntaxError as e:\n+    print(f\"Caught expected SyntaxError: {e}\")\n+except Exception as e:\n+    print(f\"Caught unexpected exception: {type(e).__name__}: {e}\")\ndiff --git a/templates/macro_file.jinja b/templates/macro_file.jinja\nnew file mode 100644\nindex 0000000..bfefc86\n--- /dev/null\n+++ b/templates/macro_file.jinja\n@@ -0,0 +1 @@\n+{% macro my_macro() %}Hello World{% endmacro %}\n\\ No newline at end of file\ndiff --git a/templates/{% if True %}a{%endif%}.jinja b/templates/{% if True %}a{%endif%}.jinja\nnew file mode 100644\nindex 0000000..513d300\n--- /dev/null\n+++ b/templates/{% if True %}a{%endif%}.jinja\t\n@@ -0,0 +1,2 @@\n+{% from \"macro_file.jinja\" import non_existent_macro %}\n+{{ non_existent_macro() }}\n\\ No newline at end of file\n",
+    "test_output": "STDOUT:\n......                                                                   [100%]\n6 passed in 0.04s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7feb2678c980>",
+    "tool_calls": 28,
+    "task_index": 1
+   },
+   "segundos_reloj": 294.3
+  }
+ ]
+}

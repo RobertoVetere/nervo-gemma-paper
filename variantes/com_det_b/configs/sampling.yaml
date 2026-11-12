@@ -1,9 +1,0 @@
-# com_det_a / com_det_b: agente público (base_comunidad) idéntico, salvo temperatura 0 y semilla fija.
-# Dos copias iguales para medir en Kaggle cuánto se repite el resultado (determinismo) y si baja el acierto.
-temperature: 0.0
-top_p: 1.0
-seed: 1234
-max_output_tokens: 8192
-thinking_config:
-  thinking_budget: 4096
-  include_thoughts: true

@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_t0",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "more-itertools__more-itertools-828",
+   "resolved": false,
+   "patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex abbdd5f..8cf43bb 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -56,6 +56,7 @@ __all__ = [\n     'polynomial_from_roots',\n     'polynomial_derivative',\n     'powerset',\n+    'powerset_of_sets',\n     'prepend',\n     'quantify',\n     'reshape',\n@@ -1011,3 +1012,12 @@ def totient(n):\n         n = n // p * (p - 1)\n \n     return n\n+\n+\n+\n+def powerset_of_sets(iterable):\n+    \"\"\"Return sets of a powerset calling hash() only once per element.\"\n+    # powerset_of_sets([1,2,3]) --> set() {1} {2} {3} {1,2} {1,3} {2,3} {1,2,3}\n+    sets = list(map(set, zip(iterable)))\n+    for r in range(len(sets) + 1):\n+        yield from starmap(set().union, combinations(sets, r))",
+   "tool_calls": 20,
+   "duration_s": 305.3,
+   "error": null,
+   "raw": {
+    "task_id": "more-itertools__more-itertools-828",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 305.29044951900005,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 22,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q1/e4b_t0__more-itertools__more-itertools-828/results/traces/trace_more-itertools__more-itertools-828.json",
+    "metadata": "{}",
+    "repo": "more-itertools/more-itertools",
+    "agent_patch": "diff --git a/more_itertools/recipes.py b/more_itertools/recipes.py\nindex abbdd5f..8cf43bb 100644\n--- a/more_itertools/recipes.py\n+++ b/more_itertools/recipes.py\n@@ -56,6 +56,7 @@ __all__ = [\n     'polynomial_from_roots',\n     'polynomial_derivative',\n     'powerset',\n+    'powerset_of_sets',\n     'prepend',\n     'quantify',\n     'reshape',\n@@ -1011,3 +1012,12 @@ def totient(n):\n         n = n // p * (p - 1)\n \n     return n\n+\n+\n+\n+def powerset_of_sets(iterable):\n+    \"\"\"Return sets of a powerset calling hash() only once per element.\"\n+    # powerset_of_sets([1,2,3]) --> set() {1} {2} {3} {1,2} {1,3} {2,3} {1,2,3}\n+    sets = list(map(set, zip(iterable)))\n+    for r in range(len(sets) + 1):\n+        yield from starmap(set().union, combinations(sets, r))\n",
+    "test_output": "STDOUT:\n\n==================================== ERRORS ====================================\n_____________________ ERROR collecting tests/test_more.py ______________________\n/usr/local/lib/python3.13/site-packages/_pytest/python.py:508: in importtestmodule\n    mod = import_path(\n/usr/local/lib/python3.13/site-packages/_pytest/pathlib.py:596: in import_path\n    importlib.import_module(module_name)\n/usr/local/lib/python3.13/importlib/__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1404: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1369: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1340: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:935: in _load_unlocked\n    ???\n/usr/local/lib/python3.13/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntests/test_more.py:34: in <module>\n    import more_itertools as mi\nmore_itertools/__init__.py:3: in <module>\n    from .more import *  # noqa\n    ^^^^^^^^^^^^^^^^^^^\nmore_itertools/more.py:29: in <module>\n    from .recipes import (\nE     File \"/tmp/swegemma_sandbox_5ff01852-d47_n4xl460h/workspace/more_itertools/recipes.py\", line 1019\nE       \"\"\"Return sets of a powerset calling hash() only once per element.\"\nE       ^\nE   SyntaxError: unterminated triple-quoted string literal (detected at line 1023)\n____________________ ERROR collecting tests/test_recipes.py ____________________\n/usr/local/lib/python3.13/site-packages/_pytest/python.py:508: in importtestmodule\n    mod = import_path(\n/usr/local/lib/python3.13/site-packages/_pytest/pathlib.py:596: in import_path\n    importlib.import_module(module_name)\n/usr/local/lib/python3.13/importlib/__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1404: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1369: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1340: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:935: in _load_unlocked\n    ???\n/usr/local/lib/python3.13/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntests/test_recipes.py:11: in <module>\n    import more_itertools as mi\nmore_itertools/__init__.py:3: in <module>\n    from .more import *  # noqa\n    ^^^^^^^^^^^^^^^^^^^\nmore_itertools/more.py:29: in <module>\n    from .recipes import (\nE     File \"/tmp/swegemma_sandbox_5ff01852-d47_n4xl460h/workspace/more_itertools/recipes.py\", line 1019\nE       \"\"\"Return sets of a powerset calling hash() only once per element.\"\nE       ^\nE   SyntaxError: unterminated triple-quoted string literal (detected at line 1023)\n=========================== short test summary info ============================\nERROR tests/test_more.py\nERROR tests/test_recipes.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 0.51s\n\nSTDERR:\n",
+    "test_exit_code": 2,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7fc7380ac980>",
+    "tool_calls": 20,
+    "task_index": 1
+   },
+   "segundos_reloj": 305.3
+  }
+ ]
+}

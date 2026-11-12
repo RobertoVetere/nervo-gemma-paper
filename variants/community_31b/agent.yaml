@@ -1,0 +1,19 @@
+# A/B experiment (8 Nov): the public community agent UNCHANGED, only with the 31B model.
+# Compared with submission 1 (nervo_repro 31B, 0.18): is the problem the prompt or the 31B and its speed?
+# Baseline for comparison: the public community single agent
+# ("gemma-4-harness-fixed-single-agent", Kaggle sample notebook), same tools as published,
+# same sampling and budgets as nervo v4. Only the prompt differs.
+name: swe_agent
+model: gemma-4-31b-it-qat-w4a16-ct
+instruction: !include prompts/system.md
+tools:
+  - run_command
+  - read_file
+  - edit_file
+  - write_file
+  - get_status
+  - submit_patch
+  - get_code_neighbors
+  - search_similar_code
+  - get_code_subgraph
+generate_content_config: !include configs/sampling.yaml

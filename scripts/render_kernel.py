@@ -21,10 +21,10 @@ def main() -> None:
     p.add_argument("--diag", action="store_true")
     p.add_argument("--variant", default="submission")
     p.add_argument("--model", default="")
-    p.add_argument("--lab", default="", help="JSON de sondas one-shot (modo laboratorio)")
-    p.add_argument("--bateria", default="", help="JSON de la batería de enfoques (lab/motor.py)")
-    p.add_argument("--slot", default="", help="sufijo del kernel (a-z0-9) para no pisar uno en marcha")
-    p.add_argument("--banco", action="store_true", help="usar el banco de repos nuevos (dataset <usuario>/nervo-banco-nuevo)")
+    p.add_argument("--lab", default="", help="JSON with single-call probes (lab mode)")
+    p.add_argument("--battery", "--bateria", dest="bateria", default="", help="JSON battery of approaches (lab/motor.py, not included)")
+    p.add_argument("--slot", default="", help="kernel suffix (a-z0-9) so as not to overwrite a running kernel")
+    p.add_argument("--bench", "--banco", dest="banco", action="store_true", help="use the validation bench (Kaggle dataset <user>/nervo-banco-nuevo)")
     a = p.parse_args()
 
     user = os.environ["KAGGLE_USERNAME"].strip()
@@ -41,7 +41,7 @@ def main() -> None:
         bundle[Path(v).name] = files
     modelos = {line.split(":", 1)[1].strip() for files in bundle.values() for f, t in files.items()
                if f.endswith(".yaml") for line in t.splitlines() if line.strip().startswith("model:")}
-    assert len(modelos) == 1, f"todas las variantes deben usar el mismo modelo: {modelos}"
+    assert len(modelos) == 1, f"every variant must use the same model: {modelos}"
     model = modelos.pop()
     payload = base64.b64encode(json.dumps(bundle).encode()).decode()
 
@@ -59,10 +59,10 @@ def main() -> None:
     out = RAIZ / a.out
     out.mkdir(exist_ok=True)
     (out / "nervo_eval.py").write_text(code, encoding="utf-8")
-    # un kernel por modelo: así se pueden ejecutar a la vez sin pisarse
+    # one kernel per model, so they can run at the same time without overwriting each other
     slug = "nervo-eval" if not a.model else "nervo-eval-" + a.model.split("-")[2]
     if a.slot:
-        slug += "-" + a.slot  # otro kernel para no pisar uno que sigue corriendo (E14)
+        slug += "-" + a.slot  # another kernel, so as not to overwrite one still running
     meta = {
         "id": f"{user}/{slug}",
         "title": slug,
@@ -81,14 +81,14 @@ def main() -> None:
         "model_sources": [f"google/gemma-4/Other/{model}/2"],
     }
     if a.oracle and a.n_tasks == 0 and not a.tasks:
-        # solo oráculo: no hace falta GPU, así no gasta cuota
+        # oracle only: no GPU needed, so no quota is spent
         meta["enable_gpu"] = False
         meta.pop("machine_shape", None)
         meta["model_sources"] = []
         meta["id"] = f"{user}/nervo-oraculo"
         meta["title"] = "nervo-oraculo"
     (out / "kernel-metadata.json").write_text(json.dumps(meta, indent=2) + "\n")
-    print(f"kernel {meta['id']} | variantes {list(bundle)} | modelo {model} | {a.n_tasks} tareas")
+    print(f"kernel {meta['id']} | variants {list(bundle)} | model {model} | {a.n_tasks} tasks")
 
 
 if __name__ == "__main__":

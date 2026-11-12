@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_t0",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pallets__jinja-1614",
+   "resolved": true,
+   "patch": "diff --git a/src/jinja2/environment.py b/src/jinja2/environment.py\nindex 9dd455a..a4be14b 100644\n--- a/src/jinja2/environment.py\n+++ b/src/jinja2/environment.py\n@@ -534,7 +534,7 @@ class Environment:\n \n         return func(*args, **kwargs)\n \n-    def call_filter(\n+    async def call_filter(\n         self,\n         name: str,\n         value: t.Any,\n@@ -542,7 +542,7 @@ class Environment:\n         kwargs: t.Optional[t.Mapping[str, t.Any]] = None,\n         context: t.Optional[Context] = None,\n         eval_ctx: t.Optional[EvalContext] = None,\n-    ) -> t.Any:\n+    ) -> t.Awaitable[t.Any]:\n         \"\"\"Invoke a filter on a value the same way the compiler does.\n \n         This might return a coroutine if the filter is running from an",
+   "tool_calls": 9,
+   "duration_s": 349.4,
+   "error": null,
+   "raw": {
+    "task_id": "pallets__jinja-1614",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 349.434246277,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 11,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/q1/e4b_t0__pallets__jinja-1614/results/traces/trace_pallets__jinja-1614.json",
+    "metadata": "{}",
+    "repo": "pallets/jinja",
+    "agent_patch": "diff --git a/src/jinja2/environment.py b/src/jinja2/environment.py\nindex 9dd455a..a4be14b 100644\n--- a/src/jinja2/environment.py\n+++ b/src/jinja2/environment.py\n@@ -534,7 +534,7 @@ class Environment:\n \n         return func(*args, **kwargs)\n \n-    def call_filter(\n+    async def call_filter(\n         self,\n         name: str,\n         value: t.Any,\n@@ -542,7 +542,7 @@ class Environment:\n         kwargs: t.Optional[t.Mapping[str, t.Any]] = None,\n         context: t.Optional[Context] = None,\n         eval_ctx: t.Optional[EvalContext] = None,\n-    ) -> t.Any:\n+    ) -> t.Awaitable[t.Any]:\n         \"\"\"Invoke a filter on a value the same way the compiler does.\n \n         This might return a coroutine if the filter is running from an\n",
+    "test_output": "STDOUT:\n..........................................................               [100%]\n58 passed in 0.24s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7fa3a0b28980>",
+    "tool_calls": 9,
+    "task_index": 1
+   },
+   "segundos_reloj": 349.5
+  }
+ ]
+}

@@ -1,0 +1,11 @@
+# com_t16: public agent with E4B and a larger reasoning budget (12288 instead of 4096).
+# Reason: single-call probes of 10 Nov (lab/oneshot/chain3.jsonl): "E4B" with uncapped reasoning solved 9/22 against 5/22
+# without reasoning, and 9 of its 17 successes used more than 4096 tokens. (Those probes were later found to be served
+# by a 31B through the API; see the paper, Section 4.6.) max_output_tokens 14336 so that input (up to ~16k) + output
+# fit in vLLM's 32768.
+temperature: 0.2
+top_p: 0.95
+max_output_tokens: 14336
+thinking_config:
+  thinking_budget: 12288
+  include_thoughts: true

@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_cmd",
+ "modelo": "gemma-4-31b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "python-babel__babel-1196",
+   "resolved": false,
+   "patch": "diff --git a/babel/messages/extract.py b/babel/messages/extract.py\nindex dcf62f2..9f1fe63 100644\n--- a/babel/messages/extract.py\n+++ b/babel/messages/extract.py\n@@ -755,7 +755,12 @@ def extract_javascript(\n                 # message\n                 if translator_comments and \\\n                    translator_comments[-1][0] < message_lineno - 1:\n-                    translator_comments = []\n+                    # If the message is multi-line, the translator_comments\n+                    # might have been updated with the lines of the string itself.\n+                    # We should only clear comments if the last comment is not\n+                    # part of the message itself.\n+                    if not (translator_comments[-1][0] >= message_lineno):\n+                        translator_comments = []\n \n                 if messages is not None:\n                     yield (message_lineno, funcname, messages,",
+   "tool_calls": 25,
+   "duration_s": 103.7,
+   "error": null,
+   "raw": {
+    "task_id": "python-babel__babel-1196",
+    "resolved": false,
+    "status": "SUCCESS",
+    "duration_seconds": 103.703285766,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 27,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/di-v121/e4b_cmd__python-babel__babel-1196/results/traces/trace_python-babel__babel-1196.json",
+    "metadata": "{}",
+    "repo": "python-babel/babel",
+    "agent_patch": "diff --git a/babel/messages/extract.py b/babel/messages/extract.py\nindex dcf62f2..9f1fe63 100644\n--- a/babel/messages/extract.py\n+++ b/babel/messages/extract.py\n@@ -755,7 +755,12 @@ def extract_javascript(\n                 # message\n                 if translator_comments and \\\n                    translator_comments[-1][0] < message_lineno - 1:\n-                    translator_comments = []\n+                    # If the message is multi-line, the translator_comments\n+                    # might have been updated with the lines of the string itself.\n+                    # We should only clear comments if the last comment is not\n+                    # part of the message itself.\n+                    if not (translator_comments[-1][0] >= message_lineno):\n+                        translator_comments = []\n \n                 if messages is not None:\n                     yield (message_lineno, funcname, messages,\n",
+    "test_output": "STDOUT:\n........................................FF                               [100%]\n=================================== FAILURES ===================================\n_______________________________ test_issue_1195 ________________________________\n\n    def test_issue_1195():\n        buf = BytesIO(b\"\"\"\n    foof = {\n        'test_string': StringWithMeta(\n            # NOTE: Text describing a test string\n            string=_(\n                'Text string that is on a new line'\n            ),\n        ),\n    }\n    \"\"\")\n        messages = list(extract.extract('python', buf, {'_': None}, [\"NOTE\"], {}))\n        message = messages[0]\n        assert message[0] in (5, 6)  # Depends on whether #1126 is in\n        assert message[1] == 'Text string that is on a new line'\n>       assert message[2] == ['NOTE: Text describing a test string']\nE       AssertionError: assert [] == ['NOTE: Text ... test string']\nE         \nE         Right contains one more item: 'NOTE: Text describing a test string'\nE         Use -v to get more diff\n\ntests/messages/test_extract.py:581: AssertionError\n______________________________ test_issue_1195_2 _______________________________\n\n    def test_issue_1195_2():\n        buf = BytesIO(b\"\"\"\n    # NOTE: This should still be considered, even if\n    #       the text is far away\n    foof = _(\n    \n    \n    \n    \n    \n    \n    \n    \n    \n                'Hey! Down here!')\n    \"\"\")\n        messages = list(extract.extract('python', buf, {'_': None}, [\"NOTE\"], {}))\n        message = messages[0]\n        assert message[1] == 'Hey! Down here!'\n>       assert message[2] == [\n            'NOTE: This should still be considered, even if',\n            'the text is far away',\n        ]\nE       AssertionError: assert [] == ['NOTE: This ... is far away']\nE         \nE         Right contains 2 more items, first extra item: 'NOTE: This should still be considered, even if'\nE         Use -v to get more diff\n\ntests/messages/test_extract.py:603: AssertionError\n=========================== short test summary info ============================\nFAILED tests/messages/test_extract.py::test_issue_1195 - AssertionError: asse...\nFAILED tests/messages/test_extract.py::test_issue_1195_2 - AssertionError: as...\n2 failed, 40 passed in 0.13s\n\nSTDERR:\n",
+    "test_exit_code": 1,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f028880e7b0>",
+    "tool_calls": 25,
+    "task_index": 1
+   },
+   "segundos_reloj": 103.8
+  }
+ ]
+}

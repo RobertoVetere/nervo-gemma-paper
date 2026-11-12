@@ -1,0 +1,9 @@
+# com_det_a / com_det_b: public agent (community_base), identical except temperature 0 and a fixed seed.
+# Two identical copies to measure how often the result repeats (determinism) and whether accuracy drops.
+temperature: 0.0
+top_p: 1.0
+seed: 1234
+max_output_tokens: 8192
+thinking_config:
+  thinking_budget: 4096
+  include_thoughts: true

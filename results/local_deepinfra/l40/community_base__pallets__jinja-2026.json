@@ -1,0 +1,40 @@
+{
+ "variant": "variants/community_base",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "pallets__jinja-2026",
+   "resolved": true,
+   "patch": "",
+   "tool_calls": 28,
+   "duration_s": 110.0,
+   "error": null,
+   "raw": {
+    "task_id": "pallets__jinja-2026",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 110.02602311800001,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 34,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/l40/community_base__pallets__jinja-2026/results/traces/trace_pallets__jinja-2026.json",
+    "metadata": "{}",
+    "repo": "pallets/jinja",
+    "agent_patch": "",
+    "test_output": "STDOUT:\n....................................................                     [100%]\n52 passed in 0.13s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7f2bf44267b0>",
+    "tool_calls": 28,
+    "task_index": 1
+   },
+   "segundos_reloj": 110.1
+  }
+ ]
+}

@@ -1,0 +1,241 @@
+{
+ "label": "bat-real-01-31b",
+ "stage": "done",
+ "tasks": [
+  {
+   "variant": "community_base",
+   "id": "rich_3454",
+   "repo": "Textualize/rich",
+   "resolved": true,
+   "patch_chars": 654,
+   "tool_calls": 20,
+   "duration_s": 214.7,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/rich/highlighter.py b/rich/highlighter.py\nindex 27714b25..e4c462e2 100644\n--- a/rich/highlighter.py\n+++ b/rich/highlighter.py\n@@ -98,7 +98,7 @@ class ReprHighlighter(RegexHighlighter):\n             r\"(?P<number>(?<!\\w)\\-?[0-9]+\\.?[0-9]*(e[-+]?\\d+?)?\\b|0x[0-9a-fA-F]*)\",\n             r\"(?P<path>\\B(/[-\\w._+]+)*\\/)(?P<filename>[-\\w._+]*)?\",\n             r\"(?<![\\\\\\w])(?P<str>b?'''.*?(?<!\\\\)'''|b?'.*?(?<!\\\\)'|b?\\\"\\\"\\\".*?(?<!\\\\)\\\"\\\"\\\"|b?\\\".*?(?<!\\\\)\\\")\",\n-            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!`(),.?/;:&=%#~]*)\",\n+            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!`(),.?/;:&=%#~@]*)\",\n         ),\n     ]"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "rich_3454",
+   "repo": "Textualize/rich",
+   "resolved": true,
+   "patch_chars": 654,
+   "tool_calls": 20,
+   "duration_s": 281.8,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/rich/highlighter.py b/rich/highlighter.py\nindex 27714b25..e4c462e2 100644\n--- a/rich/highlighter.py\n+++ b/rich/highlighter.py\n@@ -98,7 +98,7 @@ class ReprHighlighter(RegexHighlighter):\n             r\"(?P<number>(?<!\\w)\\-?[0-9]+\\.?[0-9]*(e[-+]?\\d+?)?\\b|0x[0-9a-fA-F]*)\",\n             r\"(?P<path>\\B(/[-\\w._+]+)*\\/)(?P<filename>[-\\w._+]*)?\",\n             r\"(?<![\\\\\\w])(?P<str>b?'''.*?(?<!\\\\)'''|b?'.*?(?<!\\\\)'|b?\\\"\\\"\\\".*?(?<!\\\\)\\\"\\\"\\\"|b?\\\".*?(?<!\\\\)\\\")\",\n-            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!`(),.?/;:&=%#~]*)\",\n+            r\"(?P<url>(file|https|http|ws|wss)://[-0-9a-zA-Z$_+!`(),.?/;:&=%#~@]*)\",\n         ),\n     ]"
+  },
+  {
+   "variant": "community_base",
+   "id": "requests_7315",
+   "repo": "psf/requests",
+   "resolved": true,
+   "patch_chars": 521,
+   "tool_calls": 23,
+   "duration_s": 132.2,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/src/requests/adapters.py b/src/requests/adapters.py\nindex 98f74465..27919468 100644\n--- a/src/requests/adapters.py\n+++ b/src/requests/adapters.py\n@@ -545,8 +545,6 @@ class HTTPAdapter(BaseAdapter):\n             using_socks_proxy = proxy_scheme.startswith(\"socks\")\n \n         url = request.path_url\n-        if url.startswith(\"//\"):  # Don't confuse urllib3\n-            url = f\"/{url.lstrip('/')}\"\n \n         if is_proxied_http_request and not using_socks_proxy:\n             url = urldefragauth(request.url)"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "requests_7315",
+   "repo": "psf/requests",
+   "resolved": true,
+   "patch_chars": 521,
+   "tool_calls": 13,
+   "duration_s": 75.6,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/src/requests/adapters.py b/src/requests/adapters.py\nindex 98f74465..27919468 100644\n--- a/src/requests/adapters.py\n+++ b/src/requests/adapters.py\n@@ -545,8 +545,6 @@ class HTTPAdapter(BaseAdapter):\n             using_socks_proxy = proxy_scheme.startswith(\"socks\")\n \n         url = request.path_url\n-        if url.startswith(\"//\"):  # Don't confuse urllib3\n-            url = f\"/{url.lstrip('/')}\"\n \n         if is_proxied_http_request and not using_socks_proxy:\n             url = urldefragauth(request.url)"
+  },
+  {
+   "variant": "community_base",
+   "id": "rich_2725",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 1628,
+   "tool_calls": 27,
+   "duration_s": 486.1,
+   "exit_code": 1,
+   "error": "Agent exceeded session timeout (8.0 min)",
+   "patch": "diff --git a/rich/table.py b/rich/table.py\nindex fe4054cf..45cf3111 100644\n--- a/rich/table.py\n+++ b/rich/table.py\n@@ -775,16 +775,16 @@ class Table(JupyterMixin):\n                     _Segment(_box.head_right, border_style),\n                     _Segment(_box.head_vertical, border_style),\n                 ),\n-                (\n-                    _Segment(_box.foot_left, border_style),\n-                    _Segment(_box.foot_right, border_style),\n-                    _Segment(_box.foot_vertical, border_style),\n-                ),\n                 (\n                     _Segment(_box.mid_left, border_style),\n                     _Segment(_box.mid_right, border_style),\n                     _Segment(_box.mid_vertical, border_style),\n                 ),\n+                (\n+                    _Segment(_box.foot_left, border_style),\n+                    _Segment(_box.foot_right, border_style),\n+                    _Segment(_box.foot_vertical, border_style),\n+                ),\n             ]\n             if show_edge:\n                 yield _Segment(_box.get_top(widths), border_style)\n@@ -866,7 +866,7 @@ class Table(JupyterMixin):\n                         _box.get_row(widths, \"foot\", edge=show_edge), border_style\n                     )\n                     yield new_line\n-                left, right, _divider = box_segments[0 if first else (2 if last else 1)]\n+                left, right, _divider = box_segments[0 if (first and show_header) else (2 if (last and show_footer) else 1)]\n \n                 # If the column divider is whitespace also style it with the row background\n                 divider = ("
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "rich_2725",
+   "repo": "Textualize/rich",
+   "resolved": true,
+   "patch_chars": 608,
+   "tool_calls": 20,
+   "duration_s": 208.9,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/rich/table.py b/rich/table.py\nindex fe4054cf..6268cba4 100644\n--- a/rich/table.py\n+++ b/rich/table.py\n@@ -866,7 +866,7 @@ class Table(JupyterMixin):\n                         _box.get_row(widths, \"foot\", edge=show_edge), border_style\n                     )\n                     yield new_line\n-                left, right, _divider = box_segments[0 if first else (2 if last else 1)]\n+                left, right, _divider = box_segments[0 if first else (1 if last else 2)]\n \n                 # If the column divider is whitespace also style it with the row background\n                 divider = ("
+  },
+  {
+   "variant": "community_base",
+   "id": "rich_3772",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 2469,
+   "tool_calls": 18,
+   "duration_s": 784.9,
+   "exit_code": 124,
+   "error": "Agent exceeded session timeout (8.0 min)",
+   "patch": "diff --git a/rich/traceback.py b/rich/traceback.py\nindex b2cc6304..3508ef2b 100644\n--- a/rich/traceback.py\n+++ b/rich/traceback.py\n@@ -130,30 +130,45 @@ def install(\n         else locals_hide_sunder\n     )\n \n+    is_handling_exception = False\n+\n     def excepthook(\n         type_: Type[BaseException],\n         value: BaseException,\n         traceback: Optional[TracebackType],\n     ) -> None:\n-        exception_traceback = Traceback.from_exception(\n-            type_,\n-            value,\n-            traceback,\n-            width=width,\n-            code_width=code_width,\n-            extra_lines=extra_lines,\n-            theme=theme,\n-            word_wrap=word_wrap,\n-            show_locals=show_locals,\n-            locals_max_length=locals_max_length,\n-            locals_max_string=locals_max_string,\n-            locals_hide_dunder=locals_hide_dunder,\n-            locals_hide_sunder=bool(locals_hide_sunder),\n-            indent_guides=indent_guides,\n-            suppress=suppress,\n-            max_frames=max_frames,\n-        )\n-        traceback_console.print(exception_traceback)\n+        nonlocal is_handling_exception\n+        if is_handling_exception:\n+            import traceback as tb_module\n+            tb_module.print_exception(type_, value, traceback)\n+            return\n+\n+        is_handling_exception = True\n+        try:\n+            exception_traceback = Traceback.from_exception(\n+                type_,\n+                value,\n+                traceback,\n+                width=width,\n+                code_width=code_width,\n+                extra_lines=extra_lines,\n+                theme=theme,\n+                word_wrap=word_wrap,\n+                show_locals=show_locals,\n+                locals_max_length=locals_max_length,\n+                locals_max_string=locals_max_string,\n+                locals_hide_dunder=locals_hide_dunder,\n+                locals_hide_sunder=bool(locals_hide_sunder),\n+                indent_guides=indent_guides,\n+                suppress=suppress,\n+                max_frames=max_frames,\n+            )\n+            traceback_console.print(exception_traceback)\n+        except Exception:\n+            import traceback as tb_module\n+            tb_module.print_exception(type_, value, traceback)\n+        finally:\n+            is_handling_exception = False\n \n     def ipy_excepthook_closure(ip: Any) -> None:  # pragma: no cover\n         tb_data = {}  # store information about showtraceback call"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "rich_3772",
+   "repo": "Textualize/rich",
+   "resolved": false,
+   "patch_chars": 0,
+   "tool_calls": 11,
+   "duration_s": 480.9,
+   "exit_code": -1,
+   "error": "Agent exceeded session timeout (8.0 min)",
+   "patch": ""
+  },
+  {
+   "variant": "community_base",
+   "id": "fastapi_11194",
+   "repo": "fastapi/fastapi",
+   "resolved": true,
+   "patch_chars": 992,
+   "tool_calls": 28,
+   "duration_s": 235.6,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/fastapi/dependencies/utils.py b/fastapi/dependencies/utils.py\nindex dc663f54..9be37c3f 100644\n--- a/fastapi/dependencies/utils.py\n+++ b/fastapi/dependencies/utils.py\n@@ -872,20 +872,18 @@ async def _extract_form_body(\n     received_body: FormData,\n ) -> Dict[str, Any]:\n     values = {}\n-    first_field = body_fields[0]\n-    first_field_info = first_field.field_info\n \n     for field in body_fields:\n         value = _get_multidict_value(field, received_body)\n         if (\n-            isinstance(first_field_info, params.File)\n+            isinstance(field.field_info, params.File)\n             and is_bytes_field(field)\n             and isinstance(value, UploadFile)\n         ):\n             value = await value.read()\n         elif (\n             is_bytes_sequence_field(field)\n-            and isinstance(first_field_info, params.File)\n+            and isinstance(field.field_info, params.File)\n             and value_is_sequence(value)\n         ):\n             # For types"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "fastapi_11194",
+   "repo": "fastapi/fastapi",
+   "resolved": true,
+   "patch_chars": 992,
+   "tool_calls": 28,
+   "duration_s": 245.6,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/fastapi/dependencies/utils.py b/fastapi/dependencies/utils.py\nindex dc663f54..6363e90f 100644\n--- a/fastapi/dependencies/utils.py\n+++ b/fastapi/dependencies/utils.py\n@@ -872,20 +872,17 @@ async def _extract_form_body(\n     received_body: FormData,\n ) -> Dict[str, Any]:\n     values = {}\n-    first_field = body_fields[0]\n-    first_field_info = first_field.field_info\n-\n     for field in body_fields:\n         value = _get_multidict_value(field, received_body)\n         if (\n-            isinstance(first_field_info, params.File)\n+            isinstance(field.field_info, params.File)\n             and is_bytes_field(field)\n             and isinstance(value, UploadFile)\n         ):\n             value = await value.read()\n         elif (\n             is_bytes_sequence_field(field)\n-            and isinstance(first_field_info, params.File)\n+            and isinstance(field.field_info, params.File)\n             and value_is_sequence(value)\n         ):\n             # For types"
+  },
+  {
+   "variant": "community_base",
+   "id": "fastapi_14306",
+   "repo": "fastapi/fastapi",
+   "resolved": false,
+   "patch_chars": 0,
+   "tool_calls": 28,
+   "duration_s": 265.0,
+   "exit_code": 1,
+   "error": null,
+   "patch": ""
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "fastapi_14306",
+   "repo": "fastapi/fastapi",
+   "resolved": false,
+   "patch_chars": 1912,
+   "tool_calls": 28,
+   "duration_s": 244.4,
+   "exit_code": 1,
+   "error": null,
+   "patch": "diff --git a/fastapi/exceptions.py b/fastapi/exceptions.py\nindex 0620428b..3edd11b2 100644\n--- a/fastapi/exceptions.py\n+++ b/fastapi/exceptions.py\n@@ -155,30 +155,35 @@ class DependencyScopeError(FastAPIError):\n \n \n class ValidationException(Exception):\n-    def __init__(self, errors: Sequence[Any]) -> None:\n+    def __init__(self, errors: Sequence[Any], context: Optional[str] = None) -> None:\n         self._errors = errors\n+        self.context = context\n \n     def errors(self) -> Sequence[Any]:\n         return self._errors\n \n+    def __str__(self) -> str:\n+        message = f\"{len(self._errors)} validation errors:\\n\"\n+        for err in self._errors:\n+            message += f\"  {err}\\n\"\n+        if self.context:\n+            message += f\"Context: {self.context}\\n\"\n+        return message\n+\n \n class RequestValidationError(ValidationException):\n-    def __init__(self, errors: Sequence[Any], *, body: Any = None) -> None:\n-        super().__init__(errors)\n+    def __init__(self, errors: Sequence[Any], *, body: Any = None, context: Optional[str] = None) -> None:\n+        super().__init__(errors, context=context)\n         self.body = body\n \n \n class WebSocketRequestValidationError(ValidationException):\n-    pass\n+    def __init__(self, errors: Sequence[Any], *, context: Optional[str] = None) -> None:\n+        super().__init__(errors, context=context)\n \n \n class ResponseValidationError(ValidationException):\n-    def __init__(self, errors: Sequence[Any], *, body: Any = None) -> None:\n-        super().__init__(errors)\n+    def __init__(self, errors: Sequence[Any], *, body: Any = None, context: Optional[str] = None) -> None:\n+        super().__init__(errors, context=context)\n         self.body = body\n \n-    def __str__(self) -> str:\n-        message = f\"{len(self._errors)} validation errors:\\n\"\n-        for err in self._errors:\n-            message += f\"  {err}\\n\"\n-        return message"
+  },
+  {
+   "variant": "community_base",
+   "id": "requests_6644",
+   "repo": "psf/requests",
+   "resolved": true,
+   "patch_chars": 723,
+   "tool_calls": 25,
+   "duration_s": 187.6,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/src/requests/models.py b/src/requests/models.py\nindex 44556394..76374874 100644\n--- a/src/requests/models.py\n+++ b/src/requests/models.py\n@@ -93,6 +93,8 @@ class RequestEncodingMixin:\n         path = p.path\n         if not path:\n             path = \"/\"\n+        elif path.startswith(\"//\"):\n+            path = \"/\" + path.lstrip(\"/\")\n \n         url.append(path)\n \n@@ -466,6 +468,8 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):\n         # Bare domains aren't valid URLs.\n         if not path:\n             path = \"/\"\n+        elif path.startswith(\"//\"):\n+            path = \"/\" + path.lstrip(\"/\")\n \n         if isinstance(params, (str, bytes)):\n             params = to_native_string(params)"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "requests_6644",
+   "repo": "psf/requests",
+   "resolved": true,
+   "patch_chars": 498,
+   "tool_calls": 14,
+   "duration_s": 125.6,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/src/requests/models.py b/src/requests/models.py\nindex 44556394..efed0d91 100644\n--- a/src/requests/models.py\n+++ b/src/requests/models.py\n@@ -466,6 +466,8 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):\n         # Bare domains aren't valid URLs.\n         if not path:\n             path = \"/\"\n+        elif path.startswith(\"//\"):\n+            path = \"/\" + path.lstrip(\"/\")\n \n         if isinstance(params, (str, bytes)):\n             params = to_native_string(params)"
+  },
+  {
+   "variant": "community_base",
+   "id": "httpx_3672",
+   "repo": "encode/httpx",
+   "resolved": true,
+   "patch_chars": 1132,
+   "tool_calls": 28,
+   "duration_s": 305.6,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/src/httpx/_parsers.py b/src/httpx/_parsers.py\nindex 830fccd..86717bf 100644\n--- a/src/httpx/_parsers.py\n+++ b/src/httpx/_parsers.py\n@@ -375,9 +375,13 @@ class HTTPParser:\n             self.recv_state = State.DONE\n         return body\n \n-    def complete(self):\n+    @property\n+    def keep_alive(self) -> bool:\n+        return self.send_keep_alive and self.recv_keep_alive\n+\n+    def reset(self):\n         is_fully_complete = self.send_state == State.DONE and self.recv_state == State.DONE\n-        is_keepalive = self.send_keep_alive and self.recv_keep_alive\n+        is_keepalive = self.keep_alive\n \n         if not (is_fully_complete and is_keepalive):\n             self.close()\ndiff --git a/src/httpx/_server.py b/src/httpx/_server.py\nindex 95226d9..974321d 100644\n--- a/src/httpx/_server.py\n+++ b/src/httpx/_server.py\n@@ -3,7 +3,8 @@ import logging\n import time\n \n from ._content import Text\n-from ._parsers import HTTPParser\n+from ._parsers import HTTPParser, ProtocolError\n+from ._request import Request\n from ._request import Request\n from ._response import Response\n from ._network import NetworkBackend, sleep"
+  },
+  {
+   "variant": "nervo_repro",
+   "id": "httpx_3672",
+   "repo": "encode/httpx",
+   "resolved": true,
+   "patch_chars": 2575,
+   "tool_calls": 28,
+   "duration_s": 362.9,
+   "exit_code": 0,
+   "error": null,
+   "patch": "diff --git a/src/httpx/_network.py b/src/httpx/_network.py\nindex 5ea9bb5..5e52800 100644\n--- a/src/httpx/_network.py\n+++ b/src/httpx/_network.py\n@@ -160,7 +160,7 @@ class NetworkServer:\n         self._max_workers = 5\n         self._executor = None\n         self._thread = None\n-        self._streams = list[NetworkStream]\n+        self._streams = set()\n \n     @property\n     def host(self):\n@@ -176,17 +176,24 @@ class NetworkServer:\n         return self\n \n     def __exit__(self, exc_type, exc_val, exc_tb):\n-        self.listener.close()\n-        self._executor.shutdown(wait=True)\n+        try:\n+            self.listener.close()\n+            for stream in list(self._streams):\n+                stream.close()\n+            self._executor.shutdown(wait=True)\n+        except KeyboardInterrupt:\n+            pass\n \n     def _serve(self):\n         while stream := self.listener.accept():\n             self._executor.submit(self._handler, stream)\n \n     def _handler(self, stream):\n+        self._streams.add(stream)\n         try:\n             self.handler(stream)\n         finally:\n+            self._streams.remove(stream)\n             stream.close()\n \n \ndiff --git a/src/httpx/_parsers.py b/src/httpx/_parsers.py\nindex 830fccd..86717bf 100644\n--- a/src/httpx/_parsers.py\n+++ b/src/httpx/_parsers.py\n@@ -375,9 +375,13 @@ class HTTPParser:\n             self.recv_state = State.DONE\n         return body\n \n-    def complete(self):\n+    @property\n+    def keep_alive(self) -> bool:\n+        return self.send_keep_alive and self.recv_keep_alive\n+\n+    def reset(self):\n         is_fully_complete = self.send_state == State.DONE and self.recv_state == State.DONE\n-        is_keepalive = self.send_keep_alive and self.recv_keep_alive\n+        is_keepalive = self.keep_alive\n \n         if not (is_fully_complete and is_keepalive):\n             self.close()\ndiff --git a/src/httpx/_server.py b/src/httpx/_server.py\nindex 95226d9..4e45589 100644\n--- a/src/httpx/_server.py\n+++ b/src/httpx/_server.py\n@@ -3,7 +3,7 @@ import logging\n import time\n \n from ._content import Text\n-from ._parsers import HTTPParser\n+from ._parsers import HTTPParser, State\n from ._request import Request\n from ._response import Response\n from ._network import NetworkBackend, sleep\n@@ -89,7 +89,9 @@ class HTTPConnection:\n \n     # Start it all over again...\n     def _complete(self):\n-        self._parser.complete\n+        while self._parser.recv_state == State.RECV_BODY:\n+            self._recv_body()\n+        self._parser.reset()\n         self._idle_expiry = time.monotonic() + self._keepalive_duration"
+  }
+ ],
+ "error": null,
+ "variantes": [
+  "community_base",
+  "nervo_repro"
+ ],
+ "vllm_start_seconds": 364.6,
+ "n_public_tasks": 129,
+ "sample": [
+  "rich_3454",
+  "requests_7315",
+  "rich_2725",
+  "rich_3772",
+  "fastapi_11194",
+  "fastapi_14306",
+  "requests_6644",
+  "httpx_3672"
+ ],
+ "presupuestos": {
+  "community_base": {
+   "timeout_seconds": 300,
+   "max_tool_calls": 28,
+   "max_time_minutes": 8,
+   "max_turns": 80
+  },
+  "nervo_repro": {
+   "timeout_seconds": 300,
+   "max_tool_calls": 28,
+   "max_time_minutes": 8,
+   "max_turns": 80
+  }
+ },
+ "summary": {
+  "community_base": {
+   "resolved": 5,
+   "total": 8,
+   "con_parche": 7
+  },
+  "nervo_repro": {
+   "resolved": 6,
+   "total": 8,
+   "con_parche": 7
+  }
+ }
+}

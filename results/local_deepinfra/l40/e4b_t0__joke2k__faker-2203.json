@@ -1,0 +1,40 @@
+{
+ "variant": "variants/e4b_t0",
+ "modelo": "gemma-4-e4b-it-qat-w4a16-ct",
+ "presupuesto": {
+  "timeout_seconds": 300,
+  "max_tool_calls": 28,
+  "max_time_minutes": 8,
+  "max_turns": 80
+ },
+ "tareas": [
+  {
+   "id": "joke2k__faker-2203",
+   "resolved": true,
+   "patch": "diff --git a/faker/proxy.py b/faker/proxy.py\nindex fc72a15..51318f6 100644\n--- a/faker/proxy.py\n+++ b/faker/proxy.py\n@@ -334,13 +334,22 @@ class UniqueProxy:\n             retval = self._sentinel\n \n             for i in range(_UNIQUE_ATTEMPTS):\n-                if retval not in generated:\n+                try:\n+                    if retval not in generated:\n+                        break\n+                except TypeError:\n+                    # If retval is not hashable, we can't check if it's in the set.\n+                    # We'll just assume it's unique for now.\n                     break\n                 retval = function(*args, **kwargs)\n             else:\n                 raise UniquenessException(f\"Got duplicated values after {_UNIQUE_ATTEMPTS:,} iterations.\")\n \n-            generated.add(retval)\n+            try:\n+                generated.add(retval)\n+            except TypeError:\n+                # If retval is not hashable, we can't add it to the set.\n+                pass\n \n             return retval",
+   "tool_calls": 13,
+   "duration_s": 69.3,
+   "error": null,
+   "raw": {
+    "task_id": "joke2k__faker-2203",
+    "resolved": true,
+    "status": "SUCCESS",
+    "duration_seconds": 69.337556447,
+    "cost_usd": 0.0,
+    "total_tokens": 0,
+    "total_llm_calls": 15,
+    "error_message": null,
+    "trace_path": "/home/claude/trabajo_lotes/l40/e4b_t0__joke2k__faker-2203/results/traces/trace_joke2k__faker-2203.json",
+    "metadata": "{}",
+    "repo": "joke2k/faker",
+    "agent_patch": "diff --git a/faker/proxy.py b/faker/proxy.py\nindex fc72a15..51318f6 100644\n--- a/faker/proxy.py\n+++ b/faker/proxy.py\n@@ -334,13 +334,22 @@ class UniqueProxy:\n             retval = self._sentinel\n \n             for i in range(_UNIQUE_ATTEMPTS):\n-                if retval not in generated:\n+                try:\n+                    if retval not in generated:\n+                        break\n+                except TypeError:\n+                    # If retval is not hashable, we can't check if it's in the set.\n+                    # We'll just assume it's unique for now.\n                     break\n                 retval = function(*args, **kwargs)\n             else:\n                 raise UniquenessException(f\"Got duplicated values after {_UNIQUE_ATTEMPTS:,} iterations.\")\n \n-            generated.add(retval)\n+            try:\n+                generated.add(retval)\n+            except TypeError:\n+                # If retval is not hashable, we can't add it to the set.\n+                pass\n \n             return retval\n \n",
+    "test_output": "STDOUT:\n......                                                                   [100%]\n6 passed in 0.30s\n\nSTDERR:\n",
+    "test_exit_code": 0,
+    "trace": "<adk_eval_core.tracing.trace.SessionTrace object at 0x7ff126b067b0>",
+    "tool_calls": 13,
+    "task_index": 1
+   },
+   "segundos_reloj": 69.5
+  }
+ ]
+}

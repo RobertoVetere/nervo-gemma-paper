@@ -2,75 +2,97 @@
 
 # The Prompt Proposes, the Code Decides
 
-**Interface Design for Small Quantized Code Agents**
+**Interface Rules for Small Quantized Code Agents**
 
 Roberto Vetere · Independent researcher
 
-[Paper (EN)](docs/paper/paper_en.md) · [PDF](docs/paper/paper_en.pdf) · [Paper (ES)](docs/paper/paper_es.md) · [Reproduce](docs/REPRODUCE.md) · [Data](datos/banco_nuevo/) · [Results](resultados/)
+[Paper](docs/paper/paper_en.md) · [PDF](docs/paper/paper_en.pdf) · [Reproduce](docs/REPRODUCE.md) · [Notebook](notebooks/reproduce_paper.ipynb) · [Data](data/new_bench/) · [Results](results/)
 
 </div>
 
 ---
 
-Small language models with 4-bit weights can run coding agents on modest hardware, but the design rules for large models
-do not carry over. This repository contains the agents, data, infrastructure and per-task results behind a study of
-**Gemma 4 E4B and 31B (w4a16)** as repository-repair agents: given an issue and a repository, produce a patch that
-passes hidden tests, under hard limits of 8 minutes, 28 tool calls and 80 turns.
+How to connect small 4-bit models to tools as coding agents is largely unmeasured. This repository contains the agents,
+data, infrastructure and per-call and per-task results behind a study of **Gemma 4 E4B and E2B, Qwen3-4B and Qwen3-1.7B,
+with original and 4-bit weights**, repairing Python repositories scored by hidden tests, under hard limits of 8 minutes,
+28 tool calls and 80 turns.
 
 The design stance is simple: **the model proposes what to change; deterministic scripts locate code, apply edits and
 run checks, and their verdict decides what happens next.**
 
 ## Results at a glance
 
-| Question | Result | Evidence |
+| Question | Result | Where |
 |---|---|---|
-| Can a quantized model drive scripted tools reliably? | With one-field calls and long text passed through files, **0 of 105** calls were rejected, against **81–88%** with a three-field call | Successive agent versions, evaluation traces |
-| Does reasoning help? | It depends on the agent: **+6 tasks** for a free-form agent, **−6** for a script-guided one | Exploratory: 40 random tasks, one run per cell, sign test **p = 0.006** |
-| Does quantization change behaviour? | In single-call probes the quantized model generates **a third as many tokens** when reasoning and fails **twice as many edits** by miscopying code (24 vs 11 of 88, p = 0.02) | Same pipeline; localization not held fixed |
-| Is localization the bottleneck? | No. With the right file in hand, **55 of 64** repair attempts still fail; rewriting whole functions removes copy errors but not wrong changes | Single-call probes, hidden tests |
-| Can single runs be trusted? | No. At temperature 0 with a fixed seed, **0 of 8** trajectories repeated | Two runs on the same tasks |
+| Which tool-call interface survives in small models? | One long text per call (a single field or a file) stayed at **0–9%** structural failures in every model; calls with several fields failed in up to **73%** | 6,720 single calls, five models, one vLLM server (paper 4.2, Figure 1) |
+| Is the interface the cause inside a real agent? | Same E4B, same scripts: **286 of 621** calls rejected with a three-field call, **0 of 687** with one-field commands; solved 8 vs 9 of 40 | Paper 4.3 |
+| Does 4-bit quantization matter? | Not for E4B's isolated calls; it amplified E4B's call failures under long context, more so for E2B, and not for Qwen3-4B | Paper 4.2, 4.5 |
+| Does reasoning help? | With a 31B it helped a free-form agent more than a script-guided one; the effect shrank on replication and vanished with 4-bit E4B | Three + two replicas on 40 tasks (paper 4.4, Figure 2) |
+| Can single runs and local benches be trusted? | No: 0 of 8 trajectories repeated at temperature 0; an API silently served a 31B for E4B requests; local success did not transfer to the test set | Paper 4.6 |
+
+Hypotheses for the generalization runs were committed before running them: [`docs/HYPOTHESES_12NOV.md`](docs/HYPOTHESES_12NOV.md)
+(see its git history with `git log --follow docs/HYPOTHESES_12NOV.md`).
 
 <p align="center">
-  <img src="docs/paper/fig_interaction.png" width="460" alt="Solved tasks out of 40: reasoning helps the free-form agent and hurts the script-guided one">
+  <img src="docs/paper/fig_format.png" width="460" alt="Share of calls failing structurally per model and interface">
+  <img src="docs/paper/fig_interaction.png" width="400" alt="Solved tasks out of 40 per agent, with and without reasoning">
 </p>
 
 ## What is in this repository
 
 | Path | Contents |
 |---|---|
-| [`docs/paper/`](docs/paper/) | The paper, in English and Spanish, and its figure |
-| [`variantes/`](variantes/) | Every agent compared in the paper, in the competition's submission format (`agent.yaml`, prompts, skills with scripts) |
-| [`datos/banco_nuevo/`](datos/banco_nuevo/) | 104 repair tasks from 24 repositories, each validated with the official oracle (65 also run locally), derived from a CC BY 4.0 dataset |
-| [`local/shim_vllm.py`](local/shim_vllm.py) | A bridge that poses as the vLLM server to the official evaluator and forwards to any OpenAI-compatible API, with a spending cap |
-| [`local/correr_local.py`](local/correr_local.py) | Runs the official evaluator locally, with a subprocess sandbox or a Docker replica of the evaluation sandbox ([`local/docker/`](local/docker/)) |
-| [`local/modal_vllm.py`](local/modal_vllm.py) | Serves the exact quantized weights (vLLM 0.19.1, Gemma 4 parsers) on [Modal](https://modal.com), scaling to zero when idle |
-| [`local/modal_eval.py`](local/modal_eval.py) | Runs a full evaluation on four L4 GPUs on Modal, matching the competition environment |
-| [`lab/oneshot/`](lab/oneshot/) | Single-call probes: localization and repair with full-precision vs quantized weights |
-| [`resultados/`](resultados/) | Per-task JSON results of every run cited in the paper |
-| [`scripts/`](scripts/) | Submission builder and validator, and the evaluation kernel |
+| [`docs/paper/`](docs/paper/) | The paper (Markdown and PDF) and its figures |
 | [`docs/REPRODUCE.md`](docs/REPRODUCE.md) | Where every number in the paper comes from, and how to regenerate it |
-| [`docs/HISTORIAL_EJECUCIONES.md`](docs/HISTORIAL_EJECUCIONES.md) | Log of every evaluation run (Spanish) |
+| [`notebooks/reproduce_paper.ipynb`](notebooks/reproduce_paper.ipynb) | Regenerates every table from the saved results, on a CPU |
+| [`docs/HYPOTHESES_12NOV.md`](docs/HYPOTHESES_12NOV.md) | Pre-registered hypotheses and their outcomes |
+| [`docs/RUN_LOG.md`](docs/RUN_LOG.md) | Log of every evaluation run in the competition environment |
+| [`variants/`](variants/) | Every agent compared in the paper, in the competition's submission format (`agent.yaml`, prompts, skills with scripts) |
+| [`data/new_bench/`](data/new_bench/) | Validation set: 104 repair tasks from 24 repositories, each validated with the official oracle (65 also run locally), derived from a CC BY 4.0 dataset |
+| [`lab/oneshot/`](lab/oneshot/) | Single-call experiments: the tool-call format test (`call_format.py`) and localization/repair probes, with their summaries |
+| [`local/shim_vllm.py`](local/shim_vllm.py) | A bridge that poses as the vLLM server to the official evaluator and forwards to an OpenAI-compatible API or to our vLLM server, with a spending cap |
+| [`local/run_local.py`](local/run_local.py) | Runs the official evaluator locally, with a subprocess sandbox or a Docker replica of the evaluation sandbox ([`local/docker/`](local/docker/)) |
+| [`local/modal_vllm.py`](local/modal_vllm.py) | Serves the exact weights (vLLM 0.19.1, each family's parsers) on [Modal](https://modal.com), scaling to zero when idle |
+| [`local/modal_eval.py`](local/modal_eval.py) | Runs a full evaluation on four L4 GPUs on Modal, matching the competition environment |
+| [`results/`](results/) | Per-call and per-task results of every run cited in the paper |
+| [`scripts/`](scripts/) | Submission builder and validator, and the evaluation kernel |
+| [`.github/workflows/`](.github/workflows/) | The GitHub Actions workflows used to launch runs on Kaggle and Modal (they need the author's secrets) |
 
 ## Reproduce
 
-Check the main table from the saved results, at no cost:
+Check every table from the saved results, at no cost (no GPU, no API key):
 
 ```bash
-python3 local/tabla_lote.py resultados/local_deepinfra/l40   # 2x2 table, Wilson intervals, McNemar tests
-python3 local/interaccion.py                                   # interaction sign test
-python3 lab/oneshot/resumen_cuantizacion.py                    # single-call probes, quantized vs unquantized
+python3 lab/oneshot/summary_format.py results/call_format/*.jsonl      # 4.2: five models, three interfaces
+python3 local/count_ab.py results/modal_e4b_4bit/ab_calls.jsonl results/modal_e4b_4bit/ab   # 4.3: interface A/B
+python3 local/replica_table.py results/modal_e4b_4bit/q1 results/modal_e4b_4bit/q2      # 4.4: E4B 4-bit 2x2
+python3 lab/oneshot/summary_quantization.py                                # 4.5: single calls, bf16 vs 4-bit
 ```
 
-Re-running agents requires the official evaluator wheels (`swegemma`, `adk_eval_core`, `adk_submission`,
-`google-adk==1.36.1`) and an OpenAI-compatible endpoint serving Gemma 4. [`docs/REPRODUCE.md`](docs/REPRODUCE.md)
-maps every number in the paper to the file and command that produce it.
+[`docs/REPRODUCE.md`](docs/REPRODUCE.md) maps every number to its file and command, and explains how to re-run the
+agents (official evaluator wheels and an OpenAI-compatible endpoint serving the model).
+
+## Field names in saved results
+
+Code and documentation are in English. Some keys inside the saved JSON results, and some internal variable names, are
+Spanish words, kept so that the raw records stay exactly as they were produced:
+
+| Key | Meaning | Key | Meaning |
+|---|---|---|---|
+| `tareas` / `tarea` | tasks / task | `modelo` | model |
+| `muestra` | sample | `archivo` | file |
+| `resuelve` / `resuelta` | solved | `motivo` | reason |
+| `llamadas` | calls | `segundos` | seconds |
+| `presupuesto` | budget | `razonar` | reasoning on/off |
+| `oro` | gold (official patch symbols) | `nivel` | level |
+| `lista` / `mapa` | localization from a file list / from the repository map | `bateria` | battery of approaches |
 
 ## Citation
 
 ```bibtex
 @misc{vetere2026promptproposes,
   author       = {Roberto Vetere},
-  title        = {The Prompt Proposes, the Code Decides: Interface Design for Small Quantized Code Agents},
+  title        = {The Prompt Proposes, the Code Decides: Interface Rules for Small Quantized Code Agents},
   year         = {2026},
   howpublished = {\url{https://github.com/RobertoVetere/nervo-gemma-paper}},
   note         = {Paper Track, Google -- The Gemma 4 Developer Agent Competition}
@@ -79,11 +101,12 @@ maps every number in the paper to the file and command that produce it.
 
 ## Acknowledgements
 
-The evaluation harness, tasks and quantized models are from the
+The evaluation harness, tasks and quantized Gemma models are from the
 [Gemma 4 Developer Agent Competition](https://www.kaggle.com/competitions/gemma-4-developer-agent) (Markowitz et al., 2026).
-The free-form baseline is the public community single agent published as a Kaggle sample notebook (`gemma-4-harness-fixed-single-agent`). The task bank
-derives from D. Gluzdov's *gemma-4-task-soundness-and-local-results* dataset (CC BY 4.0).
+The free-form baseline is the public community single agent published as a Kaggle sample notebook
+(`gemma-4-harness-fixed-single-agent`). The task bank derives from D. Gluzdov's
+*gemma-4-task-soundness-and-local-results* dataset (CC BY 4.0).
 
 ## License
 
-Code: [Apache 2.0](LICENSE). The task data in `datos/banco_nuevo/` keeps its original CC BY 4.0 license.
+Code: [Apache 2.0](LICENSE). The task data in `data/new_bench/` keeps its original CC BY 4.0 license.
