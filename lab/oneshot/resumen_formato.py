@@ -122,6 +122,14 @@ def fallo_estructural(r):
     return (not r['called']) or clase_fallo(r) == 'lost'
 
 
+def etiqueta(b_, m):  # readable label; DeepInfra answers requests for E4B with a 31B (see Section 4.6 of the paper)
+    base, ctx = m.replace('+ctx36k', ''), ('+ctx36k' if '+ctx36k' in m else '')
+    if b_ == 'deepinfra':
+        return '31B (API; asked for e4b)' + ctx
+    nombres = {'e4b': 'e4b 4-bit', 'e2b': 'e2b 4-bit', 'qwen3-4b-awq': 'qwen3-4b AWQ 4-bit'}
+    return nombres.get(base, base) + ctx
+
+
 print('\nStructural failures (not executed + lost field), nested / flat / one field, per model and context:')
 for m in sorted({k[1] for k in g}, key=lambda x: (x.replace('+ctx36k', ''), x)):
     for b_ in sorted({k[0] for k in g if k[1] == m}):
@@ -129,12 +137,12 @@ for m in sorted({k[1] for k in g}, key=lambda x: (x.replace('+ctx36k', ''), x)):
         for f in ('three_field', 'edit_file', 'one_field'):
             v = g.get((b_, m, f), [])
             cells.append(f"{sum(fallo_estructural(x) for x in v)}/{len(v)} ({sum(not x['called'] for x in v)} not run)")
-        print(f'  {b_:9} {m:22} ' + '  '.join(cells))
+        print(f'  {etiqueta(b_, m):34} ' + '  '.join(cells))
 
 
 # One field against each multi-field interface, paired by block (a block fails if any of its samples failed
 # structurally); McNemar per model, pooling short and long context as separate blocks.
-print('\nOne field vs multi-field, block-level McNemar per model (short and long context pooled):')
+print('\nOne field vs multi-field, block-level McNemar per model (short and long context pooled; e4b, e2b = 4-bit; Modal only):')
 modelos = sorted({k[1].replace('+ctx36k', '') for k in g if k[0] == 'modal'})
 for m in modelos:
     res = []
