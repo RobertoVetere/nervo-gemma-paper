@@ -30,7 +30,7 @@ for agent in COL:
                     color=COL[agent], fontsize=10)
 ax.set_xticks([0, 1], ['No reasoning', 'Reasoning (4,096)']); ax.set_xlim(-0.35, 1.35); ax.set_ylim(0, 24)
 ax.set_ylabel('Solved tasks (of 40)'); ax.spines[['top', 'right']].set_visible(False)
-ax.set_title(f'E4B, 40 random tasks, {len(dirs)} replicas (line = mean, dots = replicas)', fontsize=10)
+ax.set_title(f'31B (API), 40 random tasks, {len(dirs)} replicas (line = mean, dots = replicas)', fontsize=10)
 ax.legend(frameon=False, loc='lower left', fontsize=9)
 fig.tight_layout(); fig.savefig(out)
 print({f'{a[:8]}|{x}': v for (a, x), v in vals.items()})

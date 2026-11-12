@@ -4,7 +4,7 @@
 
 ## Abstract
 
-How to connect small 4-bit models to tools as coding agents is largely unmeasured. We study quantized Gemma 4 E4B and 31B repairing Python repositories scored by hidden tests, under one principle: the model proposes the change; deterministic scripts locate code, apply edits and decide the next step. First, with one-field calls and long text passed through files, none of 105 agent calls was rejected, against 81–88% with a three-field call; a controlled test of 1,920 calls shows why: long text nested in an argument object makes the model drop the other fields, and quantization and long context amplify it (0 to 21 of 160), while flat calls almost never fail. Second, in a 2×2 experiment on 40 random tasks with three replicas, reasoning helped a free-form agent every time (+3.7 tasks on average) but not a script-guided one, which hit the turn limit more often; a striking first-run interaction (p = 0.006) shrank on replication. Third, the quantized model reasoned a third as long and miscopied twice as many edits, consistent with evidence that 4-bit weights amplify existing failures. Fourth, tuning tasks inflate success and runs do not repeat at temperature 0. We condense our data and independent evidence into five design rules and release the agents, a 104-task validation set and tools to run the official evaluator outside the competition.
+How to connect small 4-bit models to tools as coding agents is largely unmeasured. We study Gemma 4 E4B (official 4-bit weights) and 31B repairing Python repositories scored by hidden tests, under one principle: the model proposes the change; deterministic scripts locate code, apply edits and decide the next step. First, with one-field calls and long text passed through files, none of 105 agent calls was rejected, against 81–88% with a three-field call. A controlled test of 1,920 calls on one server shows why: long text nested in an argument object makes the model drop other fields, 4-bit weights amplify this only under long context (21 against 6 of 160), and flat calls almost never fail. Second, in isolated calls the 4-bit weights matched the original ones in repair, localization and reasoning length. Third, in a 2×2 experiment with three replicas, reasoning helped a free-form agent every time but not a script-guided one; a striking first-run interaction shrank on replication. Fourth, our evaluation hid three traps: tuning tasks, non-repeating runs, and an API that served a 31B model when asked for E4B. We condense the evidence into five design rules and release agents, data and a validation set.
 
 ## 1. Introduction
 
@@ -18,7 +18,7 @@ We start from a simple principle: *the prompt proposes, the code decides*. The m
 
 **Environment.** We use the evaluation environment of the Gemma 4 Developer Agent competition [1]: agents declared in YAML on Google's Agent Development Kit (ADK) [2], nine predefined tools, and custom code only as Python scripts in a *skill*, invoked with a three-field call. The framework summarizes the conversation every 15 events, after which the model no longer sees its instructions. We run the competition's evaluator with one documented sandbox patch for `src/` layouts.
 
-**Models.** Gemma 4 E4B and Gemma 4 31B with 4-bit weights and 16-bit activations (w4a16) [3], served with vLLM 0.19.1 [4] on four NVIDIA L4 GPUs with the Gemma 4 parsers and a 32k context; some experiments use the unquantized models through a commercial API. Temperature is 0.2 unless stated otherwise.
+**Models.** Gemma 4 E4B and Gemma 4 31B with 4-bit weights and 16-bit activations (w4a16) [3], served with vLLM 0.19.1 [4] on four NVIDIA L4 GPUs with the Gemma 4 parsers and a 32k context; for quantization comparisons the same server also runs the original bf16 E4B weights. Some experiments used a commercial API (DeepInfra); requests there for E4B were answered by `gemma-4-31B-it-turbo`, as we found after the fact (4.6), so we report those results as 31B (API). Temperature is 0.2 unless stated otherwise.
 
 **Task sets.** The *validation set* has 104 tasks from 24 repositories of a public CC BY 4.0 collection [5] whose reference patch passes in the competition environment (65 also locally). The *development set* has the 72 locally runnable public competition tasks from three repositories. The *test set* has 58 held-out tasks, seen only as an aggregate score. Comparisons are paired.
 
@@ -35,7 +35,7 @@ Our agent, `fixer`, has three tools (`run_command`, `write_file`, `submit_patch`
 7. the model writes a search-and-replace edit; `apply_edit.py` applies it or shows the closest real lines;
 8. `verify.py` runs the cases and a related existing test, and returns `SUBMIT`, `FIX` or `NO_EDIT`.
 
-Every script ends with a `NEXT:` line giving the exact next command, because the last tool output survives a summary. The 31B version is shorter: it skips steps 5 and 6, and `verify.py` instead runs the issue's own example before and after the change.
+Every script ends with a `NEXT:` line giving the exact next command, because the last tool output survives a summary. The 31B version skips steps 5 and 6 and checks the issue's own example.
 
 ## 4. Experiments and results
 
@@ -59,46 +59,46 @@ Across the traces of successive agent versions with the quantized models, five f
 | Skill, three-field call, three prompt versions | E4B | 3 | 43 | 12 (28%) | 1 |
 | One-time install, one-field commands | E4B, 31B | 8 | 105 | 0 | 4 |
 
-Of the 819 rejected three-field calls of the 31B, 653 were the naming failure; after names were fixed, 130 of 160 were still rejected (81%). With one-field commands, 0 of 105 calls were rejected (two-sided 95% upper bound: 3.5%). This compares successive versions over few runs. With built-in tools format failures are rare, but the small model loses edits by miscopying the text to replace.
+Of the 819 rejected three-field calls of the 31B, 653 were the naming failure; after names were fixed, 130 of 160 were still rejected (81%). With one-field commands, 0 of 105 were (95% upper bound: 3.5%), comparing successive versions over few runs. With built-in tools format failures are rare, but the small model loses edits by miscopying the text to replace.
 
 ### 4.2 A controlled test of the call format
 
-Agent traces compare versions, not conditions, so we asked the model to apply one edit with one tool call, copying an old and a new block of real code (6–30 lines, 80 blocks from the validation repositories, two samples each) through three interfaces: the skill call with the text nested in an `args` object, a flat `edit_file(path, old_string, new_string)`, and a single `content` field holding a search-and-replace block. E4B ran quantized (our vLLM server, Gemma 4 tool parser) and unquantized (API), with or without 10,000 tokens of previously read code before the request.
+Agent traces compare versions, not conditions, so we asked the model to apply one edit with one tool call, copying an old and a new block of real code (6–30 lines, 80 blocks from the validation repositories, two samples each) through three interfaces: the skill call with the text nested in an `args` object, a flat `edit_file(path, old_string, new_string)`, and a single `content` field holding a search-and-replace block. E4B ran on one vLLM server with the Gemma 4 tool parser, with the original bf16 or the official 4-bit weights, with or without 10,000 tokens of previously read code before the request.
 
-| Calls that lost fields, of 160 | Unquantized | Quantized | Unquantized + context | Quantized + context |
+| E4B, calls that lost fields, of 160 | bf16 | 4-bit | bf16 + context | 4-bit + context |
 |---|---|---|---|---|
-| Nested (`args` object) | 0 | 4 | 6 | **21** |
+| Nested (`args` object) | 7 | 4 | 6 | **21** |
 | Flat, three fields | 0 | 0 | 0 | 0 |
 | One field | 0 | 0 | 0 | 1 |
 
-The lost fields are those seen in agents: `skill_name` or `file_path` vanish or are absorbed into `args`. Quantization amplified the failure (21 against 6 with context; Fisher, p = 0.004, calls treated as independent) and so did context (4 to 21). Flat calls did not fail, so the cause is nesting long text, not the number of fields. Blocks ending in a quote failed less. Copied text was otherwise almost always exact.
+As in agents, `skill_name` or `file_path` vanish or are absorbed into `args`. Nesting fails with either weights; flat calls do not, so the cause is nesting, not the number of fields. The 4-bit weights changed nothing on short requests but amplified the failure under long context (21 against 6; Fisher, p = 0.004, calls treated as independent). The 31B (API) lost fields in 0 and 6 of 160 calls. Blocks ending in a quote failed less.
 
 ### 4.3 Reasoning and agent structure, with replication
 
-We crossed two agents with two reasoning settings on 40 random validation tasks with unquantized E4B: `fixer`, and a free-form public agent that edits files with the built-in tools. After a striking first run we repeated all four cells twice.
+We crossed two agents with two reasoning settings on 40 random validation tasks: `fixer`, and a free-form public agent that edits files with the built-in tools. These runs went through the API and were therefore served by the 31B (4.6), not E4B. After a striking first run we repeated all four cells twice.
 
-| E4B, 40 tasks, solved per replica (mean) | No reasoning | Reasoning (4,096 tokens) |
+| 31B (API), 40 tasks, solved per replica (mean) | No reasoning | Reasoning (4,096 tokens) |
 |---|---|---|
 | Free-form agent | 14, 13, 14 (13.7) | 20, 17, 15 (**17.3**) |
 | `fixer` | 16, 16, 15 (**15.7**) | 10, 16, 15 (13.7) |
 
 ![Figure 1: tasks solved out of 40 by agent and reasoning setting; line = mean of three replicas, dots = replicas.](fig_interaction.png)
 
-Reasoning helped the free-form agent in all three replicas (+6, +4, +1) and at 2.2 times the time per task (163 against 74 s for `fixer` without reasoning). Its harm to `fixer` did not replicate: −6 in the first run, 0 and 0 after. In that first run the per-task interaction favoured opposite effects in 11 tasks against 1 (sign test, p = 0.006); in the two new replicas alone it was 8 against 4 (p = 0.39). One part was stable: with reasoning, `fixer` hit the 80-turn limit in 5, 5 and 4 tasks, against 0, 0 and 1 without. The direction held, but the interaction in solved tasks fell from 12 to 4 and 1: a single run overstated it. Reasoning is not a free gain for a script-guided agent.
+Reasoning helped the free-form agent in all three replicas (+6, +4, +1), at 2.2 times the time per task of `fixer` without reasoning. Its harm to `fixer` did not replicate: −6 in the first run, 0 and 0 after. In that first run the per-task interaction favoured opposite effects in 11 tasks against 1 (sign test, p = 0.006); in the two new replicas alone it was 8 against 4 (p = 0.39). One part was stable: with reasoning, `fixer` hit the 80-turn limit in 5, 5 and 4 tasks, against 0, 0 and 1 without. The direction held, but the interaction fell from 12 tasks to 4 and 1: a single run overstated it.
 
 ### 4.4 What changes with quantization
 
-We made single calls, one to locate the code from a repository map and one to write an edit scored with the hidden tests, with unquantized (API) and quantized E4B (our vLLM server), on 11 tasks where the agents of 4.3 disagreed, two samples each (reasoning capped at 16,384 tokens).
+Single calls located the code from a repository map and wrote an edit scored with the hidden tests, on 11 tasks where the agents of 4.3 disagreed, two samples each; both E4B weights ran on one server.
 
-| Single call, E4B | Unquantized | Quantized |
-|---|---|---|
-| Fix, no reasoning | 5 of 22 | 5 of 22 |
-| Fix, with reasoning | 9 of 22 | 5 of 22 |
-| Median tokens generated per answer, with reasoning | 6,002 | 2,002 |
-| Attempts lost because the search text did not match the code | 11 of 88 | 24 of 88 |
-| Correct symbol located, 40 tasks: file list / repository map | 28 / 31 | 24 / 29 |
+| Single call | E4B bf16 | E4B 4-bit | 31B (API) |
+|---|---|---|---|
+| Fix, no reasoning | 6 of 22 | 5 of 22 | 5 of 22 |
+| Fix, with reasoning (up to 16,384 tokens) | 5 of 22 | 5 of 22 | 9 of 22 |
+| Median tokens generated, with reasoning | 2,094 | 2,002 | 6,002 |
+| Attempts lost because the search text did not match | 18 of 88 | 24 of 88 | 11 of 88 |
+| Correct symbol located, 40 tasks: file list / map | 23 / 30 | 24 / 29 | 28 / 31 |
 
-Each model located the code itself (different functions in 6 of 11 tasks), so the comparison mixes localization and repair. The quantized model generated a third as many tokens when reasoning, and failed twice as many edits because the copied text did not match the code (Fisher's exact test, p = 0.02). The difference in reasoning gain (9 against 5 of 22) is not significant (p = 0.33), and where both located the same code they solved the same number; we cannot attribute the missing reasoning gain to quantization.
+In isolated calls the 4-bit weights behaved like the original ones (miscopies 18 against 24, Fisher p = 0.38). Short reasoning and miscopies, first attributed to quantization, belong to the smaller model. Quantization's cost appeared only under long context (4.2), consistent with W4A16 being near-lossless on reasoning benchmarks [19].
 
 ### 4.5 Where the remaining failures are
 
@@ -112,24 +112,24 @@ Each model located the code itself (different functions in 6 of 11 tasks), so th
 
 **Runs do not repeat.** With temperature 0, top-p 1 and a fixed seed, 0 of 8 trajectories were identical across two runs; they diverged at the third to fifth call, likely because batched inference is not batch-invariant [7].
 
-**Development tasks can differ from target tasks.** Competition tasks are short pull-request descriptions (median 72 words against 108; none with a runnable example, against 7 of 40). Unquantized, the small model solved a third to a half of validation tasks; quantized, the same agents scored 0.01 and 0.03 on the test set. A Docker sandbox replica reproduced 4 of 5 validation results, so descriptions, weights or repositories explain the gap; our data cannot separate them.
+**The API may serve another model.** Our requests for E4B were answered by a 31B: the provider had marked the model as replaced, our bridge logged the requested name, and the bill matched 31B prices to the cent. The response's `model` field showed it. The same agents solved a third to a half of validation tasks there, but scored 0.01 and 0.03 with 4-bit E4B on the competition test set: much of that gap is model size. Competition tasks are also shorter (median 72 words against 108) and never include a runnable example.
 
 ## 5. Related work and convergent evidence
 
-SWE-bench [8] defined repository repair with hidden tests; SWE-agent [9] showed that the agent–computer interface matters, and Agentless [10] that a fixed localize–repair–validate pipeline can beat autonomous agents. We study the other end of the scale: an interface that a small quantized model cannot call incorrectly. Strict output formats degrade reasoning [17], and reasoning models overthink in agentic repair [18]; our replicated 2×2 agrees for the script-guided agent. 4-bit weights are near-lossless on reasoning benchmarks [19], yet in agents they amplify failures the model already has: 2.5 times more failed tool calls for Gemma 4 31B with an unchanged score [20], and more missed calls in a 1.7B model [21]. Our lost fields (6 to 21 of 160) and miscopied edits (11 to 24 of 88) fit this pattern. Other participants report agreeing results:
+SWE-bench [8] defined repository repair with hidden tests; SWE-agent [9] showed that the agent–computer interface matters, and Agentless [10] that a fixed localize–repair–validate pipeline can beat autonomous agents. We study the other end of the scale: an interface that a small quantized model cannot call incorrectly. Strict output formats degrade reasoning [17], and reasoning models overthink in agentic repair [18]; our replicated 2×2 agrees for the script-guided agent. 4-bit weights are near-lossless on reasoning benchmarks [19], yet in agents they amplify failures the model already has: 2.5 times more failed tool calls for Gemma 4 31B with an unchanged score [20], and more missed calls in a 1.7B model [21]. We see the same amplification only under long context (6 to 21 of 160 lost fields); in short isolated calls the QAT weights matched bf16. Other participants report agreeing results:
 
 | Finding | This paper | Independent evidence |
 |---|---|---|
 | Interfaces steer; instructions do not | 0 of 105 one-field calls rejected | Prompt rules rarely followed; interface changes worked [11] |
-| Long strings in structured calls break | Nested calls lose fields, amplified by quantization and context (4.2) | Single-string edits cut failures from 56% to 2% [12]; we did not reproduce their quote trigger |
-| Reasoning is not a free gain | Helps free-form agent (+3.7), not `fixer` (3 replicas) | Keeping or dropping earlier reasoning changed nothing [14]; thinking did not help in the time budget [15] |
+| Long strings in structured calls break | Nested calls lose fields; 4-bit weights amplify it under long context (4.2) | Single-string edits cut failures from 56% to 2% [12]; we did not reproduce their quote trigger |
+| Reasoning is not a free gain | Helps free-form agent (+3.7), not `fixer` (31B, 3 replicas) | Keeping or dropping earlier reasoning changed nothing [14]; thinking did not help in the time budget [15] |
 | Localization is not the bottleneck | Model-free retriever: top 3 for 28 of 40 | Name lookup drives localization; graph edges change at most 3 of 75 [16] |
 | Summaries remove instructions | Repeated calls; none with `NEXT` lines | Odds of solving halve after one compaction [13] |
 | One run is one sample | 0 of 8 runs identical; a first-run effect shrank on replication | One leaderboard draw varies by about 1.5 tasks [13] |
 
 ## 6. Limitations
 
-Apart from the 2×2, comparisons use one run per condition on 40 tasks or fewer; the format test treats repeated samples as independent calls; the probes do not fix localization; all results use one model family and framework.
+The 2×2 used a 31B through an API, not E4B; other comparisons use one run per condition; the format test treats repeated samples as independent calls; the probes do not fix localization; all results use one model family and framework.
 
 ## 7. Conclusion
 
@@ -139,7 +139,7 @@ For small quantized models, the interface decides whether an agent works, not ho
 2. **Put the next step in the tool output**, the only text that survives a summary.
 3. **Let code decide.** Scripts locate, apply and verify; the model's verdict is unreliable.
 4. **Measure reasoning per design.** It helped one agent and not another with the same model.
-5. **Validate with the deployed weights**, on random samples, with paired comparisons and repeated runs.
+5. **Validate with the deployed weights**, on random samples, with repeated runs, and check which model actually answered.
 
 No rule fixed the content of the change, where most failures remain.
 

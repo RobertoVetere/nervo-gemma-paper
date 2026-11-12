@@ -23,7 +23,8 @@ MODELOS_KAGGLE = {'e4b': 'gemma-4-e4b-it-qat-w4a16-ct', '31b': 'gemma-4-31b-it-q
 def llamar(modelo, prompt, razonar, tope=8192):
     url, clave, nombre = URL, '~/.deepinfra_key', MODELOS[modelo]
     if BASE_MODAL:
-        url, clave, nombre = BASE_MODAL.rstrip('/') + '/chat/completions', '~/.modal_vllm_key', MODELOS_KAGGLE[modelo]
+        url, clave, nombre = (BASE_MODAL.rstrip('/') + '/chat/completions', '~/.modal_vllm_key',
+                             os.environ.get('NERVO_SONDA_SERVIDO') or MODELOS_KAGGLE[modelo])  # e.g. gemma-4-e4b-it (bf16)
     body = {'model': nombre, 'messages': [{'role': 'user', 'content': prompt}], 'temperature': 0.2,
             'top_p': 0.95, 'max_tokens': tope, 'chat_template_kwargs': {'enable_thinking': bool(razonar)}}
     req = urllib.request.Request(url, json.dumps(body).encode(), {

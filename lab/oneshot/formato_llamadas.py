@@ -10,14 +10,16 @@ Three interfaces, same text, same instructions:
 Scored per call: tool called with the right name / arguments parse and required fields present / texts exact
 (trailing whitespace of each line ignored). Also records whether the block ends in a quote or backtick, the trigger
 other participants report for the Gemma 4 string delimiter.
-Backends: unquantized E4B/31B on DeepInfra (~/.deepinfra_key), quantized official weights on our vLLM server
-(--modal URL, ~/.modal_vllm_key, vLLM gemma4 tool parser).
+Backends: our vLLM server on Modal (--modal URL, ~/.modal_vllm_key, vLLM gemma4 tool parser) with the official quantized
+weights (--modelo e4b) or the unquantized bf16 weights (--modelo e4b-bf16); or an API (DeepInfra). Note: in Nov 2026
+DeepInfra served google/gemma-4-E4B-it requests with google/gemma-4-31B-it-turbo (replaced_by), so its 'e4b' is a 31B.
 Usage: python3 -I formato_llamadas.py --items 60 --modelo e4b --backend deepinfra --out res.jsonl
 """
 import argparse, ast, concurrent.futures as cf, glob, json, os, random, tarfile, tempfile, time, urllib.request
 
 MOD_DI = {'e4b': 'google/gemma-4-E4B-it', '31b': 'google/gemma-4-31B-it'}
-MOD_Q = {'e4b': 'gemma-4-e4b-it-qat-w4a16-ct', '31b': 'gemma-4-31b-it-qat-w4a16-ct'}
+MOD_Q = {'e4b': 'gemma-4-e4b-it-qat-w4a16-ct', '31b': 'gemma-4-31b-it-qat-w4a16-ct',
+         'e4b-bf16': 'gemma-4-e4b-it'}  # same vLLM server and parser, unquantized weights
 
 S = {'type': 'string'}
 TOOLS = {

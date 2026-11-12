@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""Section 4.3-4.4: numbers of the single-call probes (unquantized vs quantized E4B).
+"""Sections 4.4-4.5: numbers of the single-call probes.
 
-Reads lab/oneshot/cadena3.jsonl (unquantized, API), cadena3_cuantizado.jsonl (quantized, vLLM 0.19.1),
-loc.jsonl / loc_cuantizado.jsonl (localization) and cadena_funcion_cuantizado.jsonl (whole-function rewrite).
+Quantization comparison, same vLLM 0.19.1 server and parser: cadena3_bf16.jsonl / loc_bf16.jsonl (E4B, original bf16
+weights) against cadena3_cuantizado.jsonl / loc_cuantizado.jsonl (E4B, official w4a16 weights).
+cadena3.jsonl / loc.jsonl were requested as E4B from an API (DeepInfra) that served google/gemma-4-31B-it-turbo
+instead (the E4B model there is marked replaced_by it); they are kept and labelled as such.
+cadena_funcion_cuantizado.jsonl: whole-function rewrite with the quantized E4B.
 Usage: python3 lab/oneshot/resumen_cuantizacion.py
 """
 import json, os, statistics as st
@@ -20,29 +23,29 @@ def fisher(a, n1, b, n2):
     return sum(pr(x) for x in range(max(0, T - n2), min(n1, T) + 1) if pr(x) <= p0 + 1e-12)
 
 
-U, Q = load('cadena3.jsonl'), load('cadena3_cuantizado.jsonl')
-for name, R in (('unquantized', U), ('quantized', Q)):
+U, Q = load('cadena3_bf16.jsonl'), load('cadena3_cuantizado.jsonl')
+API = load('cadena3.jsonl')
+for name, R in (('bf16 E4B', U), ('w4a16 E4B', Q), ('API (31B)', API)):
     s = {k: sum(bool(r[k]['resuelve']) for r in R) for k in K}
     mis = sum('no encaja' in str(r[k].get('motivo', '')) for r in R for k in K)
     tok = st.median(r[k]['tokens'] for r in R for k in ('e4b_t_A', 'e4b_t_C') if r[k].get('tokens'))
-    print(f'{name:12} fix no-reasoning {s["e4b_A"]}/{len(R)} | with reasoning {s["e4b_t_A"]}/{len(R)} | '
+    print(f'{name:10} fix no-reasoning {s["e4b_A"]}/{len(R)} | with reasoning {s["e4b_t_A"]}/{len(R)} | '
           f'+tests {s["e4b_C"]}/{len(R)} | search mismatch {mis}/{4 * len(R)} | median tokens with reasoning {tok:.0f}')
+su = {k: sum(bool(r[k]['resuelve']) for r in U) for k in K}; sq = {k: sum(bool(r[k]['resuelve']) for r in Q) for k in K}
 mu = sum('no encaja' in str(r[k].get('motivo', '')) for r in U for k in K)
 mq = sum('no encaja' in str(r[k].get('motivo', '')) for r in Q for k in K)
-print(f'search mismatch Fisher p = {fisher(mu, 88, mq, 88):.3f}; reasoning 9/22 vs 5/22 p = {fisher(9, 22, 5, 22):.2f}')
+print(f'bf16 vs w4a16: search mismatch {mu}/88 vs {mq}/88, Fisher p = {fisher(mu, 88, mq, 88):.3f}; '
+      f'reasoning {su["e4b_t_A"]}/22 vs {sq["e4b_t_A"]}/22, p = {fisher(su["e4b_t_A"], 22, sq["e4b_t_A"], 22):.2f}')
 ku, kq = {(r['tarea'], r['muestra']): r for r in U}, {(r['tarea'], r['muestra']): r for r in Q}
 same = [k for k in ku if k in kq and ku[k]['where'] == kq[k]['where'] and ku[k]['archivo'] == kq[k]['archivo']]
 diff_tasks = {k[0] for k in ku if k not in same}
-print(f'same location in {len(same)} of {len(ku)} samples; located function differs in {len(diff_tasks)} of '
-      f'{len({k[0] for k in ku})} tasks')
-for k in K:
-    print(f'  same-location samples, {k}: unquantized {sum(bool(ku[x][k]["resuelve"]) for x in same)}, '
-          f'quantized {sum(bool(kq[x][k]["resuelve"]) for x in same)}')
+print(f'bf16 vs w4a16: same location in {len(same)} of {len(ku)} samples; located function differs in '
+      f'{len(diff_tasks)} of {len({k[0] for k in ku})} tasks')
 right = [r for r in Q if r['archivo_ok']]
 print(f'quantized, right file: {sum(not r[k]["resuelve"] for r in right for k in K)} of {4 * len(right)} attempts fail')
-for name, f in (('unquantized', 'loc.jsonl'), ('quantized', 'loc_cuantizado.jsonl')):
+for name, f in (('bf16 E4B', 'loc_bf16.jsonl'), ('w4a16 E4B', 'loc_cuantizado.jsonl'), ('API (31B)', 'loc.jsonl')):
     R = [r for r in load(f) if r['modelo'] == 'e4b']
-    print(f'localization {name}: ' + ', '.join(f'{c} symbol {sum(r["simbolo_ok"] for r in R if r["cond"] == c)}/'
+    print(f'localization {name}: ' + ', '.join(f'{c} symbol {sum(r["simbolo_ok"] in (True, 'True') for r in R if r["cond"] == c)}/'
                                               f'{sum(r["cond"] == c for r in R)}' for c in ('lista', 'mapa')))
 F = load('cadena_funcion_cuantizado.jsonl')
 ok = [r for r in F if not r['e4b_F'].get('na')]

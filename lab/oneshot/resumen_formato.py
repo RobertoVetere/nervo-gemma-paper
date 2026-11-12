@@ -30,14 +30,20 @@ for k in sorted(g):
     fq = sum(not x['exact'] for x in q); fo = sum(not x['exact'] for x in o)
     print(f'{k}: failures ending in quote {fq}/{len(q)}, other {fo}/{len(o)}, Fisher p = {fisher(fq, len(q)-fq, fo, len(o)-fo):.3f}')
 print()
-bk = sorted({(k[0], k[1]) for k in g})
-for i, a in enumerate(bk):
-    for b in bk[i + 1:]:
-        if a[1] != b[1]:
-            continue
-        for f in sorted({k[2] for k in g}):
-            va, vb = g.get((*a, f), []), g.get((*b, f), [])
-            if va and vb:
-                fa = sum(not x['exact'] for x in va); fb = sum(not x['exact'] for x in vb)
-                print(f'{f}: {a[0]} {fa}/{len(va)} vs {b[0]} {fb}/{len(vb)} failures, Fisher p = '
-                      f'{fisher(fa, len(va)-fa, fb, len(vb)-fb):.3f}')
+def fails(key):
+    v = g.get(key, []); return sum(not x['exact'] for x in v), len(v)
+
+
+for f in sorted({k[2] for k in g}):
+    for ctx in ('', '+ctx36k'):
+        pairs = [(('modal', 'e4b-bf16' + ctx, f), ('modal', 'e4b' + ctx, f)),     # quantization, same server and parser
+                 (('deepinfra', 'e4b' + ctx, f), ('modal', 'e4b' + ctx, f))]      # API (served by a 31B) vs quantized E4B
+        for a, b in pairs:
+            (fa, na), (fb, nb) = fails(a), fails(b)
+            if na and nb:
+                print(f'{f}{ctx}: {a[0]}/{a[1]} {fa}/{na} vs {b[0]}/{b[1]} {fb}/{nb} failures, Fisher p = '
+                      f'{fisher(fa, na - fa, fb, nb - fb):.3f}')
+    for m in ('e4b', 'e4b-bf16'):
+        (fa, na), (fb, nb) = fails(('modal', m, f)), fails(('modal', m + '+ctx36k', f))
+        if na and nb:
+            print(f'{f}: context effect modal/{m}: {fa}/{na} -> {fb}/{nb}, Fisher p = {fisher(fa, na - fa, fb, nb - fb):.3f}')

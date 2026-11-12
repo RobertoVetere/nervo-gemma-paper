@@ -19,9 +19,10 @@ GPUS = int(os.environ.get('NERVO_VLLM_GPUS', '1'))
 REPOS_HF = {
     'gemma-4-e4b-it-qat-w4a16-ct': 'google/gemma-4-E4B-it-qat-w4a16-ct',
     'gemma-4-31b-it-qat-w4a16-ct': 'google/gemma-4-31B-it-qat-w4a16-ct',
+    'gemma-4-e4b-it': 'google/gemma-4-E4B-it',  # unquantized bf16 weights, for quantized-vs-unquantized comparisons
 }
 CLAVE = hashlib.sha256((os.environ.get('MODAL_TOKEN_SECRET', '') + ':vllm').encode()).hexdigest()[:40]
-CORTO = 'e4b' if 'e4b' in MODELO else '31b'
+CORTO = ('e4b' if 'e4b' in MODELO else '31b') + ('-bf16' if 'qat' not in MODELO else '')
 
 app = modal.App(f'nervo-vllm-{CORTO}')
 modelos = modal.Volume.from_name('nervo-modelos', create_if_missing=True)
