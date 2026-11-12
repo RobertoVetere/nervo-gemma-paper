@@ -53,3 +53,5 @@ is counted separately, not as a lost field).
 - **H3b — held.** Solved 8 vs 9 of 40 (one task only with one-field).
 - Not pre-registered and reported as such: per-model McNemar of single field vs flat, and the re-scoring that
   separates lost fields from layout errors.
+- Note on numbering: section numbers above refer to the paper draft of the time; in the final paper the 2×2 is Section 4.4
+  and the interface A/B is Section 4.3.
