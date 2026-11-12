@@ -1,0 +1,20 @@
+name: Create paper tag
+# Creates the tag paper-v1 on the commit cited by the paper (runs once when this file is pushed).
+on:
+  push:
+    paths: [".github/workflows/tag_release.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: |
+          git config user.name "nervo-bot"; git config user.email "nervo-bot@users.noreply.github.com"
+          git tag -f paper-v1 07bef3f
+          git push -f origin paper-v1
+          git ls-remote --tags origin paper-v1
